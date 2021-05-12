@@ -1,0 +1,6 @@
+.main_panel {
+  background: red;
+  display: -ms-grid;
+  display: grid; }
+  .main_panel .acordeon {
+    color: #fff; }

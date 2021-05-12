@@ -1,0 +1,43 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+a{
+    text-decoration: none;
+    color: #000;
+}
+
+textarea{
+    resize: none;
+}
+
+ul,li{
+    list-style: none;
+}
+
+.textoderecha{
+    text-align: right;
+}
+
+.textocentro{
+    text-align: center;
+}
+
+.textoizquierda{
+    text-align: left;
+}
+
+.oculto{
+    display: none;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+input[type=number] { -moz-appearance:textfield; }
