@@ -914,7 +914,6 @@
                 $mail->Host = 'mail.sepcon.net';
                 $mail->SMTPAuth = true;
                 $mail->Username = 'sistema_ibis@sepcon.net';
-                //$mail->Password = 'aK8izG1WEQwwB1O';
                 $mail->Password = $_SESSION['password'];
                 $mail->Port = 465;
                 $mail->SMTPSecure = "ssl";

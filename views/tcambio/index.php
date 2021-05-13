@@ -7,6 +7,7 @@
     <title>Sistema de Control Logístico - Ibis</title>
 </head>
 <body>
+    <?php require 'views/header.php'; ?>
     <div class="mensaje msj_error">
         <span></span>
     </div> 
@@ -25,7 +26,6 @@
             </div>
         </div>
     </div>
-    <?php require 'views/header.php'; ?>
     <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>
         <div class="workOneForm">

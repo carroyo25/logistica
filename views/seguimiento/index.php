@@ -99,7 +99,10 @@
                             <span>Detalles</span>
                             <div>
                                 <button type="button" id="btnClosOrd" title="Cierra la orden y la envia por correo">
-                                    <i class="fas fa-inbox"></i> Enviar Orden
+                                    <i class="fas fa-inbox"></i> Cerrar Orden
+                                </button>
+                                <button type="button" id="btnSendMail" title="Cierra la orden y la envia por correo">
+                                    <i class="far fa-paper-plane"></i> Enviar Correo
                                 </button>
                                 <button type="button" id="btnGenDoc" title="Firmar Orden">
                                     <i class="far fa-file-pdf"></i> Generar Orden

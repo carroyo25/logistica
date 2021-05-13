@@ -240,7 +240,7 @@
         left: 10%;
         top: 15%;
         width: 85%;
-        min-height: 65%;
+        min-height: 75%;
         max-height: 82%;
         background: #fff;
         border: 2px solid black;
@@ -260,11 +260,12 @@
         }
 
         button{
-            width: 170px;
+            width: auto;
             height: 35px;
             border: none;
             outline: none;
             margin: 5px;
+            padding: 0 20px;
         }
     }
 
@@ -1958,9 +1959,27 @@ hr{
     width: 100px;
 }
 
+.w150px {
+    width: 150px;
+}
+
+
+.w235px{
+    width: 235px;
+}
+
+.w295px{
+    width: 295px;
+}
+
 .w250px{
     width: 250px;
 }
+
+.w300px{
+    width: 300px;
+}
+
 
 //margenes
 

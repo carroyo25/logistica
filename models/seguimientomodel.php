@@ -519,7 +519,7 @@
                         $titulo = $titulo . " " . $numdoc;
                         $condicion = 1;
                         
-                        $file = uniqid($prefix).".pdf";
+                        $file = $codigo.".pdf";
                         $filename = "public/ordenes/aprobadas/".$file;
 
                         if(file_exists($filename))
@@ -835,19 +835,100 @@
             for ($i=0; $i < $nreg; $i++) { 
                 $sql = $this->db->connect()->prepare("UPDATE lg_detapedido SET idreg_ref=:ord WHERE nidpedi =:idreg");
                 $sql->execute(["idreg"=>$ordenes[$i]['nidpedi'],"ord"=>$idorden]);
-               
             }
         }
 
-        public function sendMail($orden){
+        public function sendMail($orden,$entidad){
             require_once("public/PHPMailer/PHPMailerAutoload.php");
-            
             try {
-                //TODO programar el envio de los correos
+                $entidad = $this->getContac($entidad);
+                $filename = $this->getAtach($orden);
+                $enviado = false;
+
+
+                $origen = $_SESSION['user']."@sepcon.net";
+                $nombre_envio = $_SESSION['nombres'];
+                $title = utf8_decode("Atención de Orden");
+
+                $mail = new PHPMailer;
+                $mail->isSMTP();
+                $mail->SMTPDebug = 0;
+                $mail->Debugoutput = 'html';
+                $mail->Host = 'mail.sepcon.net';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'sistema_ibis@sepcon.net';
+                $mail->Password = $_SESSION['password'];
+                $mail->Port = 465;
+                $mail->SMTPSecure = "ssl";
+                $mail->SMTPOptions = array(
+                    'ssl' => array(
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                        'allow_self_signed' => false
+                    )
+                );
+                
+                $mail->setFrom($origen,$nombre_envio);
+                $mail->addAddress($entidad['mail'],$entidad['nombre']);
+                $mail->Subject = $title;
+
+                $mensaje =  "<html><body>";
+                $mensaje .=  "<p>Sres;</p>";
+                $mensaje .=  "<p>Sirvanse, atender la orden , según el archivo adjunto</p>";
+                $mensaje .=  "<p>Atte.</p>";
+                $mensaje .= "</body></html>";
+
+                $mail->msgHTML(utf8_decode($mensaje));
+
+                $atach = "public/ordenes/aprobadas/".$filename;
+
+                if (file_exists($atach)){
+                    $mail->addAttachment($atach);
+                }
+
+                if (!$mail->send()) {
+                    $enviado = false;
+			    }else {
+                    $enviado = true;
+                    $this->updateMail($orden);
+                }
+
+
+                return $enviado;
+                
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
             }
+        }
+
+        public function getAtach($orden){
+            try {
+                $sql = $this->db->connect()->prepare("SELECT
+                                                            lg_regabastec.id_regmov,
+                                                            lg_regabastec.cdocPDF 
+                                                        FROM
+                                                            lg_regabastec 
+                                                        WHERE
+                                                            lg_regabastec.id_regmov = :ord");
+                $sql->execute(["ord"=>$orden]);
+                $rowCount = $sql->rowcount();
+
+                if ($rowCount > 0) {
+                    while ($rs = $sql->fetch()) {
+                       $filename = $rs['cdocPDF'];
+                    }
+                }
+
+                return $filename;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function updateMail($orden){
+
         }
     }
 ?>

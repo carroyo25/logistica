@@ -9,7 +9,7 @@
     <title>Sistema de Control logístico - Ibis</title>
 </head>
 <body>
-<?php require 'views/header.php'; ?>
+    <?php require 'views/header.php'; ?>
     <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>
         <div class="workData">

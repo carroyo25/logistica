@@ -77,10 +77,18 @@
 
         function changePed(){
             $idorden  = $_POST['idorden'];
-            $numorden = $_POST['orden'];
             $pedido   = $_POST['ped'];
 
-            $result = $this->model->updatePed($idorden,$pedido,$numorden);
+            $result = $this->model->updatePed($idorden,$pedido);
+
+            echo $result;
+        }
+
+        function mail(){
+            $orden = $_POST['idorden'];
+            $entidad = $_POST['entidad'];
+
+            $result = $this->model->sendMail($orden,$entidad);
 
             echo $result;
         }

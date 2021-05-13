@@ -7,6 +7,7 @@
     <title>Sistema de Control Logístico - Ibis</title>
 </head>
 <body>
+    <?php require 'views/header.php'; ?>
     <div class="modal" id="modalSeek">
         <div class="search">
             <div>
@@ -32,7 +33,6 @@
         </div>
         <a href="#" id="closeModal" class="buttonClose"><i class="fas fa-reply-all"></i></a>
     </div>
-    <?php require 'views/header.php'; ?>
     <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>
         <div class="workOneForm">

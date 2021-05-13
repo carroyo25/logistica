@@ -91,8 +91,8 @@ $(function(){
     //generar pdf orden
     $("#btnGenDoc").on("click", function (e) {
         e.preventDefault();
-
-        if ( $("#firma_log").hasClass('firma_confirmada') && $("#firma_ope").hasClass('firma_confirmada') && $("#firma_fin").hasClass('firma_confirmada')){
+        //&& $("#firma_ope").hasClass('firma_confirmada') && $("#firma_fin").hasClass('firma_confirmada')
+        if ( $("#firma_log").hasClass('firma_confirmada') ){
             $.post(RUTA+"seguimiento/genOrder", {orden:$("#orden").val()},
                 function (data, textStatus, jqXHR) {
                     $("#modalPreview").fadeIn();
@@ -129,6 +129,18 @@ $(function(){
                 
             },
             "json"
+        );
+        return false;
+    });
+
+    $("#btnSendMail").on("click", function (e) {
+        e.preventDefault();
+
+        $.post(RUTA+"seguimiento/mail", {idorden:$("#orden").val(),entidad:$("#id_entidad").val()},
+            function (data, textStatus, jqXHR) {
+                
+            },
+            "text"
         );
         return false;
     });

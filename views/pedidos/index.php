@@ -185,7 +185,7 @@
         <a href="#" class="buttonClose" id="closeModalItems"><i class="fas fa-reply-all"></i></a>    
     </div>
     <div class="modal zindex3" id="modalImport">
-        <div class="dialogContainer">
+        <div class="dialogContainer w35p">
             <div class="dialogTitle">
                 <h4>Importar</h4>
             </div>
@@ -210,7 +210,7 @@
         <a href="#" id="closeModalPreview" class="buttonClose"><i class="fas fa-reply-all"></i></a>
     </div>
     <div class="modal zindex3" id="modalAtach">
-        <div class="dialogContainer">
+        <div class="dialogContainer w35p">
             <div class="dialogTitle">
                 <h4>Adjuntar Archivos</h4>
             </div>

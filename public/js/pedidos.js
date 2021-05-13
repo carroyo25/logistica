@@ -1083,7 +1083,7 @@ $(function() {
 
         $.ajax({
             // URL to move the uploaded image file to server
-            url: RUTA + 'pedidos/uploadsAtachs',
+            url: RUTA + 'pedidos/uploadCotAtachs',
             // Request type
             type: "POST", 
             // To send the full form data
