@@ -19,6 +19,9 @@
                         <div class="descrip_title">
                             <span>Datos Generales</span>
                             <div>
+                                <button type="button" id="importPedi" title="Importar Pedido">
+                                    <i class="fas fa-archive"></i> Importar Pedido 
+                                </button>
                                 <button type="button" id="importOrd" title="Importar Orden">
                                     <i class="far fa-folder-open"></i> Importar Orden 
                                 </button>
@@ -34,7 +37,12 @@
                             <div class="process_left">
                                 <div class="input_process g4items">
                                     <label for="almacen" class="w100px">Almacen :</label>
-                                    <input type="text" name="almacen" id="almacen" class="w300px pl10">
+                                    <input type="text" name="almacen" id="almacen" class="w300px pl10" placeholder="seleccione opcion">
+                                    <div class="seleccion seleccion_pedido">
+                                        <ul id="listaAlmacen">
+                                            <?php echo $this->almacenes?>
+                                        </ul>
+                                    </div>
                                     <label for="nro_ingreso" class="w100px">Nro Ingreso :</label>
                                     <input type="text" name="nro_ingreso" id="nro_ingreso" class="w100px pl10" readonly>
                                 </div>
@@ -50,19 +58,19 @@
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="area" class="w100px">Area/Of. :</label>
-                                    <input type="text" name="area" id="area" class="pl20 mayusculas" placeholder="Seleccione una opcion">
+                                    <input type="text" name="area" id="area" class="pl20 mayusculas">
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="costos" class="w100px">C.Costos. :</label>
-                                    <input type="text" name="costos" id="costos" class="pl20 mayusculas" placeholder="Seleccione una opcion">
+                                    <input type="text" name="costos" id="costos" class="pl20 mayusculas">
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="solicita" class="w100px">Solicita :</label>
-                                    <input type="text" name="solicita" id="solicita" class="pl20 mayusculas" placeholder="Seleccione una opcion">
+                                    <input type="text" name="solicita" id="solicita" class="pl20 mayusculas">
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="aprueba" class="w100px">Aprueba :</label>
-                                    <input type="text" name="aprueba" id="aprueba" class="pl20 mayusculas" placeholder="Seleccione una opcion">
+                                    <input type="text" name="aprueba" id="aprueba" class="pl20 mayusculas">
                                 </div>
                             </div>
                             <div class="process_right">
@@ -75,7 +83,7 @@
                                 <div class="input_process g4items">
                                     <label for="nrord" class="w100px">Nro. Orden:</label>
                                     <input type="text" name="nrord" id="nrord" class="pl20">
-                                    <label for="nroped" class="w100px">Fec. Contable :</label>
+                                    <label for="nroped" class="w100px">Nro. Pedido :</label>
                                     <input type="text" name="nroped" id="nroped" class="pl20">
                                 </div>
                                 <div class="input_process g4items">
@@ -86,7 +94,7 @@
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="entidad" class="w100px">Razón Social :</label>
-                                    <input type="text" name="entidad" id="entidad" class="pl20 mayusculas" placeholder="Seleccione una opcion">
+                                    <input type="text" name="entidad" id="entidad" class="pl20 mayusculas">
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="concepto" class="w100px">Concepto :</label>
@@ -159,7 +167,53 @@
         </form>
         <a href="#" id="closeModalProcess" class="buttonClose"><i class="fas fa-reply-all"></i></a>
     </div>
-    <div class="modal zindex3" id="modalItems"></div>
+    <div class="modal zindex3" id="modalOrdenes">
+        <div class="lists">
+            <div class="barra_busqueda_interna">
+                <label for="nroorden">Nro. Orden</label>
+                <input type="text" name="nroorden" id="nroorden">
+                <button>Procesar</button>
+            </div>
+            <div class="lista">
+                <table id="lista_ordenes" class="w100p con_borde tabla_lista" >
+                    <thead>
+                        <tr>
+                            <th class="w8p">Nro.Orden</th>
+                            <th>Proyecto</th>
+                            <th>Centro de Costos</th>
+                            <th>Area</th>
+                            <th class="w8p">Fecha</th>
+                            <th class="w5p">...</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="barra_busqueda_interna">
+                <button>Seleccionar todos</button>
+            </div>
+            <div class="detalleslista">
+                <table id="detalles" class="w100p con_borde tabla_lista">
+                    <thead>
+                        <tr>
+                            <th class="w5p">Item</th>
+                            <th>Codigo</th>
+                            <th>Descripcion</th>
+                            <th class="w10p">Cantidad</th>
+                            <th class="w5p">...</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal zindex3" id="modalOrdenes">
+        <h1>Lista de Pedidos</h1>
+    </div>
     <div class="modal zindex3" id="modalPreview"></div>
     <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>
@@ -171,8 +225,8 @@
             <div class="formulario">
                 <div class="banner">
                     <div>
-                        <label for="tipo">Tipo</label>
-                        <select name="tipo" id="tipo">
+                        <label for="tipo">Almacen</label>
+                        <select name="almacen" id="almacen">
                             <option value="-1" class="oculto">Seleccione opcion</option>
                             <option value="1">Bienes</option>
                             <option value="2">Servicios</option>
@@ -188,6 +242,10 @@
                         </select>
                     </div>
                     <div>
+                        <label for="anio">Año</label>
+                        <input type="number" name="anio" id="anio" min="2020" max="3000" value="<?php echo date("Y")?>">
+                    </div>
+                    <div>
                         <label for="mes">Mes</label>
                         <select name="mes" id="mes">
                             <option value="-1" class="oculto">Seleccione opcion</option>
@@ -195,10 +253,6 @@
                             <option value="2">Febrero</option>
                             <option value="3">Marzo</option>
                         </select>
-                    </div>
-                    <div>
-                        <label for="anio">Año</label>
-                        <input type="number" name="anio" id="anio" min="2020" max="3000">
                     </div>
                     <div>
                         <button type="button">Procesar</button>

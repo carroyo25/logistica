@@ -456,6 +456,51 @@
       background: #fff;
       padding-left: 20px; }
 
+.lists {
+  position: absolute;
+  background: #fff;
+  width: 80%;
+  height: 70vh;
+  left: 11%;
+  top: 11%;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-rows: 40px 43% 40px 43%;
+  grid-template-rows: 40px 43% 40px 43%;
+  padding: 5px; }
+  .lists .lista, .lists .detalleslista {
+    overflow: auto; }
+  .lists .barra_busqueda_interna {
+    padding-left: 20px;
+    position: relative; }
+    .lists .barra_busqueda_interna input {
+      width: 10%;
+      height: 35px;
+      padding-left: 20px;
+      outline: none; }
+    .lists .barra_busqueda_interna button {
+      border: none;
+      height: 35px;
+      text-align: right;
+      width: auto;
+      padding: 0 20px;
+      position: absolute;
+      right: 10px;
+      -webkit-transition: .3s;
+      -o-transition: .3s;
+      transition: .3s;
+      border: 2px solid #fff; }
+      .lists .barra_busqueda_interna button:hover {
+        border: 2px solid darkgrey; }
+
+.tabla_lista {
+  border-collapse: collapse; }
+  .tabla_lista thead {
+    color: #fff;
+    background: #000; }
+    .tabla_lista thead tr {
+      height: 35px; }
+
 .insidePreview {
   position: absolute;
   width: 50%;

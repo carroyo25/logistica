@@ -584,6 +584,62 @@
     }
 }
 
+.lists{
+    position: absolute;
+    background: #fff;
+    width: 80%;
+    height: 70vh;
+    left: 11%;
+    top: 11%;
+    display: grid;
+    grid-template-rows: 40px 43% 40px 43%;;
+    padding: 5px;
+
+    .lista, .detalleslista{
+        overflow: auto;
+    }
+
+    .barra_busqueda_interna{
+        padding-left: 20px;
+        position: relative;
+
+        input{
+            width: 10%;
+            height: 35px;
+            padding-left: 20px;
+            outline: none;
+        }
+
+        button{
+            border: none;
+            height: 35px;
+            text-align: right;
+            width: auto;
+            padding: 0 20px;
+            position: absolute;
+            right: 10px;
+            transition: .3s;
+            border: 2px solid #fff;
+            
+            &:hover{
+                border: 2px solid darkgrey;
+            }
+        }
+    }
+}
+
+.tabla_lista{
+    border-collapse: collapse;
+    thead{
+        color: #fff;
+        background: #000;
+        tr{
+            height: 35px;
+        }
+
+    }
+}
+
 .insidePreview{
     position: absolute;
     width: 50%;

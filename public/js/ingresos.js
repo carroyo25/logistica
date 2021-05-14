@@ -39,4 +39,52 @@ $(function(){
 
         return false;
     });
+
+    $("#almacen").focus(function (e) { 
+        e.preventDefault();
+        
+        $("#cod_almacen").val("");
+        $(this).select();
+        $(".seleccion").fadeOut();
+
+        $(this).next(".seleccion").slideDown();
+
+        return false;
+    });
+
+    $("#listaAlmacen").on("click","a", function (e) {
+        e.preventDefault();
+
+        $("#cod_almacen").val($(this).attr("href"));
+        $("#almacen").val($(this).text());
+
+        $.post(RUTA+"ingresos/nroingreso", {data:$("#cod_almacen").val()},
+            function (data, textStatus, jqXHR) {
+                $("#nro_ingreso").val(data.guia_nmr);
+                $("#movalmacen").val(data.mov_nmr);
+            },
+            "json"
+        );
+
+        $(this).parent().parent().parent().slideUp();
+        $("#saveDoc span").addClass('parpadea');
+
+        return false;
+    });
+
+    $("#importOrd").on("click", function (e) {
+        e.preventDefault();
+
+        $.post(RUTA+"ingresos/ordenes",
+            function (data, textStatus, jqXHR) {
+                $("#lista_ordenes tbody")
+                    .empty()
+                    .append(data);
+                $("#modalOrdenes").fadeIn();      
+            },
+            "text"
+        );
+
+        return false;
+    });
 })
