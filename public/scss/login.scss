@@ -195,6 +195,8 @@
         .dialogBody{
             padding: 20px;
             line-height: 2rem;
+            max-height: 67vh;
+            overflow: auto;
 
             h1,h2 {
                 text-align: center;
@@ -602,9 +604,11 @@
     .barra_busqueda_interna{
         padding-left: 20px;
         position: relative;
+        display: flex;
+        justify-content: space-between;
 
         input{
-            width: 10%;
+            //width: 10%;
             height: 35px;
             padding-left: 20px;
             outline: none;
@@ -616,8 +620,6 @@
             text-align: right;
             width: auto;
             padding: 0 20px;
-            position: absolute;
-            right: 10px;
             transition: .3s;
             border: 2px solid #fff;
             
@@ -1608,6 +1610,10 @@
     padding: 5px;
     width: 150px;
     height: 35px;
+}
+
+.descrip_bloque{
+    display: block;
 }
 
 .seleccion {

@@ -14,14 +14,13 @@
     <div class="modal" id="modalProcess">
         <form action="#" autocomplete="off" id="formProcess">
             <input type="hidden" name="cod_almacen" id="cod_almacen">
+            <input type="hidden" name="cod_motivo" id="cod_motivo">
+            <input type="hidden" name="cod_autoriza" id="cod_autoriza">
             <div class="process">
                 <div class="sides_process">
                         <div class="descrip_title">
                             <span>Datos Generales</span>
                             <div>
-                                <button type="button" id="importPedi" title="Importar Pedido">
-                                    <i class="fas fa-archive"></i> Importar Pedido 
-                                </button>
                                 <button type="button" id="importOrd" title="Importar Orden">
                                     <i class="far fa-folder-open"></i> Importar Orden 
                                 </button>
@@ -71,12 +70,22 @@
                                 <div class="input_process g2items">
                                     <label for="aprueba" class="w100px">Aprueba :</label>
                                     <input type="text" name="aprueba" id="aprueba" class="pl20 mayusculas">
+                                    <div class="seleccion seleccion_pedido">
+                                        <ul id="listaAprueba">
+                                            <?php echo $this->aprueba?>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                             <div class="process_right">
                                 <div class="input_process g4items">
                                     <label for="tipomov" class="w100px">Tipo Mov :</label>
                                     <input type="text" name="tipomov" id="tipomov" class="w300px pl10">
+                                    <div class="seleccion seleccion_pedido">
+                                        <ul id="listaMotivo">
+                                            <?php echo $this->motivos?>
+                                        </ul>
+                                    </div>
                                     <label for="movalmacen" class="w100px">Mov.Almacén :</label>
                                     <input type="text" name="movalmacen" id="movalmacen" class="w100px pl10" readonly>
                                 </div>
@@ -142,19 +151,20 @@
                         </div>
                         <div class="process_items">
                         <div>
-                            <table class="con_borde w100p" id="detalle_pedido">
+                            <table class="con_borde w100p" id="detalle_ingreso">
                                 <thead>
                                     <tr>
                                         <th class="con_borde w2p">...</th>
-                                        <th class="con_borde w2p">...</th>
-                                        <th class="con_borde w5p">Item</th>
-                                        <th class="con_borde w15p">Codigo</th>
-                                        <th class="con_borde w20p">Descripcion</th>
-                                        <th class="con_borde w10p">Unidad</th>
+                                        <th class="con_borde w3p">Item</th>
+                                        <th class="con_borde w10p">Codigo</th>
+                                        <th class="con_borde w30p">Descripcion</th>
+                                        <th class="con_borde w5p">Unidad</th>
                                         <th class="con_borde w5p">Cantidad </br> Orden</th>
                                         <th class="con_borde w5p">Cant. </br> Ingresada</th>
                                         <th class="con_borde w10p">Estado </br> Bien</th>
                                         <th class="con_borde w10p">Ubicación </br> Física</th>
+                                        <th class="con_borde w10p">Lote</th>
+                                        <th class="con_borde w10p">Fecha </br> Vencimiento</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -170,9 +180,14 @@
     <div class="modal zindex3" id="modalOrdenes">
         <div class="lists">
             <div class="barra_busqueda_interna">
-                <label for="nroorden">Nro. Orden</label>
-                <input type="text" name="nroorden" id="nroorden">
-                <button>Procesar</button>
+                <div>
+                    <label for="nroorden">Nro. Orden</label>
+                    <input type="text" name="nroorden" id="nroorden">
+                </div>
+                <div>
+                    <button>Buscar</button>
+                    <button>Registrar Ingreso</button>
+                </div>
             </div>
             <div class="lista">
                 <table id="lista_ordenes" class="w100p con_borde tabla_lista" >
@@ -191,28 +206,43 @@
                     </tbody>
                 </table>
             </div>
-            <div class="barra_busqueda_interna">
-                <button>Seleccionar todos</button>
+        </div>
+        <a href="#" id="closeModalOrders" class="buttonClose"><i class="fas fa-reply-all"></i></a>
+    </div>
+    <div class="modal zindex3" id="modalSerie">
+        <div class="dialogContainer w35p">
+            <div class="dialogTitle">
+                <h4>Registrar Series</h4>
             </div>
-            <div class="detalleslista">
-                <table id="detalles" class="w100p con_borde tabla_lista">
-                    <thead>
-                        <tr>
-                            <th class="w5p">Item</th>
-                            <th>Codigo</th>
-                            <th>Descripcion</th>
-                            <th class="w10p">Cantidad</th>
-                            <th class="w5p">...</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+            <hr>
+            <div class="dialogBody">
+                <div class="titulos">
+                    <h4 id="descrip"></h4>
+                    <h4 id="nroItemSerial" class="oculto"></h4>
+                    <a href="#" id="addSerials"><i class="far fa-calendar-plus"></i></a>
+                </div>
+                <form action="">
+                    <div>
+                        <table id="detalle_series" class="w100p con_border espacio_tabla_0 ">
+                            <thead>
+                                <tr>
+                                    <th class="con_borde">...</th>
+                                    <th class="con_borde">Item</th>
+                                    <th class="con_borde">Nro. Serie</th>
+                                    <th class="con_borde">Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="options">
+                        <button id="btnConfirmSerial" class="botones" type="button">Aceptar</button>
+                        <button id="btnCancelSerial" class="botones" type="button">Cancelar</button>
+                    </div>
+                </form>   
             </div>
         </div>
-    </div>
-    <div class="modal zindex3" id="modalOrdenes">
-        <h1>Lista de Pedidos</h1>
     </div>
     <div class="modal zindex3" id="modalPreview"></div>
     <div class="main_panel">

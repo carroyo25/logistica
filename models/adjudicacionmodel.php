@@ -474,7 +474,7 @@
             $info = $proyecto['codigo']. " " . $proyecto['nombre'];
 
             $numdoc = date("Y")."-".str_pad($this->genDocNumber($tipo),5,"0",STR_PAD_LEFT);
-            $anio = explode("/",$fecha);
+            $anio = explode("-",$fecha);
 
             if ($tipo == "B") {
                 $titulo = "ORDEN DE COMPRA" ;

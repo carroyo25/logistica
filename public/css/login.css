@@ -164,7 +164,9 @@
       justify-content: space-between; }
     .modal .dialogContainer .dialogBody {
       padding: 20px;
-      line-height: 2rem; }
+      line-height: 2rem;
+      max-height: 67vh;
+      overflow: auto; }
       .modal .dialogContainer .dialogBody h1, .modal .dialogContainer .dialogBody h2 {
         text-align: center;
         line-height: 3rem; }
@@ -472,9 +474,14 @@
     overflow: auto; }
   .lists .barra_busqueda_interna {
     padding-left: 20px;
-    position: relative; }
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between; }
     .lists .barra_busqueda_interna input {
-      width: 10%;
       height: 35px;
       padding-left: 20px;
       outline: none; }
@@ -484,8 +491,6 @@
       text-align: right;
       width: auto;
       padding: 0 20px;
-      position: absolute;
-      right: 10px;
       -webkit-transition: .3s;
       -o-transition: .3s;
       transition: .3s;
@@ -1296,6 +1301,9 @@
   padding: 5px;
   width: 150px;
   height: 35px; }
+
+.descrip_bloque {
+  display: block; }
 
 .seleccion {
   position: absolute;
