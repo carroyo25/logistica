@@ -75,7 +75,7 @@
             echo $result;
         }
 
-        function changePed(){
+        function changeOrd(){
             $idorden  = $_POST['idorden'];
             $pedido   = $_POST['ped'];
 
@@ -85,12 +85,23 @@
         }
 
         function mail(){
-            $orden = $_POST['idorden'];
-            $entidad = $_POST['entidad'];
+            $orden   = $_POST['idorden'];
+            $correo  = $_POST['correo'];
+            $pedido  = $_POST['pedido'];
+            $mensaje = $_POST['mensaje'];
 
-            $result = $this->model->sendMail($orden,$entidad);
+
+            $result = $this->model->sendMail($orden,$pedido,$correo,$mensaje);
 
             echo $result;
+        }
+
+        function getmail(){
+            $codigo = $_POST['identidad'];
+
+            $result = $this->model->updateMail($codigo);
+
+            echo json_encode($result);
         }
     }
 ?>

@@ -50,7 +50,31 @@
 
                 if ($rowCount > 0) {
                     while ($row = $sql->fetch()) {
-                        $salida.='<li><a href="'.$row['ncodprm2'].'">'.strtoupper($row['cdesprm2']).'</a></li>';
+                        $salida.='<option value="'.$row['ncodprm2'].'">'.$row['cdesprm2'].'</option>';
+                    }
+                }
+
+                return $salida;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function getMovs(){
+            $salida = "";
+            try {
+                $sql= $this->db->connect()->query("SELECT
+                                                    lg_movimiento.ncodmov,
+                                                    lg_movimiento.cdesmov 
+                                                FROM
+                                                    lg_movimiento");
+                $sql->execute();
+                $rowCount = $sql->rowcount();
+
+                if ($rowCount > 0) {
+                    while ($row = $sql->fetch()) {
+                        $salida.='<li><a href="'.$row['ncodmov'].'">'.strtoupper($row['cdesmov']).'</a></li>';
                     }
                 }
 
@@ -180,6 +204,7 @@
                                                         logistica.lg_regabastec.ffechadoc,
                                                         logistica.lg_regabastec.mdetalle,
                                                         logistica.lg_regabastec.cconcepto,
+                                                        logistica.lg_regabastec.cdocPDF,
                                                         logistica.cm_entidad.crazonsoc,
                                                         logistica.lg_registro.cnumero AS pedido,
                                                         logistica.tb_proyecto1.ccodpry,
@@ -220,6 +245,8 @@
                         $item['entidad']    = $row['crazonsoc'];
                         $item['ruc']        = $row['cnumdoc'];
                         $item['orden']      = str_pad($row['orden'],5,"0",STR_PAD_LEFT).'-'.$row['cper'];
+                        $item['pdf']        = 'public/ordenes/aprobadas/'.$row['cdocPDF'];
+                        $item['id']         = uniqid("EM");
                     }
                 }
 
@@ -234,6 +261,8 @@
         public function getOrderDetails($cod){
             try {
                 $salida = "";
+
+                $estados = $this->getParameters();
 
                  $sql=$this->db->connect()->prepare("SELECT
                                                     lg_detaabastec.id_regmov,
@@ -262,14 +291,15 @@
                     while ($row = $sql->fetch()) {
                         $cont++;
                         $salida.='<tr class="lh1_2rem pointertr" data-id="'.$row['nidpedi'].'">
-                                    <td class="con_borde centro"><a href="'.$row['nidpedi'].'"><i class="fas fa-barcode"></i></a></td>
+                                    <td class="con_borde centro"><a href="'.$row['nidpedi'].'" data-action="resgister"><i class="fas fa-barcode"></i></a></td>
+                                    <td class="con_borde centro"><a href="'.$row['nidpedi'].'" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
                                     <td class="centro con_borde">'.str_pad($cont,3,"0",STR_PAD_LEFT).'</td>
                                     <td class="centro con_borde">'.$row['id_cprod'].'</td>
                                     <td class="pl20 con_borde">'.$row['cdesprod'].'</td>
                                     <td class="con_borde centro">'.$row['cabrevia'].'</td>
                                     <td class="con_borde drch pr20">'.number_format($row['ncanti'], 2, '.', ',').'</td>
-                                    <td class="con_borde centro"><input type="number" class="drch pr10" value="'.number_format($row['ncanti'], 2, '.', ',').'"></td>
-                                    <td class="con_borde"></td>
+                                    <td class="con_borde centro"><input type="number" onClick="this.select();" class="drch pr10" value="'.number_format($row['ncanti'], 2, '.', ',').'"></td>
+                                    <td class="con_borde"><select>'. $estados .'</select></td>
                                     <td class="con_borde"></td>
                                     <td class="con_borde"></td>
                                     <td class="con_borde"><input type="date"></td>

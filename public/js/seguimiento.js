@@ -91,8 +91,8 @@ $(function(){
     //generar pdf orden
     $("#btnGenDoc").on("click", function (e) {
         e.preventDefault();
-        //&& $("#firma_ope").hasClass('firma_confirmada') && $("#firma_fin").hasClass('firma_confirmada')
-        if ( $("#firma_log").hasClass('firma_confirmada') ){
+
+        if ( $("#firma_log").hasClass('firma_confirmada') && $("#firma_ope").hasClass('firma_confirmada') && $("#firma_fin").hasClass('firma_confirmada')){
             $.post(RUTA+"seguimiento/genOrder", {orden:$("#orden").val()},
                 function (data, textStatus, jqXHR) {
                     $("#modalPreview").fadeIn();
@@ -118,30 +118,58 @@ $(function(){
         return false;
     });
 
-    $("#btnClosOrd").on("click", function (e) {
+    $("#btnSendCancel").on("click", function (e) {
         e.preventDefault();
 
-        $.post(RUTA+"seguimiento/changePed", {idorden:$("#orden").val(),
-                                            entidad:$("#id_entidad").val(),
-                                            ped:$("#pedido").val(),
-                                            orden:$("#numOrd").val()},
-            function (data, textStatus, jqXHR) {
-                
-            },
-            "json"
-        );
+        $("#dialogSend").fadeOut();
+        $("#mail_ent").val("");
+        $("#mail_msg").val("");
+        
         return false;
+    });
+
+    $("#btnSendConfirm").on("click", function (e) {
+        e.preventDefault();
+
+        if ( $("#mail_ent").val().indexOf('@', 0) == -1 || $("#mail_ent").val().indexOf('.', 0) == -1 ){
+            mostrarMensaje("msj_error","Escriba una dirección de correo válido");
+            $("#mail_ent").focus();
+        }else if($("#mail_msg").val() == ''){
+            mostrarMensaje("msj_error","Escriba un texto en el mensaje");
+            $("#mail_msg").focus();
+        }else{
+            $.post(RUTA+"seguimiento/mail",{idorden:$("#orden").val(),
+                                            correo:$("#mail_ent").val(),
+                                            pedido:$("#pedido").val(),
+                                            orden:$("#numOrd").val(),
+                                            mensaje:$("#mail_msg").val()},
+                function (data, textStatus, jqXHR) {
+                    if (data) {
+                        mostrarMensaje("msj_correcto","Correo enviado");
+                        $("#mail_ent").val("");
+                        $("#mail_msg").val("");
+                        $("#dialogSend").fadeOut();
+                        
+                    }
+                },
+                "text"
+            );
+        } 
+        return false
     });
 
     $("#btnSendMail").on("click", function (e) {
         e.preventDefault();
 
-        $.post(RUTA+"seguimiento/mail", {idorden:$("#orden").val(),entidad:$("#id_entidad").val()},
-            function (data, textStatus, jqXHR) {
-                
-            },
-            "text"
-        );
+        if ( $("#firma_log").hasClass('firma_confirmada') && $("#firma_ope").hasClass('firma_confirmada') && $("#firma_fin").hasClass('firma_confirmada')){
+            $("#dialogSend").fadeIn();
+
+            $("#name_ent").val($("#entidad").val());
+        }
+        else{
+            mostrarMensaje("msj_error","Faltan firmas de autorización");
+        }
+
         return false;
     });
 })

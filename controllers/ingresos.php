@@ -8,8 +8,8 @@
         function render(){
             $this->view->menu       = $this->model->acordeon($_SESSION['id_user']);
             $this->view->almacenes  = $this->model->getWarehouses();
-            $this->view->motivos    = $this->model->getParameters();
-            $this->view->aprueba   = $this->model->getPersonal();
+            $this->view->motivos    = $this->model->getMovs();
+            $this->view->aprueba    = $this->model->getPersonal();
             //$this->view->registros  = $this->model->getMainRecords(); //aca debo poner los primeros 20 registros
             
             $this->view->render('ingresos/index');
@@ -51,6 +51,25 @@
             $result = $this->model->getOrderDetails($cod);
 
             echo $result;
+        }
+
+        function uploadDocuments(){
+            // Count total files
+            $countfiles = count($_FILES['uploadAtach']['name']);
+            $files = array();
+            // Looping all files
+            for($i=0;$i<$countfiles;$i++){
+                $ext = explode('.',$_FILES['uploadAtach']['name'][$i]);
+                $filename = uniqid("at").".".end($ext);
+                $return = $filename ."~".$_FILES['uploadAtach']['name'][$i];
+
+                // Upload file
+                move_uploaded_file($_FILES['uploadAtach']['tmp_name'][$i],'public/adjuntos/'.$filename);
+                array_push($files,$return);
+            }
+
+            $json_string = json_encode($files);
+            echo $json_string;
         }
         
     }

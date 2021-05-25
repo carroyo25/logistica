@@ -816,7 +816,7 @@
             }
         }
 
-        public function saveAction($accion,$codigo,$modulo,$user){
+        /*public function saveAction($accion,$codigo,$modulo,$user){
             try {
                 $query = $this->db->connect()->prepare("INSERT INTO lg_seguimiento SET cmodulo=:cmod,id_regmov=:cod,cproceso=:acc,ncoduser=:usr");
                 $query->execute(["cmod" => $modulo,
@@ -827,7 +827,7 @@
                 echo $e->getMessage();
                 return false;
             }
-        }
+        }*/
 
         public function insertItemsTable($datos){
             try {

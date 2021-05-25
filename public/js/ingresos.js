@@ -1,3 +1,6 @@
+var atachs      = 0;
+var FILES       = [];
+
 $(function(){
     activar_opcion();
 
@@ -149,7 +152,6 @@ $(function(){
 
         return false;
     });
-
     
     //llamar los detalles de las ordenes
     $("#lista_ordenes tbody").on("click","tr", function (e) {
@@ -170,6 +172,8 @@ $(function(){
                 $("#nrord").val(data.orden);
                 $("#registro").val("PROCESO");
                 $("#documento").val("PROCESO");
+                $("#order_file").val(data.pdf);
+                $("#id_ingreso").val(data.id);
 
                 $.post(RUTA+"ingresos/detailsOrder", {codigo:data.codigo},
                     function (data, textStatus, jqXHR) {
@@ -192,17 +196,24 @@ $(function(){
         return false;
     });
 
-    //llamar a la ventana de detalles de pedidos
+    //opciones de la tabla de detalles
     $("#detalle_ingreso tbody").on("click","a", function (e) {
         e.preventDefault();
-
-        var descrip = $(this).parent().parent().find('td').eq(3).text(),
+        if ( $(this).data("action") == "register") {
+            //llamar a la ventana de series de prouctos
+            var descrip = $(this).parent().parent().find('td').eq(3).text(),
             nroserials = $(this).parent().parent().find('td').eq(6).children().val();
 
-        $("#descrip").text(descrip);
-        $("#nroItemSerial").text(nroserials);
+            $("#descrip").text(descrip);
+            $("#nroItemSerial").text(nroserials);
 
-        $("#modalSerie").fadeIn();
+            $("#modalSerie").fadeIn();
+        }else{
+            $(this).parent().parent().remove();
+
+            fill3Tables($("#detalle_ingreso tbody > tr"),2);
+        }
+        
 
         return false;
     });
@@ -235,13 +246,163 @@ $(function(){
             mostrarMensaje("msj_error","Máximo número de series");
         }
         
+        return false;
+    });
+
+    $("#btnConfirmSerial").on("click", function (e) {
+        e.preventDefault();
+
+        var maxSerial = $("#nroItemSerial").text();
+        var itemsfila = $("#detalle_series tbody tr").length + 1;
+
+        if (itemsfila == maxSerial){
+            $("#modalSerie").fadeOut();
+        }else{
+            mostrarMensaje("msj_error","Faltan series del producto");
+        }
 
         return false;
     });
 
+    $("#saveDoc").on("click", function (e) {
+        e.preventDefault(e);
 
+        var str = $("#formProcess").serialize();
+
+        return false;
+    });
+
+    //modal vista documento de la orden 
+    $("#orderDetail").on("click", function (e) {
+        e.preventDefault();
+
+        if ( $("#order_file").val().length == 0) {
+            mostrarMensaje("msj_error","Debe seleccionar una orden");
+            return false;
+        }
+
+        $(".insidePreview object")
+                .attr("data","")
+                .attr("data",$("#order_file").val());
+
+        $("#modalOrderDetail").fadeIn();
+
+        return false;
+    });
+
+    $("#closeModalOrderDetail").on("click", function (e) {
+        e.preventDefault();
+
+        $("#modalOrderDetail").fadeOut();
+
+        return false;
+    });
+
+    //modal para subir archvivos
+    $("#docsAtach").on("click", function (e) {
+        e.preventDefault();
+
+        if ( $("#order_file").val().length == 0) {
+            mostrarMensaje("msj_error","Debe seleccionar una orden");
+            return false;
+        }
+
+        $("#modalAtach").fadeIn();
+
+        return false;
+    });
+
+    $("#btnCancelAtach").on("click", function (e) {
+        e.preventDefault();
+
+        $("#modalAtach").fadeOut();
+
+        return false;
+    });
+
+    $("#btnConfirmAtach").on("click", function (e) {
+        e.preventDefault();
+
+        if ( $("#tableAdjuntos tbody tr").length == 0) {
+            mostrarMensaje("msj_error","No selecciono ningun archivo");
+            return false;
+        }
+
+        $("#modalAtach").fadeOut();
+
+        return false;
+    });
+
+     //mostrar los archivos adjuntos
+
+    $("#pickFiles").on("click", function (e) {
+        e.preventDefault();
+
+        $("#uploadAtach").trigger("click");
+        
+        return false;
+    });
+
+    $("#uploadAtach").on("change", function (e) {
+        e.preventDefault();
+
+        var fp = $("#uploadAtach");
+        var lg = fp[0].files.length; // get length
+        var items = fp[0].files;
+        var fragment = "";
+
+        if (lg > 0) {
+            for (var i = 0; i < lg; i++) {
+                var fileName = items[i].name; // get file name
+                var fileSize = items[i].size; // get file size 
+    
+                // append li to UL tag to display File info
+                fragment +="<tr><td>"+fileName+"</td>"+"<td>"+fileSize+" Kb</td></tr>"
+            }
+    
+            $("#tableAdjuntos tbody").append(fragment);
+        }
+
+        return false;
+    });
+
+    //añadir registro de adjuntos
+    $("#fileAtachs").on("submit", function (e) {
+        e.preventDefault()
+
+        $.ajax({
+            // URL to move the uploaded image file to server
+            url: RUTA + 'ingresos/uploadDocuments',
+            // Request type
+            type: "POST", 
+            // To send the full form data
+            data: new FormData( this ),
+            contentType:false,      
+            processData:false,
+            dataType:"json",    
+            // UI response after the file upload  
+            success: function(data)
+            {   
+                $.each (data, function (item) { 
+                    FILES.push(data[item]); 
+                });
+                
+                //registerAtachs( $("#cod_pedido").val() );
+
+                $("#modalAtach").fadeOut();
+                $("#fileAtachs")[0].reset();
+                $("#tableAdjuntos tbody").empty();
+            }
+        });
+        
+        return false;
+    });
 })
 
 function getSeries($cod){}
 
 function getDetails($cod){}
+
+function registerAtachs($cod){
+
+}

@@ -13,9 +13,11 @@
     </div>
     <div class="modal" id="modalProcess">
         <form action="#" autocomplete="off" id="formProcess">
+            <input type="hidden" name="id_ingreso" id="id_ingreso">
             <input type="hidden" name="cod_almacen" id="cod_almacen">
             <input type="hidden" name="cod_motivo" id="cod_motivo">
             <input type="hidden" name="cod_autoriza" id="cod_autoriza">
+            <input type="hidden" name="order_file" id="order_file">
             <div class="process">
                 <div class="sides_process">
                         <div class="descrip_title">
@@ -26,6 +28,9 @@
                                 </button>
                                 <button type="button" id="saveDoc" title="Grabar Registro">
                                     <span><i class="far fa-save"></i> Grabar Registro</span>
+                                </button>
+                                <button type="button" id="closeDoc" title="Cerrar Registro">
+                                    <i class="fas fa-ban"></i> Cerrar Registro
                                 </button>
                                 <button type="button" id="cancelDoc" title="Cancelar Registro">
                                     <i class="fas fa-ban"></i> Cancelar Registro
@@ -65,7 +70,7 @@
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="solicita" class="w100px">Solicita :</label>
-                                    <input type="text" name="solicita" id="solicita" class="pl20 mayusculas">
+                                    <input type="text" name="solicita" id="solicita" class="pl20 mayusculas" placeholder="seleccione opcion">
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="aprueba" class="w100px">Aprueba :</label>
@@ -80,7 +85,7 @@
                             <div class="process_right">
                                 <div class="input_process g4items">
                                     <label for="tipomov" class="w100px">Tipo Mov :</label>
-                                    <input type="text" name="tipomov" id="tipomov" class="w300px pl10">
+                                    <input type="text" name="tipomov" id="tipomov" class="w300px pl10" placeholder="seleccione opcion">
                                     <div class="seleccion seleccion_pedido">
                                         <ul id="listaMotivo">
                                             <?php echo $this->motivos?>
@@ -132,17 +137,11 @@
                         <div class="descrip_title">
                             <span>Detalles</span>
                             <div>
-                                <button type="button" id="inputDetails" title="Detalles del Ingreso">
-                                    <i class="fas fa-door-closed"></i> Detalles del Ingreso
-                                </button>
                                 <button type="button" id="docsAtach" title="Documentos Adjuntos/Estados">
                                     <i class="fas fa-envelope-open-text"></i> Documentos Adjuntos/Estados
                                 </button>
                                 <button type="button" id="orderDetail" title="Detalle Original de la Orden">
                                     <i class="fas fa-envelope-open-text"></i> Detalle Original de la Orden
-                                </button>
-                                <button type="button" id="asocOrder" title="Orden Asociada al Almacen">
-                                    <i class="fas fa-envelope-open-text"></i> Orden Asociada al Almacen
                                 </button>
                                 <button type="button" id="preview" title="Vista Previa">
                                     <i class="fas fa-envelope-open-text"></i> Vista Previa
@@ -154,6 +153,7 @@
                             <table class="con_borde w100p" id="detalle_ingreso">
                                 <thead>
                                     <tr>
+                                        <th class="con_borde w2p">...</th>
                                         <th class="con_borde w2p">...</th>
                                         <th class="con_borde w3p">Item</th>
                                         <th class="con_borde w10p">Codigo</th>
@@ -244,7 +244,45 @@
             </div>
         </div>
     </div>
-    <div class="modal zindex3" id="modalPreview"></div>
+    <div class="modal zindex3" id="modalOrderDetail">
+        <div class="insidePreview">
+            <object data="" type="application/pdf"></object>
+        </div>
+        <a href="#" id="closeModalOrderDetail" class="buttonClose"><i class="fas fa-reply-all"></i></a>
+    </div>
+    <div class="modal zindex3" id="modalAtach">
+        <div class="dialogContainer w35p">
+            <div class="dialogTitle">
+                <h4>Adjuntar Archivos</h4>
+            </div>
+            <hr>
+            <div class="dialogBody">
+                <div class="titulos">
+                    <h3>Seleccionar Archivos</h3>
+                    <a href="#" id="pickFiles"><i class="far fa-calendar-plus"></i></a>
+                </div>
+                <form action="<?php echo constant('URL');?>ingresos/uploadsAtachs" id="fileAtachs" enctype='multipart/form-data'>
+                    <input type="file" name="uploadAtach[]" id="uploadAtach" multiple class="oculto">
+                    <div>
+                        <table id="tableAdjuntos" class="w100p con_border espacio_tabla_0 ">
+                            <thead>
+                                <tr>
+                                    <th class="con_borde">Nombre</th>
+                                    <th class="con_borde">Tamaño</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="options">
+                        <button id="btnConfirmAtach" class="botones" type="button">Aceptar</button>
+                        <button id="btnCancelAtach" class="botones" type="button">Cancelar</button>
+                    </div>
+                </form>   
+            </div>
+        </div>
+    </div>
     <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>
         <div class="workOneForm">

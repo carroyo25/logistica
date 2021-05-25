@@ -8,6 +8,30 @@
 </head>
 <body>
     <?php require 'views/header.php'; ?>
+    <div class="modal zindex3" id="dialogSend">
+        <div class="dialogContainer w35p">
+            <div class="dialogTitle">
+                <h4>Enviar Pedido</h4>
+            </div>
+            <hr>
+            <div class="dialogBody">
+                <div class="emails">
+                    <div>
+                        <label>Entidad</label>
+                        <input type="text" name="name_ent" id="name_ent" readonly>
+                        <label>Correo</label>
+                        <input type="email" name="mail_ent" id="mail_ent">
+                    </div>
+                    <br>
+                    <textarea name="mail_msg" id="mail_msg" class="w100p" rows="7" placeholder="Escribir Mensaje"></textarea>
+                </div>
+                <div class="options">
+                    <button id="btnSendConfirm" class="botones">Aceptar</button>
+                    <button id="btnSendCancel" class="botones">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="mensaje msj_error">
         <span></span>
     </div>
@@ -68,7 +92,7 @@
                                     <label for="moneda" class="w100px">Moneda :</label>
                                     <input type="text" name="monedaOrd" id="monedaOrd" class="pl10" readonly>
                                     <label for="precio" class="w100px">Precio :</label>
-                                    <input type="number" name="precioOrd" id="precioOrd" class="drch pr20">
+                                    <input type="text" name="precioOrd" id="precioOrd" class="drch pr20">
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="tipo" class="w100px">Tipo</label>
@@ -98,14 +122,11 @@
                         <div class="descrip_title">
                             <span>Detalles</span>
                             <div>
-                                <button type="button" id="btnClosOrd" title="Cierra la orden y la envia por correo">
-                                    <i class="fas fa-inbox"></i> Cerrar Orden
-                                </button>
                                 <button type="button" id="btnSendMail" title="Cierra la orden y la envia por correo">
                                     <i class="far fa-paper-plane"></i> Enviar Correo
                                 </button>
                                 <button type="button" id="btnGenDoc" title="Firmar Orden">
-                                    <i class="far fa-file-pdf"></i> Generar Orden
+                                    <i class="far fa-file-pdf"></i> Vista Previa
                                 </button>
                             </div>
                         </div>

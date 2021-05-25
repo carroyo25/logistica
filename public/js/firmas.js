@@ -117,20 +117,20 @@ $(function(){
                         $("#firma_fin")
                             .removeClass("firma_pendiente")
                             .addClass("firma_confirmada")
-                            .html('<span><i class="far fa-check-square"></i> Logística</span>');
+                            .html('<span><i class="far fa-check-square"></i> Finanzas</span>');
         
                         break;
                     case "7152":
                         $("#firma_ope")
                             .removeClass("firma_pendiente")
                             .addClass("firma_confirmada")
-                            .html('<span><i class="far fa-check-square"></i> Logística</span>');
+                            .html('<span><i class="far fa-check-square"></i> Operaciones</span>');
                         break;
                     case "5325":
                         $("#firma_ope")
                             .removeClass("firma_pendiente")
                             .addClass("firma_confirmada")
-                            .html('<span><i class="far fa-check-square"></i> Logística</span>');
+                            .html('<span><i class="far fa-check-square"></i> Operaciones</span>');
         
                         break;
                 }

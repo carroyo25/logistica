@@ -156,7 +156,7 @@
                         $item['transporte'] = $row['transporte'];
                         $item['concepto']   = $row['cconcepto'];
                         $item['detalle']    = $row['mdetalle'];
-                        $item['total']      = round($row['ntotal'],2);
+                        $item['total']      = number_format($row['ntotal'], 2, '.', ',');
                         $item['moneda']     = $row['dmoneda'];
                         $item['tipo']       = $tipo;
                         $item['entidad']    = $row['crazonsoc'];
@@ -211,9 +211,9 @@
                                     <td class="centro con_borde">'.$row['id_cprod'].'</td>
                                     <td class="pl20 con_borde">'.$row['cdesprod'].'</td>
                                     <td class="con_borde centro">'.$row['cabrevia'].'</td>
-                                    <td class="con_borde drch pr20">'.round($row['ncanti'],2).'</td>
-                                    <td class="con_borde drch pr20">'.round($row['nvventa'],2).'</td>
-                                    <td class="con_borde drch pr20">'.round($row['ntotal'],2).'</td>
+                                    <td class="con_borde drch pr20">'.number_format($row['ncanti'], 2, '.', ',').'</td>
+                                    <td class="con_borde drch pr20">'.number_format($row['nvventa'], 2, '.', ',').'</td>
+                                    <td class="con_borde drch pr20">'.number_format($row['ntotal'], 2, '.', ',').'</td>
                                     <td class="con_borde"></td>
                                     <td class="con_borde centro">'.str_pad($ped,6,"0",STR_PAD_LEFT).'</td>
                                 </tr>';
@@ -426,192 +426,204 @@
 
         public function generateDocument($codigo){
             require_once("public/libsrepo/repooc.php");
-
-            try {
-                $sql = $this->db->connect()->prepare("SELECT
-                                                            logistica.lg_regabastec.id_regmov,
-                                                            logistica.lg_regabastec.ctipmov,
-                                                            logistica.lg_regabastec.cserie,
-                                                            logistica.lg_regabastec.cnumero,
-                                                            logistica.lg_regabastec.ffechadoc,
-                                                            logistica.lg_regabastec.ffechaent,
-                                                            logistica.lg_regabastec.id_centi,
-                                                            logistica.lg_regabastec.ncodmon,
-                                                            logistica.lg_regabastec.ntotal,
-                                                            logistica.lg_regabastec.mdetalle,
-                                                            logistica.lg_regabastec.nNivAten,
-                                                            logistica.lg_regabastec.ncodpago,
-                                                            logistica.lg_regabastec.cnumcot,
-                                                            logistica.lg_regabastec.nflgactivo,
-                                                            logistica.lg_regabastec.fregsys,
-                                                            logistica.lg_regabastec.nfirmaLog,
-                                                            logistica.lg_regabastec.nfirmaFin,
-                                                            logistica.lg_regabastec.nfirmaOpe,
-                                                            rrhh.tabla_aquarius.apellidos,
-                                                            rrhh.tabla_aquarius.nombres,
-                                                            logistica.tb_proyecto1.ccodpry,
-                                                            logistica.tb_proyecto1.cdespry,
-                                                            logistica.tb_area.ccodarea,
-                                                            logistica.tb_area.cdesarea,
-                                                            logistica.lg_regabastec.id_refpedi,
-                                                            logistica.tb_ccostos.ccodcos,
-                                                            logistica.tb_ccostos.cdescos,
-                                                            logistica.lg_regabastec.cper,
-                                                            logistica.lg_regabastec.cmes,
-                                                            transporte.cdesprm2 AS transporte,
-                                                            logistica.lg_registro.cconcepto,
-                                                            logistica.tb_moneda.dmoneda,
-                                                            logistica.cm_entidad.crazonsoc,
-                                                            logistica.cm_entidad.cnumdoc,
-                                                            atencion.cdesprm2 AS atencion,
-                                                            logistica.tb_moneda.cmoneda,
-                                                            logistica.tb_moneda.cabrevia,
-                                                            logistica.tb_almacen.cdesalm,
-                                                            plazos.cdesprm2 AS plazo,
-                                                            pagos.cdesprm2 AS pago,
-                                                            logistica.lg_registro.cnumero as nropedido
-                                                        FROM
-                                                            logistica.lg_regabastec
-                                                            INNER JOIN rrhh.tabla_aquarius ON logistica.lg_regabastec.ncodper = rrhh.tabla_aquarius.internal
-                                                            INNER JOIN logistica.tb_proyecto1 ON logistica.lg_regabastec.ncodpry = logistica.tb_proyecto1.ncodpry
-                                                            INNER JOIN logistica.tb_area ON logistica.lg_regabastec.ncodarea = logistica.tb_area.ncodarea
-                                                            INNER JOIN logistica.tb_ccostos ON logistica.lg_regabastec.ncodcos = logistica.tb_ccostos.ncodcos
-                                                            INNER JOIN logistica.tb_paramete2 AS transporte ON logistica.lg_regabastec.ctiptransp = transporte.ncodprm2
-                                                            INNER JOIN logistica.lg_registro ON logistica.lg_regabastec.id_refpedi = logistica.lg_registro.id_regmov
-                                                            INNER JOIN logistica.tb_moneda ON logistica.lg_regabastec.ncodmon = logistica.tb_moneda.ncodmon
-                                                            INNER JOIN logistica.cm_entidad ON logistica.lg_regabastec.id_centi = logistica.cm_entidad.id_centi
-                                                            INNER JOIN logistica.tb_paramete2 AS atencion ON logistica.lg_regabastec.nNivAten = atencion.ccodprm2
-                                                            INNER JOIN logistica.tb_almacen ON logistica.lg_regabastec.ncodalm = logistica.tb_almacen.ncodalm
-                                                            INNER JOIN logistica.tb_paramete2 AS plazos ON logistica.lg_regabastec.nplazo = plazos.ncodprm2
-                                                            INNER JOIN logistica.tb_paramete2 AS pagos ON logistica.lg_regabastec.ncodpago = pagos.ncodprm2 
-                                                        WHERE
-                                                            logistica.lg_regabastec.id_regmov = :cod 
-                                                            AND transporte.ncodprm1 = 7 
-                                                            AND atencion.ncodprm1 = 13 
-                                                            AND plazos.ncodprm1 = 16 
-                                                            AND pagos.ncodprm1 = 11");
-                $sql->execute(["cod"=>$codigo]);
-                $rowcount = $sql->rowcount();
-
-                if ($rowcount > 0){
-                    while ($row = $sql->fetch()) {
-                        $proyecto       = $this->getDataPed($row['id_refpedi']);
-                        $contacto       = $this->getContac($row['id_centi']);
-                        $banco          = $this->getBank($row['id_centi'],$row['ncodmon']);
-                        $distribuidor   = $this->getDataProvee($row['id_centi']);
-
-                        $info = $proyecto['codigo']. " " . $proyecto['nombre'];
-
-                        $numdoc = date("Y")."-".str_pad($row['cnumero'],5,"0",STR_PAD_LEFT);
-
-                        $anio = explode("-",$row['ffechadoc']);
-
-                        if ($row['ctipmov'] == "B") {
-                            $titulo = "ORDEN DE COMPRA" ;
-                            $prefix = "OC";
-                        }else{
-                            $titulo = "ORDEN DE SERVICIO";
-                            $prefix = "OS";
-                        }
-
-                        $simbolo = $row['cabrevia'];
-
-                        $titulo = $titulo . " " . $numdoc;
-                        $condicion = 1;
-                        
-                        $file = $codigo.".pdf";
-                        $filename = "public/ordenes/aprobadas/".$file;
-
-                        if(file_exists($filename))
-                            unlink($filename);
-                            
-                            $pdf = new PDF($titulo,$condicion,$row['ffechadoc'],$row['dmoneda'],$row['plazo'],$row['cdesalm'],$row['cnumcot'],$row['ffechaent'],$row['pago'],$row['ntotal'],
-                                        $info,$proyecto['detalle'],$proyecto['usuario'],
-                                        $distribuidor['razon'],$distribuidor['ruc'],$distribuidor['direccion'],$distribuidor['telefono'],$distribuidor['correo'],$distribuidor['retencion'],
-                                        $contacto['nombre'],$contacto['telefono'],$contacto['mail']);
-                            $pdf->AddPage();
-                            $pdf->AliasNbPages();
-                            $pdf->SetWidths(array(10,15,70,8,10,17,15,15,15,15));
-                            $pdf->SetFont('Arial','',5);
-                            $lc = 0;
-                            $rc = 0;
-
-                            $detalles = $this->getOrderDetailsToDoc($codigo,$row['nropedido']);
-                            $nreg = count($detalles);
-
-                            for ($i=1; $i <=$nreg ; $i++) { 
-                                $pdf->SetAligns(array("C","L","L","C","R","L","L","C","L","L"));
-                                $pdf->Row(array(str_pad($i,2,"0",STR_PAD_LEFT),
-                                    $detalles[$rc]['id_cprod'],
-                                    $detalles[$rc]['cdespro'],
-                                    $detalles[$rc]['cabrevia'],
-                                    number_format($detalles[$rc]['ncanti'], 2, '.', ','),
-                                    '',
-                                    '',
-                                    $detalles[$rc]['ped'],
-                                    '',
-                                    ''));
             
-                                $lc++;
-                                $rc++;
-                                
-                                if ($lc == 52) {
-                                    $pdf->AddPage();
-                                    $lc = 0;
-                                }
+            try {
+                if ($this->existDocument($codigo) != ""){
+                    return 'public/ordenes/aprobadas/'.$this->existDocument($codigo);
+                }else{
+                        $sql = $this->db->connect()->prepare("SELECT
+                                                                logistica.lg_regabastec.id_regmov,
+                                                                logistica.lg_regabastec.ctipmov,
+                                                                logistica.lg_regabastec.cserie,
+                                                                logistica.lg_regabastec.cnumero,
+                                                                logistica.lg_regabastec.ffechadoc,
+                                                                logistica.lg_regabastec.ffechaent,
+                                                                logistica.lg_regabastec.id_centi,
+                                                                logistica.lg_regabastec.ncodmon,
+                                                                logistica.lg_regabastec.ntotal,
+                                                                logistica.lg_regabastec.mdetalle,
+                                                                logistica.lg_regabastec.nNivAten,
+                                                                logistica.lg_regabastec.ncodpago,
+                                                                logistica.lg_regabastec.cnumcot,
+                                                                logistica.lg_regabastec.nflgactivo,
+                                                                logistica.lg_regabastec.fregsys,
+                                                                logistica.lg_regabastec.nfirmaLog,
+                                                                logistica.lg_regabastec.nfirmaFin,
+                                                                logistica.lg_regabastec.nfirmaOpe,
+                                                                rrhh.tabla_aquarius.apellidos,
+                                                                rrhh.tabla_aquarius.nombres,
+                                                                logistica.tb_proyecto1.ccodpry,
+                                                                logistica.tb_proyecto1.cdespry,
+                                                                logistica.tb_area.ccodarea,
+                                                                logistica.tb_area.cdesarea,
+                                                                logistica.lg_regabastec.id_refpedi,
+                                                                logistica.tb_ccostos.ccodcos,
+                                                                logistica.tb_ccostos.cdescos,
+                                                                logistica.lg_regabastec.cper,
+                                                                logistica.lg_regabastec.cmes,
+                                                                transporte.cdesprm2 AS transporte,
+                                                                logistica.lg_registro.cconcepto,
+                                                                logistica.tb_moneda.dmoneda,
+                                                                logistica.cm_entidad.crazonsoc,
+                                                                logistica.cm_entidad.cnumdoc,
+                                                                atencion.cdesprm2 AS atencion,
+                                                                logistica.tb_moneda.cmoneda,
+                                                                logistica.tb_moneda.cabrevia,
+                                                                logistica.tb_almacen.cdesalm,
+                                                                plazos.cdesprm2 AS plazo,
+                                                                pagos.cdesprm2 AS pago,
+                                                                logistica.lg_registro.cnumero as nropedido
+                                                            FROM
+                                                                logistica.lg_regabastec
+                                                                INNER JOIN rrhh.tabla_aquarius ON logistica.lg_regabastec.ncodper = rrhh.tabla_aquarius.internal
+                                                                INNER JOIN logistica.tb_proyecto1 ON logistica.lg_regabastec.ncodpry = logistica.tb_proyecto1.ncodpry
+                                                                INNER JOIN logistica.tb_area ON logistica.lg_regabastec.ncodarea = logistica.tb_area.ncodarea
+                                                                INNER JOIN logistica.tb_ccostos ON logistica.lg_regabastec.ncodcos = logistica.tb_ccostos.ncodcos
+                                                                INNER JOIN logistica.tb_paramete2 AS transporte ON logistica.lg_regabastec.ctiptransp = transporte.ncodprm2
+                                                                INNER JOIN logistica.lg_registro ON logistica.lg_regabastec.id_refpedi = logistica.lg_registro.id_regmov
+                                                                INNER JOIN logistica.tb_moneda ON logistica.lg_regabastec.ncodmon = logistica.tb_moneda.ncodmon
+                                                                INNER JOIN logistica.cm_entidad ON logistica.lg_regabastec.id_centi = logistica.cm_entidad.id_centi
+                                                                INNER JOIN logistica.tb_paramete2 AS atencion ON logistica.lg_regabastec.nNivAten = atencion.ccodprm2
+                                                                INNER JOIN logistica.tb_almacen ON logistica.lg_regabastec.ncodalm = logistica.tb_almacen.ncodalm
+                                                                INNER JOIN logistica.tb_paramete2 AS plazos ON logistica.lg_regabastec.nplazo = plazos.ncodprm2
+                                                                INNER JOIN logistica.tb_paramete2 AS pagos ON logistica.lg_regabastec.ncodpago = pagos.ncodprm2 
+                                                            WHERE
+                                                                logistica.lg_regabastec.id_regmov = :cod 
+                                                                AND transporte.ncodprm1 = 7 
+                                                                AND atencion.ncodprm1 = 13 
+                                                                AND plazos.ncodprm1 = 16 
+                                                                AND pagos.ncodprm1 = 11");
+                    $sql->execute(["cod"=>$codigo]);
+                    $rowcount = $sql->rowcount();
+
+                    if ($rowcount > 0){
+                        while ($row = $sql->fetch()) {
+                            $proyecto       = $this->getDataPed($row['id_refpedi']);
+                            $contacto       = $this->getContac($row['id_centi']);
+                            $banco          = $this->getBank($row['id_centi'],$row['ncodmon']);
+                            $distribuidor   = $this->getDataProvee($row['id_centi']);
+
+                            $nombre_contacto    = isset($contacto['nombre']) ? $contacto['nombre'] : "";
+                            $telefono_contacto  =  isset($contacto['telefono']) ? $contacto['telefono'] : "";
+                            $mail_contacto      = isset($contacto['mail']) ? $contacto['mail'] : "";
+
+                            $banco_entidad  = isset($banco['banco']) ? $banco['banco'] : "";
+                            $modena_entidad = isset($banco['cmoneda']) ? $banco['cmoneda'] : "";
+                            $cuenta_entidad = isset($banco['cta']) ? $banco['cta'] : "";
+
+                            $info = $proyecto['codigo']. " " . $proyecto['nombre'];
+
+                            $numdoc = date("Y")."-".str_pad($row['cnumero'],5,"0",STR_PAD_LEFT);
+
+                            $anio = explode("-",$row['ffechadoc']);
+
+                            if ($row['ctipmov'] == "B") {
+                                $titulo = "ORDEN DE COMPRA" ;
+                                $prefix = "OC";
+                            }else{
+                                $titulo = "ORDEN DE SERVICIO";
+                                $prefix = "OS";
                             }
 
-                            $pdf->Ln(3);
+                            $simbolo = $row['cabrevia'];
 
-                            $pdf->SetFillColor(229, 229, 229);
-                            $pdf->SetFont('Arial','B',10);
-                            $pdf->Cell(20,6,"TOTAL :","LTB",0,"C",true);
-                            $pdf->SetFont('Arial','B',8);
-                            $pdf->Cell(140,6,$this->convertir($row['ntotal']),"TBR",0,"L",true); 
-                            $pdf->SetFont('Arial','B',10);
-                            $pdf->Cell(30,6,number_format($row['ntotal'], 2, '.', ','),"1",1,"R",true);
-        
-                            $pdf->Ln(1);
-                            $pdf->SetFont('Arial',"","7");
-                            $pdf->Cell(40,6,"Pedidos Asociados",1,0,"C",true);
-                            $pdf->Cell(5,6,"",0,0);
-                            $pdf->Cell(80,6,utf8_decode("Información Bancaria del Proveedor"),1,0,"C",true);
-                            $pdf->Cell(10,6,"",0,0);
-                            $pdf->Cell(40,6,"Valor Venta",0,0);
-                            $pdf->Cell(20,6,number_format($row['ntotal'], 2, '.', ','),0,1);
+                            $titulo = $titulo . " " . $numdoc;
+                            $condicion = 1;
                             
-        
-                            $pdf->Cell(10,4,utf8_decode("Año"),1,0);
-                            $pdf->Cell(10,4,"Tipo",1,0);
-                            $pdf->Cell(10,4,"Pedido",1,0);
-                            $pdf->Cell(10,4,"Mantto",1,0);
-                            $pdf->Cell(5,6,"",0,0);
-                            $pdf->Cell(35,4,"Detalle del Banco",1,0);
-                            $pdf->Cell(15,4,"Moneda",1,0);
-                            $pdf->Cell(30,4,"Nro. Cuenta Bancaria",1,1);
-        
-                            $pdf->Cell(10,4,$anio[0],1,0);
-                            $pdf->Cell(10,4,$row['ctipmov'],1,0);
-                            $pdf->Cell(10,4,$proyecto['numero'],1,0);
-                            $pdf->Cell(10,4,"",1,0);
-                            $pdf->Cell(5,6,"",0,0);
-                            $pdf->Cell(35,4,utf8_decode($banco['banco']),1,0);
-                            $pdf->Cell(15,4,$banco['cmoneda'],1,0);
-                            $pdf->Cell(30,4,$banco['cta'],1,0);
-                            $pdf->Cell(10,4,"",0,0);
-                            $pdf->SetFont('Arial',"B","8");
-                            $pdf->Cell(20,4,"TOTAL",1,0,"L",true);
-                            $pdf->Cell(15,4,$simbolo,1,0,"C",true);
-                            $pdf->Cell(20,4,number_format($row['ntotal'], 2, '.', ','),1,1,"R",true);
-                    }
+                            $file = $codigo.".pdf";
+                            $filename = "public/ordenes/aprobadas/".$file;
 
-                    $pdf->Output($filename,'F');
+                            if(file_exists($filename))
+                                unlink($filename);
+                                
+                                $pdf = new PDF($titulo,$condicion,$row['ffechadoc'],$row['dmoneda'],$row['plazo'],$row['cdesalm'],$row['cnumcot'],$row['ffechaent'],$row['pago'],$row['ntotal'],
+                                            $info,$proyecto['detalle'],$proyecto['usuario'],
+                                            $distribuidor['razon'],$distribuidor['ruc'],$distribuidor['direccion'],$distribuidor['telefono'],$distribuidor['correo'],$distribuidor['retencion'],
+                                            $nombre_contacto,$telefono_contacto,$mail_contacto);
+                                $pdf->AddPage();
+                                $pdf->AliasNbPages();
+                                $pdf->SetWidths(array(10,15,70,8,10,17,15,15,15,15));
+                                $pdf->SetFont('Arial','',5);
+                                $lc = 0;
+                                $rc = 0;
 
-                    $this->passDocument($codigo,$file);
+                                $detalles = $this->getOrderDetailsToDoc($codigo,$row['nropedido']);
+                                $nreg = count($detalles);
 
-                    echo $filename;
-                }
+                                for ($i=1; $i <=$nreg ; $i++) { 
+                                    $pdf->SetAligns(array("C","L","L","C","R","L","L","C","L","L"));
+                                    $pdf->Row(array(str_pad($i,2,"0",STR_PAD_LEFT),
+                                        $detalles[$rc]['id_cprod'],
+                                        $detalles[$rc]['cdespro'],
+                                        $detalles[$rc]['cabrevia'],
+                                        number_format($detalles[$rc]['ncanti'], 2, '.', ','),
+                                        '',
+                                        '',
+                                        $detalles[$rc]['ped'],
+                                        '',
+                                        ''));
                 
+                                    $lc++;
+                                    $rc++;
+                                    
+                                    if ($lc == 52) {
+                                        $pdf->AddPage();
+                                        $lc = 0;
+                                    }
+                                }
+
+                                $pdf->Ln(3);
+
+                                $pdf->SetFillColor(229, 229, 229);
+                                $pdf->SetFont('Arial','B',10);
+                                $pdf->Cell(20,6,"TOTAL :","LTB",0,"C",true);
+                                $pdf->SetFont('Arial','B',8);
+                                $pdf->Cell(140,6,$this->convertir($row['ntotal']),"TBR",0,"L",true); 
+                                $pdf->SetFont('Arial','B',10);
+                                $pdf->Cell(30,6,number_format($row['ntotal'], 2, '.', ','),"1",1,"R",true);
+            
+                                $pdf->Ln(1);
+                                $pdf->SetFont('Arial',"","7");
+                                $pdf->Cell(40,6,"Pedidos Asociados",1,0,"C",true);
+                                $pdf->Cell(5,6,"",0,0);
+                                $pdf->Cell(80,6,utf8_decode("Información Bancaria del Proveedor"),1,0,"C",true);
+                                $pdf->Cell(10,6,"",0,0);
+                                $pdf->Cell(40,6,"Valor Venta",0,0);
+                                $pdf->Cell(20,6,number_format($row['ntotal'], 2, '.', ','),0,1);
+                                
+            
+                                $pdf->Cell(10,4,utf8_decode("Año"),1,0);
+                                $pdf->Cell(10,4,"Tipo",1,0);
+                                $pdf->Cell(10,4,"Pedido",1,0);
+                                $pdf->Cell(10,4,"Mantto",1,0);
+                                $pdf->Cell(5,6,"",0,0);
+                                $pdf->Cell(35,4,"Detalle del Banco",1,0);
+                                $pdf->Cell(15,4,"Moneda",1,0);
+                                $pdf->Cell(30,4,"Nro. Cuenta Bancaria",1,1);
+            
+                                $pdf->Cell(10,4,$anio[0],1,0);
+                                $pdf->Cell(10,4,$row['ctipmov'],1,0);
+                                $pdf->Cell(10,4,$proyecto['numero'],1,0);
+                                $pdf->Cell(10,4,"",1,0);
+                                $pdf->Cell(5,6,"",0,0);
+                                $pdf->Cell(35,4,utf8_decode($banco_entidad),1,0);
+                                $pdf->Cell(15,4,$modena_entidad,1,0);
+                                $pdf->Cell(30,4,$cuenta_entidad,1,0);
+                                $pdf->Cell(10,4,"",0,0);
+                                $pdf->SetFont('Arial',"B","8");
+                                $pdf->Cell(20,4,"TOTAL",1,0,"L",true);
+                                $pdf->Cell(15,4,$simbolo,1,0,"C",true);
+                                $pdf->Cell(20,4,number_format($row['ntotal'], 2, '.', ','),1,1,"R",true);
+                        }
+
+                        $pdf->Output($filename,'F');
+
+                        $this->passDocument($codigo,$file);
+
+                        return $filename;
+                    }
+                }
+                    
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
@@ -828,23 +840,31 @@
             }
         }
 
-        public function updatePed($idorden,$pedido){
-            $ordenes = $this->getOrderDetailsToDoc($idorden,$pedido);
-            $nreg = count($ordenes);
+        public function existDocument($codigo){
+            try {
+                $sql = $this->db->connect()->prepare("SELECT cdocPdf FROM lg_regabastec WHERE id_regmov=:cod");
+                $sql->execute(["cod"=>$codigo]);
+                $result  = $sql->fetch();
 
-            for ($i=0; $i < $nreg; $i++) { 
-                $sql = $this->db->connect()->prepare("UPDATE lg_detapedido SET idreg_ref=:ord WHERE nidpedi =:idreg");
-                $sql->execute(["idreg"=>$ordenes[$i]['nidpedi'],"ord"=>$idorden]);
+
+               return $result[0];
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
             }
         }
 
-        public function sendMail($orden,$entidad){
+        public function sendMail($orden,$pedido,$correo,$mensaje){
             require_once("public/PHPMailer/PHPMailerAutoload.php");
             try {
-                $entidad = $this->getContac($entidad);
                 $filename = $this->getAtach($orden);
-                $enviado = false;
 
+                if (!$filename) {
+                    $filename = $this->generateDocument($orden);
+                }
+
+                $enviado = false;
 
                 $origen = $_SESSION['user']."@sepcon.net";
                 $nombre_envio = $_SESSION['nombres'];
@@ -852,7 +872,7 @@
 
                 $mail = new PHPMailer;
                 $mail->isSMTP();
-                $mail->SMTPDebug = 0;
+                $mail->SMTPDebug = 2;
                 $mail->Debugoutput = 'html';
                 $mail->Host = 'mail.sepcon.net';
                 $mail->SMTPAuth = true;
@@ -869,14 +889,8 @@
                 );
                 
                 $mail->setFrom($origen,$nombre_envio);
-                $mail->addAddress($entidad['mail'],$entidad['nombre']);
+                $mail->addAddress($correo,$correo);
                 $mail->Subject = $title;
-
-                $mensaje =  "<html><body>";
-                $mensaje .=  "<p>Sres;</p>";
-                $mensaje .=  "<p>Sirvanse, atender la orden , según el archivo adjunto</p>";
-                $mensaje .=  "<p>Atte.</p>";
-                $mensaje .= "</body></html>";
 
                 $mail->msgHTML(utf8_decode($mensaje));
 
@@ -890,9 +904,10 @@
                     $enviado = false;
 			    }else {
                     $enviado = true;
-                    $this->updateMail($orden);
+                    $this->updateRequest($orden,$pedido);
+                    $this->updateOrder($orden);
+                    $this->saveAction("CORREO",$orden,"SEGUIMIENTO",$_SESSION['user']);
                 }
-
 
                 return $enviado;
                 
@@ -927,8 +942,26 @@
             }
         }
 
-        public function updateMail($orden){
+        public function updateRequest($idorden,$pedido){
+            $ordenes = $this->getOrderDetailsToDoc($idorden,$pedido);
+            $nreg = count($ordenes);
 
+            for ($i=0; $i < $nreg; $i++) { 
+                $sql = $this->db->connect()->prepare("UPDATE lg_detapedido SET idreg_ref=:ord WHERE nidpedi =:idreg");
+                $sql->execute(["idreg"=>$ordenes[$i]['nidpedi'],"ord"=>$idorden]);
+            }
         }
+
+        public function updateOrder($orden){
+            try {
+                $sql = $this->db->connect()->prepare("UPDATE lg_regabastec SET nEstadoDoc=:est WHERE id_regmov =:idreg");
+                $sql->execute(["idreg"=>$orden,"est"=>4]);
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        
     }
 ?>
