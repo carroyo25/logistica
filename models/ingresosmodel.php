@@ -313,5 +313,15 @@
                 return false;
             }
         }
+
+        public function genPreview($proyecto,$origen,$movimiento,$fecha,$orden,$pedido,$entidad,$guia,$autoriza,$condicion,$details){
+            
+            $datos = json_decode($details);
+            $fecha = explode($fecha,"-");
+            
+            $dia = $fecha[2];
+            $mes = $fecha[1];
+            $anio = $fecha[0];
+        }
     }
 ?>

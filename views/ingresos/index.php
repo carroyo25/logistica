@@ -102,7 +102,7 @@
                                 </div>
                                 <div class="input_process g4items">
                                     <label for="ruc" class="w100px">Nro. RUC:</label>
-                                    <input type="text" name="nrord" id="ruc" class="pl20 ">
+                                    <input type="text" name="nruc" id="ruc" class="pl20 ">
                                     <label for="nroguia" class="w150px">Nro. Guia Remisión:</label>
                                     <input type="text" name="nroguia" id="nroguia" class="pl20">
                                 </div>
@@ -282,6 +282,12 @@
                 </form>   
             </div>
         </div>
+    </div>
+    <div class="modal zindex3" id="modalPreview">
+        <div class="insidePreview">
+            <object data="" type="application/pdf"></object>
+        </div>
+        <a href="#" id="closeModalPreview" class="buttonClose"><i class="fas fa-reply-all"></i></a>
     </div>
     <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>

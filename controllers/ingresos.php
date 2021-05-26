@@ -71,6 +71,25 @@
             $json_string = json_encode($files);
             echo $json_string;
         }
+
+        function preview(){
+            $proyecto = $_POST['proyecto'];
+            $origen = $_POST['origen'];
+            $movimiento = $_POST['movimiento'];
+            $fecha = $_POST['fecha'];
+            $orden = $_POST['orden'];
+            $pedido = $_POST['pedido'];
+            $entidad = $_POST['entidad'];
+            $guia = $_POST['guia'];
+            $autoriza = $_POST['autoriza'];
+            $condicion = $_POST['condicion'];
+            $details = $_POST['details'];
+
+
+            $result = $this->model->genPreview($proyecto,$origen,$movimiento,$fecha,$orden,$pedido,$entidad,$guia,$autoriza,$condicion,$details);
+
+            echo $result;
+        }
         
     }
 ?>

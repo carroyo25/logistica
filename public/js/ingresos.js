@@ -213,7 +213,6 @@ $(function(){
 
             fill3Tables($("#detalle_ingreso tbody > tr"),2);
         }
-        
 
         return false;
     });
@@ -281,7 +280,7 @@ $(function(){
             return false;
         }
 
-        $(".insidePreview object")
+        $("#modalOrderDetail .insidePreview object")
                 .attr("data","")
                 .attr("data",$("#order_file").val());
 
@@ -397,12 +396,81 @@ $(function(){
         
         return false;
     });
+
+    //vista previa
+    $("#preview").on("click", function (e) {
+        e.preventDefault();
+
+        var details = getDetails();
+
+        $.ajax({
+            type: "POST",
+            url: RUTA+"ingresos/preview",
+            data:{  proyecto: $("#proyecto").val(),
+                    origen: $("#almacen").val(),
+                    movimiento: $("#tipomov").val(),
+                    fecha: $("#fechadoc").val(),
+                    orden: $("#nrord").val(),
+                    pedido: $("#nroped").val(),
+                    entidad: $("#entidad").val(),
+                    guia: $("#nroguia").val(),
+                    autoriza: $("#aprueba").val(),
+                    condicion: 0,
+                    details:JSON.stringify(DATA)},
+            dataType: "text",
+            success: function (response) {
+                $("#modalPreview").fadeIn();                
+            }
+        });
+
+        return false;
+    });
+
+    $("#closeModalPreview").on("click", function (e) {
+        e.preventDefault();
+
+        $("#modalPreview").fadeOut();
+        
+        return false;
+    });
 })
 
 function getSeries($cod){}
 
-function getDetails($cod){}
+function getDetails($cod){
+    DATA = [];
 
-function registerAtachs($cod){
+    var TABLA = $("#detalle_ingreso tbody > tr");
 
+    TABLA.each(function(){
+        var ITEM        = $(this).find('td').eq(2).text(),
+            CODITEM     = $(this).find('td').eq(3).text(),
+            DESCRIPCION = $(this).find('td').eq(4).text(),
+            UNIDAD      = $(this).find('td').eq(5).text(),
+            CANTIDAD    = $(this).find('td').eq(7).children().val(),
+            ESTADO      = $(this).find('td').eq(8).text(),
+            UBICACION   = $(this).find('td').eq(9).children().val(),
+            LOTE        = $(this).find('td').eq(10).text(),
+            VENCE       = $(this).find('td').eq(11).text()
+
+            item = {};
+
+            if (ITEM !== ''){
+                item["item"]        = ITEM;
+                item["coditem"]     = CODITEM;
+                item["descripcion"] = DESCRIPCION;
+                item["unidad"]      = UNIDAD;
+                item["cantidad"]    = CANTIDAD;
+                item["estado"]      = ESTADO;
+                item["ubicacion"]   = UBICACION;
+                item["lote"]        = LOTE;
+                item["vence"]       = VENCE;
+            }
+
+            DATA.push(item);
+    })
+
+    return DATA;
 }
+
+function registerAtachs($cod){}
