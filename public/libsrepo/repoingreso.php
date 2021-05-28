@@ -2,8 +2,7 @@
 	require_once "public/fpdf/mc_table.inc.php";
 
 	class PDF extends PDF_MC_Table{
-        public function __construct($ndoc,$condicion,$dia,$mes,$anio,$proyecto,$origen,$movimiento,$nord,$nped,
-                                $nguia,$nautoriza,$cautoriza)
+        public function __construct($ndoc,$condicion,$dia,$mes,$anio,$proyecto,$origen,$movimiento,$orden,$nped,$nguia,$nautoriza,$cautoriza)
         {
             parent::__construct();
             $this->ndoc         = $ndoc;
@@ -14,7 +13,7 @@
             $this->proyecto     = $proyecto;
             $this->origen       = $origen;
             $this->movimiento   = $movimiento;
-            $this->nrod         = $nord;
+            $this->orden        = $orden;
             $this->nped         = $nped;
             $this->nguia        = $nguia;
             $this->nautoriza    = $nautoriza;
@@ -58,9 +57,10 @@
 	        $this->Cell(13,5,"PE",1,0,"C",1);
 	        $this->Cell(14,5,utf8_decode("Guia"),1,1,"C",1);
 	        $this->SetXY(160,25);
-	        $this->Cell(13,5,$this->nord,1,0,"C");//pasa dato
+	        
+			$this->SetFont('Arial','B',6);
+	        $this->Cell(13,5,$this->orden,1,0,"C");//pasa dato
 	        $this->Cell(13,5,$this->nped,1,0,"C");//pasa dato
-	        $this->SetFont('Arial','B',6);
 	        $this->Cell(14,5,$this->nguia,1,1,"C");//pasa dato
 
 	        $this->SetXY(10,32);
@@ -76,7 +76,7 @@
     		$this->Ln(1);
     		$this->SetFont('Arial','B',6);
     		$this->Rect(10,48,190,7,"F"); //fondo de mensaje
-    		$this->SetWidths(array(10,15,70,8,10,17,30,15,15));
+    		$this->SetWidths(array(5,15,55,8,12,20,45,15,15));
     		$this->SetAligns(array("C","C","C","C","C","C","C","C","C"));
     		$this->Row(array('Item',utf8_decode('Código'),utf8_decode('Descripción'),
     				'Und.Med.','Cant.','Observ. Item','Proveedor','Estado',

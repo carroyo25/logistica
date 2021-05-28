@@ -518,7 +518,7 @@
   transform: translate(-50%, -50%);
   padding: 10px;
   border-radius: 10px; }
-  .insidePreview object {
+  .insidePreview object, .insidePreview iframe {
     width: 100%;
     height: 100%; }
   .insidePreview .preview {

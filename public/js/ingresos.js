@@ -1,5 +1,7 @@
 var atachs      = 0;
 var FILES       = [];
+var accion      = "";
+
 
 $(function(){
     activar_opcion();
@@ -11,27 +13,69 @@ $(function(){
         $(".process_header, .details_item").removeClass("desactivado");
         $(".sides_process div").removeClass("no_modificar");
         $("#formProcess")[0].reset();
-        //$("#cod_pedido,#cod_proy,#cod_cost,#cod_area,#cod_transporte,#cod_solicitante,#cod_tipo").val("");
-        //$("#registro, #documento").val("EN PROCESO");
+        $("#cod_almacen,#cod_motivo,#cod_autoriza,#nroguia").val("");
         $("#detalle_pedido tbody").empty();
         $("#saveItem span").removeClass('parpadea');
-        $(".seleccion").fadeOut();
-        $("#registro, #documento")
-            .removeClass('aprobado','emitido')
-            .addClass('proceso');
-
-        /*vistaItem = 0;
-
-        $.post(RUTA+"pedidos/newRequest", {data:0},
-            function (data, textStatus, jqXHR) {
-                $("#numero").val(data.numero);
-                $("#cod_pedido").val(data.codigo);
-            },
-            "json"
-        );*/
 
         accion = "n";
 
+        return false;
+    });
+
+    $("#saveDoc").on("click", function (e) {
+        e.preventDefault(e);
+
+        if ($("#cod_almacen").val().length == 0){
+            mostrarMensaje("msj_error","Seleccione un almacen");
+            return false;
+        }else if ($("#cod_motivo").val().length == 0){
+            mostrarMensaje("msj_error","Seleccione el motivo de movimiento");
+            return false;
+        }else if ($("#cod_autoriza").val().length == 0){
+            mostrarMensaje("msj_error","Seleccione la persona que autoriza");
+            return false;
+        }else if ($("#nroguia").val().length == 0){
+            mostrarMensaje("msj_error","Ingrese el Nro. de guia");
+            return false;
+        }
+
+        getDetails();
+        getSeries();
+        registerAtachs();
+
+        if ( accion == "n") {
+            $.post(RUTA + "ingresos/nuevoIngreso", {ningreso:$("#nro_ingreso").val(),
+                                                    fecha:$("#fechadoc").val(),
+                                                    origen:$("#cod_almacen").val(),
+                                                    fcoontable:$("#fechacont").val(),
+                                                    entidad:$("#id_entidad").val(),
+                                                    guia:$("#nroguia").val(),
+                                                    orden:$("#idorden").val(),
+                                                    pedido:$("#idpedido").val(),
+                                                    estado:$("#estado").val(),
+                                                    autoriza:$("#cod_autoriza").val(),
+                                                    cod_mov:$("#cod_movimento").val(),
+                                                    num_mov:$("#movalmacen").val(),
+                                                    detalles:JSON.stringify(DETALLES),
+                                                    series:JSON.stringify(SERIES),
+                                                    adjuntos:JSON.stringify(ADJUNTOS)
+                                                },
+                function (data, textStatus, jqXHR) {
+                    if (data){
+
+                    }
+                },
+                "text"
+            );
+        }else {
+            $.post(RUTA+"ingresos/actualizaIngreso", data,
+                function (data, textStatus, jqXHR) {
+                    
+                },
+                "text"
+            );
+        }
+        
         return false;
     });
 
@@ -115,7 +159,7 @@ $(function(){
     $("#aprueba").focus(function (e) { 
         e.preventDefault();
         
-        $("#cod_aprueba").val("");
+        $("#cod_autoriza").val("");
         $(this).select();
         $(".seleccion").fadeOut();
 
@@ -127,8 +171,9 @@ $(function(){
     $("#listaAprueba").on("click","a", function (e) {
         e.preventDefault();
 
-        $("#cod_aprueba").val($(this).attr("href"));
+        $("#cod_autoriza").val($(this).attr("href"));
         $("#aprueba").val($(this).text());
+        $("#cargo_almacen").val($(this).data("cargo"));
 
         $(this).parent().parent().parent().slideUp();
         $("#saveDoc span").addClass('parpadea');
@@ -174,6 +219,9 @@ $(function(){
                 $("#documento").val("PROCESO");
                 $("#order_file").val(data.pdf);
                 $("#id_ingreso").val(data.id);
+                $("#idorden").val(data.idord);
+                $("#idpedido").val(data.idped);
+                $("#id_entidad").val(data.ident);
 
                 $.post(RUTA+"ingresos/detailsOrder", {codigo:data.codigo},
                     function (data, textStatus, jqXHR) {
@@ -202,7 +250,7 @@ $(function(){
         if ( $(this).data("action") == "register") {
             //llamar a la ventana de series de prouctos
             var descrip = $(this).parent().parent().find('td').eq(3).text(),
-            nroserials = $(this).parent().parent().find('td').eq(6).children().val();
+            nroserials = $(this).parent().parent().find('td').eq(7).children().val();
 
             $("#descrip").text(descrip);
             $("#nroItemSerial").text(nroserials);
@@ -230,12 +278,12 @@ $(function(){
         e.preventDefault();
 
         var maxSerial = $("#nroItemSerial").text();
-        var itemsfila = $("#detalle_series tbody tr").length + 1;
+        var itemsfila = $("#detalle_series tbody tr").length;
 
-        if (itemsfila <= maxSerial) {
+        if ( itemsfila <= maxSerial ) {
             var fila = '<tr>'+
                         '<td class="con_borde centro"><a href="#"><i class="fas fa-trash-alt"></i></a></td>'+
-                        '<td class="con_borde centro">'+itemsfila+'</td>'+
+                        '<td class="con_borde centro">'+(itemsfila+1)+'</td>'+
                         '<td class="con_borde"><input type ="text" class="sin_borde"></td>'+
                         '<td class="con_borde"><input type ="text" class="sin_borde"></td>'+
                     '</tr>'
@@ -252,21 +300,17 @@ $(function(){
         e.preventDefault();
 
         var maxSerial = $("#nroItemSerial").text();
-        var itemsfila = $("#detalle_series tbody tr").length + 1;
+        var itemsfila = $("#detalle_series tbody tr").length;
 
-        if (itemsfila == maxSerial){
+        console.log(maxSerial);
+        console.log(itemsfila);
+
+
+        if ( itemsfila == maxSerial ){
             $("#modalSerie").fadeOut();
         }else{
             mostrarMensaje("msj_error","Faltan series del producto");
         }
-
-        return false;
-    });
-
-    $("#saveDoc").on("click", function (e) {
-        e.preventDefault(e);
-
-        var str = $("#formProcess").serialize();
 
         return false;
     });
@@ -325,6 +369,8 @@ $(function(){
         if ( $("#tableAdjuntos tbody tr").length == 0) {
             mostrarMensaje("msj_error","No selecciono ningun archivo");
             return false;
+        }else{
+            $("#fileAtachs").trigger("submit");
         }
 
         $("#modalAtach").fadeOut();
@@ -356,7 +402,7 @@ $(function(){
                 var fileSize = items[i].size; // get file size 
     
                 // append li to UL tag to display File info
-                fragment +="<tr><td>"+fileName+"</td>"+"<td>"+fileSize+" Kb</td></tr>"
+                fragment +="<tr><td classs='con_borde pl20'>"+fileName+"</td>"+"<td  classs='con_borde drch pr10'>"+fileSize+" Kb</td></tr>"
             }
     
             $("#tableAdjuntos tbody").append(fragment);
@@ -386,11 +432,9 @@ $(function(){
                     FILES.push(data[item]); 
                 });
                 
-                //registerAtachs( $("#cod_pedido").val() );
-
                 $("#modalAtach").fadeOut();
                 $("#fileAtachs")[0].reset();
-                $("#tableAdjuntos tbody").empty();
+                //$("#tableAdjuntos tbody").empty();
             }
         });
         
@@ -400,6 +444,20 @@ $(function(){
     //vista previa
     $("#preview").on("click", function (e) {
         e.preventDefault();
+
+        if ($("#cod_almacen").val().length == 0){
+            mostrarMensaje("msj_error","Seleccione un almacen");
+            return false;
+        }else if ($("#cod_motivo").val().length == 0){
+            mostrarMensaje("msj_error","Seleccione el motivo de movimiento");
+            return false;
+        }else if ($("#cod_autoriza").val().length == 0){
+            mostrarMensaje("msj_error","Seleccione la persona que autoriza");
+            return false;
+        }else if ($("#nroguia").val().length == 0){
+            mostrarMensaje("msj_error","Ingrese el Nro. de guia");
+            return false;
+        }
 
         var details = getDetails();
 
@@ -415,10 +473,17 @@ $(function(){
                     entidad: $("#entidad").val(),
                     guia: $("#nroguia").val(),
                     autoriza: $("#aprueba").val(),
+                    cargo:$("#cargo_almacen").val(),
                     condicion: 0,
+                    ndoc:$("#nro_ingreso").val(),
                     details:JSON.stringify(DATA)},
             dataType: "text",
             success: function (response) {
+                
+                $("#modalPreview .insidePreview iframe")
+                    .attr("src","")
+                    .attr("src",response);
+
                 $("#modalPreview").fadeIn();                
             }
         });
@@ -430,15 +495,35 @@ $(function(){
         e.preventDefault();
 
         $("#modalPreview").fadeOut();
-        
+
         return false;
     });
 })
 
-function getSeries($cod){}
+function getSeries(){
+    SERIES = [];
 
-function getDetails($cod){
-    DATA = [];
+    var TABLA = $("#detalle_series tbody > tr");
+
+    TABLA.each(function(){
+        var SERIE    = $(this).find('td').eq(2).children().val(),
+            OBSERV   = $(this).find('td').eq(3).children().val()
+
+            item = {};
+
+            if(SERIE !== ''){
+                item['serie']   = SERIE;
+                item['observ']  = OBSERV;
+            }
+
+            SERIES.push(item);
+    })
+
+    return SERIES;
+}
+
+function getDetails(){
+    DETALLES = [];
 
     var TABLA = $("#detalle_ingreso tbody > tr");
 
@@ -448,8 +533,9 @@ function getDetails($cod){
             DESCRIPCION = $(this).find('td').eq(4).text(),
             UNIDAD      = $(this).find('td').eq(5).text(),
             CANTIDAD    = $(this).find('td').eq(7).children().val(),
-            ESTADO      = $(this).find('td').eq(8).text(),
-            UBICACION   = $(this).find('td').eq(9).children().val(),
+            NESTADO     = $(this).find("select[name='estado']").val(),
+            TESTADO     = $(this).find("select[name='estado'] option:selected").text(),
+            UBICACION   = $(this).find('td').eq(9).text(),
             LOTE        = $(this).find('td').eq(10).text(),
             VENCE       = $(this).find('td').eq(11).text()
 
@@ -461,16 +547,37 @@ function getDetails($cod){
                 item["descripcion"] = DESCRIPCION;
                 item["unidad"]      = UNIDAD;
                 item["cantidad"]    = CANTIDAD;
-                item["estado"]      = ESTADO;
+                item["nestado"]     = NESTADO;
+                item["cestado"]     = TESTADO;
                 item["ubicacion"]   = UBICACION;
                 item["lote"]        = LOTE;
                 item["vence"]       = VENCE;
             }
 
-            DATA.push(item);
+            DETALLES.push(item);
     })
 
-    return DATA;
+    return DETALLES;
 }
 
-function registerAtachs($cod){}
+function registerAtachs(){
+    ADJUNTOS=[];
+
+    var TABLA = $("#tableAdjuntos tbody > tr");
+
+    TABLA.each(function(){
+        var NOMBRE    = $(this).find('td').eq(0).text(),
+            PESO      = $(this).find('td').eq(1).text()
+
+            item = {};
+
+            if(SERIE !== ''){
+                item['nombre']  = NOMBRE;
+                item['peso']    = PESO;
+            }
+
+            ADJUNTOS.push(item);
+    })
+
+    return ADJUNTOS;
+}

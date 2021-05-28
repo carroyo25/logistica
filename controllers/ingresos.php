@@ -73,22 +73,45 @@
         }
 
         function preview(){
+            $ingreso =  $_POST['ndoc'];
+            $condicion = $_POST['condicion'];
+            $fecha = $_POST['fecha'];
             $proyecto = $_POST['proyecto'];
             $origen = $_POST['origen'];
             $movimiento = $_POST['movimiento'];
-            $fecha = $_POST['fecha'];
             $orden = $_POST['orden'];
             $pedido = $_POST['pedido'];
-            $entidad = $_POST['entidad'];
             $guia = $_POST['guia'];
             $autoriza = $_POST['autoriza'];
-            $condicion = $_POST['condicion'];
+            $cargo = $_POST['cargo'];
+            $entidad = $_POST['entidad'];
             $details = $_POST['details'];
 
-
-            $result = $this->model->genPreview($proyecto,$origen,$movimiento,$fecha,$orden,$pedido,$entidad,$guia,$autoriza,$condicion,$details);
+            $result = $this->model->genPreview($ingreso,$condicion,$fecha,$proyecto,$origen,$movimiento,$orden,$pedido,$guia,$autoriza,$cargo,$entidad,$details);
 
             echo $result;
+        }
+
+        function nuevoIngreso(){
+            $ningreso = $_POST['ningreso'];
+            $fecha = $_POST['fecha'];
+            $origen = $_POST['origen'];
+            $fcontable = $_POST['fcoontable'];
+            $entidad = $_POST['entidad'];
+            $guia = $_POST['guia'];
+            $orden = $_POST['orden'];
+            $pedido = $_POST['pedido'];
+            $estado = $_POST['estado'];
+            $autoriza = $_POST['autoriza'];
+            $cod_mov = $_POST['cod_mov'];
+            $num_mov = $_POST['num_mov'];
+            $detalles = $_POST['detalles'];
+            $series = $_POST['series'];
+            $adjuntos = $_POST['adjuntos'];
+
+            $result = $this->model->insertarIngreso($ningreso,$fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,$cod_mov,$num_mov,$detalles,$series,$adjuntos);
+
+            echo json_encode($result);
         }
         
     }

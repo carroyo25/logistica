@@ -92,7 +92,8 @@
                                                             tabla_aquarius.internal,
                                                             tabla_aquarius.apellidos,
                                                             tabla_aquarius.nombres,
-                                                            tabla_aquarius.ccargo 
+                                                            tabla_aquarius.ccargo,
+                                                            tabla_aquarius.dcargo
                                                         FROM
                                                             tabla_aquarius 
                                                         WHERE
@@ -102,7 +103,7 @@
 
                 if ($rowCount > 0) {
                     while ($row = $sql->fetch()) {
-                        $salida.='<li><a href="'.$row['internal'].'">'.strtoupper($row['nombres']." ".$row['apellidos']).'</a></li>';
+                        $salida.='<li><a href="'.$row['internal'].'" data-cargo="'.$row['dcargo'].'">'.strtoupper($row['nombres']." ".$row['apellidos']).'</a></li>';
                     }
                 }
 
@@ -205,6 +206,7 @@
                                                         logistica.lg_regabastec.mdetalle,
                                                         logistica.lg_regabastec.cconcepto,
                                                         logistica.lg_regabastec.cdocPDF,
+                                                        logistica.lg_regabastec.id_centi,
                                                         logistica.cm_entidad.crazonsoc,
                                                         logistica.lg_registro.cnumero AS pedido,
                                                         logistica.tb_proyecto1.ccodpry,
@@ -247,6 +249,9 @@
                         $item['orden']      = str_pad($row['orden'],5,"0",STR_PAD_LEFT).'-'.$row['cper'];
                         $item['pdf']        = 'public/ordenes/aprobadas/'.$row['cdocPDF'];
                         $item['id']         = uniqid("EM");
+                        $item['idord']      = $row['id_regmov'];
+                        $item['idped']      = $row['id_refpedi'];
+                        $item['ident']      = $row['id_centi'];
                     }
                 }
 
@@ -291,7 +296,7 @@
                     while ($row = $sql->fetch()) {
                         $cont++;
                         $salida.='<tr class="lh1_2rem pointertr" data-id="'.$row['nidpedi'].'">
-                                    <td class="con_borde centro"><a href="'.$row['nidpedi'].'" data-action="resgister"><i class="fas fa-barcode"></i></a></td>
+                                    <td class="con_borde centro"><a href="'.$row['nidpedi'].'" data-action="register"><i class="fas fa-barcode"></i></a></td>
                                     <td class="con_borde centro"><a href="'.$row['nidpedi'].'" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
                                     <td class="centro con_borde">'.str_pad($cont,3,"0",STR_PAD_LEFT).'</td>
                                     <td class="centro con_borde">'.$row['id_cprod'].'</td>
@@ -299,7 +304,7 @@
                                     <td class="con_borde centro">'.$row['cabrevia'].'</td>
                                     <td class="con_borde drch pr20">'.number_format($row['ncanti'], 2, '.', ',').'</td>
                                     <td class="con_borde centro"><input type="number" onClick="this.select();" class="drch pr10" value="'.number_format($row['ncanti'], 2, '.', ',').'"></td>
-                                    <td class="con_borde"><select>'. $estados .'</select></td>
+                                    <td class="con_borde"><select name="estado">'. $estados .'</select></td>
                                     <td class="con_borde"></td>
                                     <td class="con_borde"></td>
                                     <td class="con_borde"><input type="date"></td>
@@ -314,14 +319,107 @@
             }
         }
 
-        public function genPreview($proyecto,$origen,$movimiento,$fecha,$orden,$pedido,$entidad,$guia,$autoriza,$condicion,$details){
+        public function genPreview($ingreso,$condicion,$fecha,$proyecto,$origen,$movimiento,$orden,$pedido,$nguia,$nombre,$cargo,$entidad,$details){
+            require_once("public/libsrepo/repoingreso.php");
             
             $datos = json_decode($details);
-            $fecha = explode($fecha,"-");
-            
-            $dia = $fecha[2];
-            $mes = $fecha[1];
-            $anio = $fecha[0];
+            $fecha_explode = explode("-",$fecha);
+            $lc = 0;
+            $rc = 0;
+
+            $dia = $fecha_explode[2];
+            $mes = $fecha_explode[1];
+            $anio = $fecha_explode[0];
+
+            $filename = "public/temp/".uniqid("RI").".pdf";
+
+            if(file_exists($filename))
+                unlink($filename);
+
+            $nreg = count($datos);
+
+            $pdf = new PDF($ingreso,$condicion,$dia,$mes,$anio,$proyecto,$origen,$movimiento,$orden,$pedido,$nguia,$nombre,$cargo);
+            // Creación del objeto de la clase heredada
+            $pdf->AliasNbPages();
+            $pdf->AddPage();
+            $pdf->SetWidths(array(5,15,55,8,12,20,45,15,15));
+            $pdf->SetFont('Arial','',4);
+            $lc = 0;
+
+            for($i=1;$i<=$nreg;$i++){
+                    $pdf->SetAligns(array("C","L","L","L","R","L","L","L","L"));
+                    $pdf->Row(array(str_pad($i,3,"0",STR_PAD_LEFT),
+                                            $datos[$rc]->coditem,
+                                            utf8_decode($datos[$rc]->descripcion),
+                                            $datos[$rc]->unidad,
+                                            $datos[$rc]->cantidad,
+                                            "",
+                                            utf8_decode($entidad),
+                                            $datos[$rc]->cestado,
+                                            $datos[$rc]->ubicacion));
+                    $lc++;
+                    $rc++;
+                    
+                    if ($lc == 52) {
+                        $pdf->AddPage();
+                        $lc = 0;
+                    }	
+                }
+                
+            $pdf->Output($filename,'F');
+            echo $filename;
         }
+
+        public function insertarIngreso($ningreso,$fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,$cod_mov,$num_mov,$detalles,$series,$adjuntos){
+            try {
+                $cod = uniqid("NI");
+                $fecha_explode = explode("-",$fecha); 
+                
+                $sql = $this->db->connect()->prepare("INSERT INTO al_removi1 SET id_regalm=:cod,ncodmov=:cmo,cper=:anio,cmes=:mes,ncodalm1=:cma,ffecdoc=:fec,
+                                                                ffconta=:,id_centi=:idt,cnumguia=:ngi,idref_pedi=:ped,id_userAprob=:apro,nEstadoDoc=:est,nflgactivo=:flag,
+                                                                nnromov=:nmov,nnronota=:nnot");
+                $sql->execute(["cod"=>$cod,
+                                "cmo"=>$cod_mov,
+                                "anio"=>$fecha_explode[0],
+                                "mes"=>$fecha_explode[1],
+                                "cma"=>$origen,
+                                "fec"=>$fecha,
+                                "fco"=>$fcontable,
+                                "idt"=>$entidad,
+                                "ngi"=>$guia,
+                                "ped"=>$pedido,
+                                "apro"=>$autoriza,
+                                "est"=>$estado,
+                                "flag"=>1,
+                                "nmov"=>$num_mov,
+                                "nnot"=>$ningreso
+                                ]);
+                $rowCount = $sql->rowcount();
+                
+                if ($rowCount == 1) {
+                    $mensaje = "Registro insertado";
+                    $this->insertarDetalles($cod,$detalles);
+                    $this->insertarSeries($cod,$series);
+                    $this->insertarAdjuntos($cod,$adjuntos);
+                }else{
+                    $mensaje = "Hubo un problema al crear el registro";
+                }
+
+                $salidajson = array("mensaje"=>$mensaje,
+                                    "estado"=>true);
+                return $salidajson;
+
+
+            } catch (PDOException  $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function insertarDetalles($cod,$detalles){}
+
+        public function insertarAdjuntos($cod,$adjuntos){}
+
+        public function insertarSeries($cod,$series){}
     }
 ?>

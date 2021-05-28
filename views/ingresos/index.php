@@ -14,10 +14,16 @@
     <div class="modal" id="modalProcess">
         <form action="#" autocomplete="off" id="formProcess">
             <input type="hidden" name="id_ingreso" id="id_ingreso">
+            <input type="hidden" name="id_entidad" id="id_entidad">
             <input type="hidden" name="cod_almacen" id="cod_almacen">
-            <input type="hidden" name="cod_motivo" id="cod_motivo">
+            <input type="hidden" name="cod_movimento" id="cod_movimento">
             <input type="hidden" name="cod_autoriza" id="cod_autoriza">
             <input type="hidden" name="order_file" id="order_file">
+            <input type="hidden" name="cargo_almacen" id="cargo_almacen">
+            <input type="hidden" name="idorden" id="idorden">
+            <input type="hidden" name="idpedido" id="idpedido">
+            <input type="hidden" name="estado" id="estado" value= "1">
+
             <div class="process">
                 <div class="sides_process">
                         <div class="descrip_title">
@@ -218,7 +224,7 @@
             <div class="dialogBody">
                 <div class="titulos">
                     <h4 id="descrip"></h4>
-                    <h4 id="nroItemSerial" class="oculto"></h4>
+                    <h4 id="nroItemSerial" class="nooculto"></h4>
                     <a href="#" id="addSerials"><i class="far fa-calendar-plus"></i></a>
                 </div>
                 <form action="">
@@ -285,7 +291,8 @@
     </div>
     <div class="modal zindex3" id="modalPreview">
         <div class="insidePreview">
-            <object data="" type="application/pdf"></object>
+            <!-- <object data="" type="application/pdf" id="dialogPreview"></object> -->
+            <iframe src=""></iframe>
         </div>
         <a href="#" id="closeModalPreview" class="buttonClose"><i class="fas fa-reply-all"></i></a>
     </div>
