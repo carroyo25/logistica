@@ -375,9 +375,9 @@
                 $cod = uniqid("NI");
                 $fecha_explode = explode("-",$fecha); 
                 
-                $sql = $this->db->connect()->prepare("INSERT INTO al_removi1 SET id_regalm=:cod,ncodmov=:cmo,cper=:anio,cmes=:mes,ncodalm1=:cma,ffecdoc=:fec,
-                                                                ffconta=:,id_centi=:idt,cnumguia=:ngi,idref_pedi=:ped,id_userAprob=:apro,nEstadoDoc=:est,nflgactivo=:flag,
-                                                                nnromov=:nmov,nnronota=:nnot");
+                $sql = $this->db->connect()->prepare("INSERT INTO al_regmovi1 SET id_regalm=:cod,ncodmov=:cmo,cper=:anio,cmes=:mes,ncodalm1=:cma,ffecdoc=:fec,
+                                                                ffconta=:fco,id_centi=:idt,cnumguia=:ngi,idref_pedi=:ped,id_userAprob=:apro,nEstadoDoc=:est,
+                                                                nflgactivo=:flag,nnromov=:nmov,nnronota=:nnot");
                 $sql->execute(["cod"=>$cod,
                                 "cmo"=>$cod_mov,
                                 "anio"=>$fecha_explode[0],

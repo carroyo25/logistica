@@ -13,7 +13,7 @@ $(function(){
         $(".process_header, .details_item").removeClass("desactivado");
         $(".sides_process div").removeClass("no_modificar");
         $("#formProcess")[0].reset();
-        $("#cod_almacen,#cod_motivo,#cod_autoriza,#nroguia").val("");
+        $("#cod_almacen,#cod_movimento,#cod_autoriza,#nroguia").val("");
         $("#detalle_pedido tbody").empty();
         $("#saveItem span").removeClass('parpadea');
 
@@ -28,7 +28,7 @@ $(function(){
         if ($("#cod_almacen").val().length == 0){
             mostrarMensaje("msj_error","Seleccione un almacen");
             return false;
-        }else if ($("#cod_motivo").val().length == 0){
+        }else if ($("#cod_movimento").val().length == 0){
             mostrarMensaje("msj_error","Seleccione el motivo de movimiento");
             return false;
         }else if ($("#cod_autoriza").val().length == 0){
@@ -133,7 +133,7 @@ $(function(){
     $("#tipomov").focus(function (e) { 
         e.preventDefault();
         
-        $("#cod_motivo").val("");
+        $("#cod_movimento").val("");
         $(this).select();
         $(".seleccion").fadeOut();
 
@@ -145,7 +145,7 @@ $(function(){
     $("#listaMotivo").on("click","a", function (e) {
         e.preventDefault();
 
-        $("#cod_motivo").val($(this).attr("href"));
+        $("#cod_movimento").val($(this).attr("href"));
         $("#tipomov").val($(this).text());
 
         $(this).parent().parent().parent().slideUp();
@@ -448,7 +448,7 @@ $(function(){
         if ($("#cod_almacen").val().length == 0){
             mostrarMensaje("msj_error","Seleccione un almacen");
             return false;
-        }else if ($("#cod_motivo").val().length == 0){
+        }else if ($("#cod_movimento").val().length == 0){
             mostrarMensaje("msj_error","Seleccione el motivo de movimiento");
             return false;
         }else if ($("#cod_autoriza").val().length == 0){
