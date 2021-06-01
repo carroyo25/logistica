@@ -6,6 +6,8 @@ var accion      = "";
 $(function(){
     activar_opcion();
 
+    $("#editreg, #editreg, #savereg, #cancelreg, #deletereg, #exportexcel").addClass("oculto");
+
     $("#newreg").on("click", function (e) {
         e.preventDefault();
 
@@ -16,6 +18,7 @@ $(function(){
         $("#cod_almacen,#cod_movimento,#cod_autoriza,#nroguia").val("");
         $("#detalle_pedido tbody").empty();
         $("#saveItem span").removeClass('parpadea');
+        $("#importOrd").removeClass("oculto");
 
         accion = "n";
 
@@ -62,7 +65,10 @@ $(function(){
                                                 },
                 function (data, textStatus, jqXHR) {
                     if (data){
-
+                        mostrarMensaje("msj_correcto","Registro insertado...");
+                        $("#modalProcess").fadeOut();
+                    }else{
+                        mostrarMensaje("msj_error","Error.. no se inserto el registro");
                     }
                 },
                 "text"
@@ -249,10 +255,12 @@ $(function(){
         e.preventDefault();
         if ( $(this).data("action") == "register") {
             //llamar a la ventana de series de prouctos
-            var descrip = $(this).parent().parent().find('td').eq(3).text(),
-            nroserials = $(this).parent().parent().find('td').eq(7).children().val();
+            var descrip = $(this).parent().parent().find('td').eq(4).text(),
+                prodcod = $(this).parent().parent().find('td').eq(3).text(),
+                nroserials = $(this).parent().parent().find('td').eq(7).children().val();
 
-            $("#descrip").text(descrip);
+            $("#descripProducto").text(descrip);
+            $("#codigoProducto").text(prodcod);
             $("#nroItemSerial").text(nroserials);
 
             $("#modalSerie").fadeIn();
@@ -279,10 +287,11 @@ $(function(){
 
         var maxSerial = $("#nroItemSerial").text();
         var itemsfila = $("#detalle_series tbody tr").length;
+        var codigoPro = $("#codigoProducto").text();
 
         if ( itemsfila <= maxSerial ) {
             var fila = '<tr>'+
-                        '<td class="con_borde centro"><a href="#"><i class="fas fa-trash-alt"></i></a></td>'+
+                        '<td class="con_borde centro"><a href="'+ codigoPro +'"><i class="fas fa-trash-alt"></i></a></td>'+
                         '<td class="con_borde centro">'+(itemsfila+1)+'</td>'+
                         '<td class="con_borde"><input type ="text" class="sin_borde"></td>'+
                         '<td class="con_borde"><input type ="text" class="sin_borde"></td>'+
@@ -301,10 +310,6 @@ $(function(){
 
         var maxSerial = $("#nroItemSerial").text();
         var itemsfila = $("#detalle_series tbody tr").length;
-
-        console.log(maxSerial);
-        console.log(itemsfila);
-
 
         if ( itemsfila == maxSerial ){
             $("#modalSerie").fadeOut();
@@ -369,7 +374,7 @@ $(function(){
         if ( $("#tableAdjuntos tbody tr").length == 0) {
             mostrarMensaje("msj_error","No selecciono ningun archivo");
             return false;
-        }else{
+        }else {
             $("#fileAtachs").trigger("submit");
         }
 
@@ -459,7 +464,7 @@ $(function(){
             return false;
         }
 
-        var details = getDetails();
+        getDetails();
 
         $.ajax({
             type: "POST",
@@ -476,7 +481,7 @@ $(function(){
                     cargo:$("#cargo_almacen").val(),
                     condicion: 0,
                     ndoc:$("#nro_ingreso").val(),
-                    details:JSON.stringify(DATA)},
+                    details:JSON.stringify(DETALLES)},
             dataType: "text",
             success: function (response) {
                 
@@ -498,6 +503,44 @@ $(function(){
 
         return false;
     });
+
+    //buscar ordenes
+    $("#nroorden").on("keypress", function (e) {
+        //e.preventDefault()
+        if(e.which == 13 && $(this).val().length > 2) {
+            $("#waitmodal").fadeIn();
+            $.post(RUTA+"ingresos/ordenesPalabra", {palabra:$(this).val()},
+                function (data, textStatus, jqXHR) {
+                    $("#lista_ordenes tbody")
+                        .empty()
+                        .append(data);
+                    $("#waitmodal").fadeOut();  
+                },
+                "text"
+            );
+        }
+    });
+
+    //llamar a las ordenes anterioes
+    $("#tabla_ingresos tbody").on("click","a", function (e) {
+        e.preventDefault();
+
+        $("#waitmodal").fadeIn();
+
+        $.post(RUTA+"ingresos/llamaIngresoPorId", {nota:$(this).attr('href')},
+            function (data, textStatus, jqXHR) {
+                $("#waitmodal").fadeOut();
+                $("#importOrd").addClass("oculto");
+                $("#modalProcess").fadeIn();
+                
+                $("#fechadoc").val(data.fechadoc);
+                $("#fechacont").val(data.fechacont);
+            },
+            "json"
+        );
+
+        return false;
+    });
 })
 
 function getSeries(){
@@ -507,13 +550,15 @@ function getSeries(){
 
     TABLA.each(function(){
         var SERIE    = $(this).find('td').eq(2).children().val(),
-            OBSERV   = $(this).find('td').eq(3).children().val()
+            OBSERV   = $(this).find('td').eq(3).children().val(),
+            CODPRO   = $("#codigoProducto").text()
 
             item = {};
 
             if(SERIE !== ''){
                 item['serie']   = SERIE;
                 item['observ']  = OBSERV;
+                item['codpro']  = CODPRO;
             }
 
             SERIES.push(item);
@@ -537,7 +582,14 @@ function getDetails(){
             TESTADO     = $(this).find("select[name='estado'] option:selected").text(),
             UBICACION   = $(this).find('td').eq(9).text(),
             LOTE        = $(this).find('td').eq(10).text(),
-            VENCE       = $(this).find('td').eq(11).text()
+            VENCE       = $(this).find('td').eq(11).text(),
+            NIDDETA     = $(this).find('td').eq(2).data('iddetalle'),
+            FACTOR      = $(this).find('td').eq(2).data('factor'),
+            CODUNI      = $(this).find('td').eq(2).data('coduni'),
+            IDPROD      = $(this).find('td').eq(2).data('idprod'),
+            IDDETPED    = $(this).find('td').eq(2).data('iddetpedido'),
+            IDDERORD    = $(this).find('td').eq(2).data('iddetorden')    
+
 
             item = {};
 
@@ -552,6 +604,13 @@ function getDetails(){
                 item["ubicacion"]   = UBICACION;
                 item["lote"]        = LOTE;
                 item["vence"]       = VENCE;
+                item["niddeta"]     = NIDDETA;
+                item["factor"]      = FACTOR;
+                item["coditem "]    = ITEM;
+                item["coduni"]      = CODUNI;
+                item["idprod"]      = IDPROD;
+                item["iddetped"]    = IDDETPED;
+                item["iddetord"]    = IDDERORD;
             }
 
             DETALLES.push(item);
@@ -560,20 +619,17 @@ function getDetails(){
     return DETALLES;
 }
 
+
 function registerAtachs(){
     ADJUNTOS=[];
 
-    var TABLA = $("#tableAdjuntos tbody > tr");
-
-    TABLA.each(function(){
-        var NOMBRE    = $(this).find('td').eq(0).text(),
-            PESO      = $(this).find('td').eq(1).text()
+    $.each(FILES, function(row){
+        var NOMBRE = FILES[row],
 
             item = {};
 
-            if(SERIE !== ''){
-                item['nombre']  = NOMBRE;
-                item['peso']    = PESO;
+            if (NOMBRE !== ""){
+                item['nombre'] = NOMBRE;
             }
 
             ADJUNTOS.push(item);

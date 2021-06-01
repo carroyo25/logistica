@@ -10,7 +10,7 @@
             $this->view->almacenes  = $this->model->getWarehouses();
             $this->view->motivos    = $this->model->getMovs();
             $this->view->aprueba    = $this->model->getPersonal();
-            //$this->view->registros  = $this->model->getMainRecords(); //aca debo poner los primeros 20 registros
+            $this->view->registros  = $this->model->getMainRecords(); //aca debo poner los primeros 20 registros
             
             $this->view->render('ingresos/index');
         }
@@ -20,11 +20,18 @@
 
             $result = $this->model->genNumber($cod);
 
-            echo str_pad($result,6,"0",STR_PAD_LEFT);
+            echo json_encode($result);
         }
 
         function ordenes(){
             $result =  $this->model->getOrders();
+            echo $result;
+        }
+
+        function ordenesPalabra(){
+            $string = $_POST['palabra'];
+
+            $result =  $this->model->getOrdersWord($string);
 
             echo $result;
         }
@@ -60,7 +67,7 @@
             // Looping all files
             for($i=0;$i<$countfiles;$i++){
                 $ext = explode('.',$_FILES['uploadAtach']['name'][$i]);
-                $filename = uniqid("at").".".end($ext);
+                $filename = uniqid("gr").".".end($ext);
                 $return = $filename ."~".$_FILES['uploadAtach']['name'][$i];
 
                 // Upload file
@@ -110,6 +117,14 @@
             $adjuntos = $_POST['adjuntos'];
 
             $result = $this->model->insertarIngreso($ningreso,$fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,$cod_mov,$num_mov,$detalles,$series,$adjuntos);
+
+            echo json_encode($result);
+        }
+
+        function llamaIngresoPorId(){
+            $nota = $_POST['nota'];
+
+            $result = $this->model->cambiarNota($nota);
 
             echo json_encode($result);
         }

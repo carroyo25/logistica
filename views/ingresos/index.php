@@ -22,7 +22,7 @@
             <input type="hidden" name="cargo_almacen" id="cargo_almacen">
             <input type="hidden" name="idorden" id="idorden">
             <input type="hidden" name="idpedido" id="idpedido">
-            <input type="hidden" name="estado" id="estado" value= "1">
+            <input type="hidden" name="estado" id="estado" value= "2">
 
             <div class="process">
                 <div class="sides_process">
@@ -223,8 +223,9 @@
             <hr>
             <div class="dialogBody">
                 <div class="titulos">
-                    <h4 id="descrip"></h4>
-                    <h4 id="nroItemSerial" class="nooculto"></h4>
+                    <h4 id="descripProducto"></h4>
+                    <h4 id="codigoProducto"></h4>
+                    <h4 id="nroItemSerial" class="oculto"></h4>
                     <a href="#" id="addSerials"><i class="far fa-calendar-plus"></i></a>
                 </div>
                 <form action="">
@@ -296,6 +297,9 @@
         </div>
         <a href="#" id="closeModalPreview" class="buttonClose"><i class="fas fa-reply-all"></i></a>
     </div>
+    <div class="modal zindex5" id="waitmodal">
+        <div class="loader"></div>
+    </div>
     <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>
         <div class="workOneForm">
@@ -340,27 +344,25 @@
                     </div>
                 </div>
                 <div class="pedidos">
-                    <table class="w100p con_borde" id="tabla_pedidos">
+                    <table class="w100p con_borde" id="tabla_ingresos">
                         <thead>
                             <tr>
                                 <th class="con_borde w55px">Num. Nota</th>
                                 <th class="con_borde w100px">Fecha </br> Registro</th>
-                                <th class="con_borde">Registo </br> Mov.Alm</th>
+                                <th class="con_borde w60px">Registo </br> Mov.Alm</th>
                                 <th class="con_borde">Almacen</th>
                                 <th class="con_borde">Descripcion/Detalle </br> Proyecto - Oficina</th>
-                                <th class="con_borde">Año Doc.</th>
-                                <th class="con_borde">Nro. Orden</th>
+                                <th class="con_borde w60px">Año Doc.</th>
+                                <th class="con_borde w60px">Nro. Orden</th>
                                 <th class="con_borde w100px">Nro. Pedido</th>
-                                <th class="con_borde w100px">Guia </br> Remisión</th>
-                                <th class="con_borde w100px">Observaciones</th>
-                                <th class="con_borde w100px">Estado </br> Documento</th>
-                                <th class="con_borde w100px">Estado </br> Registro</th>
-
+                                <th class="con_borde w80px">Guia </br> Remisión</th>
+                                <th class="con_borde w150px">Observaciones</th>
+                                <th class="con_borde w60px">Estado </br> Documento</th>
                                 <th class="con_borde">...</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- <?php echo $this->registros?> -->
+                            <?php echo $this->registros?>
                         </tbody>
                     </table>
                 </div>
