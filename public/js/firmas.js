@@ -126,7 +126,7 @@ $(function(){
                             .addClass("firma_confirmada")
                             .html('<span><i class="far fa-check-square"></i> Operaciones</span>');
                         break;
-                    case "5325":
+                    case "1030":
                         $("#firma_ope")
                             .removeClass("firma_pendiente")
                             .addClass("firma_confirmada")

@@ -37,7 +37,7 @@
                                                     WHERE
                                                         atenciones.ncodprm1 = 13 
                                                         AND estados.ncodprm1 = 4 
-                                                        AND logistica.lg_registro.nEstadoDoc = 7");
+                                                        AND logistica.lg_registro.nEstadoDoc = 4");
                 $query->execute();
                 $rowcount = $query->rowcount();
 
@@ -735,7 +735,7 @@
                 $query = $this->db->connect()->prepare("INSERT INTO lg_regabastec 
                                                         SET id_regmov=:id,id_refpedi=:ped,cper=:anio,cmes:=:mes,ctipmov=:tip,
                                                             cserie=:ser,cnumero=:cnum,ffechadoc=:fec,ffechaent=:ent,id_centi=:prov,ncodmon=:mon,
-                                                            ntotal=:imp,ncodalm=:alm,ncodpry=:proy,ncodcos=:ccos,ncodarea=:area,mdetalle=:det,
+                                                            ntotal=:imp,ncodalm=:alm,ncodpry=:proy,ncodcos=:ccos,ncodarea=:area,mobserva=:det,
                                                             ncodper=:user,ncodpago=:pago,nplazo=:plaz,cnumcot=:coti,nNivAten=:aten,nflgactivo=:flag,
                                                             ctiptransp=:trsp");
                 $query->execute(["id"=>$id,
@@ -769,13 +769,15 @@
                     return $id;
                 }
 
+                return $rowCount;
+
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
             }
         }
 
-        public function insertOCSDetails($datos,$idoc,$idped) {
+        public function insertOCSDetails($datos,$idoc) {
             try {
                 $detalles = json_decode($datos);
                 $nreg = count($detalles);
@@ -859,6 +861,10 @@
                 echo $th->getMessage();
                 return false;
             }
+        }
+
+        public function cerrarPedido($pedido){
+            
         }
     }
 ?>

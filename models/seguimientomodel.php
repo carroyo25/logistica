@@ -26,7 +26,7 @@
                                                         tb_moneda.dmoneda,
                                                         tb_paramete2.cdesprm2,
                                                         lg_registro.cconcepto,
-                                                        lg_registro.mdetalle,
+                                                        lg_registro.mobserva,
                                                         lg_regabastec.nfirmaLog,
                                                         lg_regabastec.nfirmaFin,
                                                         lg_regabastec.nfirmaOpe,
@@ -98,7 +98,7 @@
                                                         logistica.lg_regabastec.ncodmon,
                                                         logistica.lg_regabastec.ntotal,
                                                         logistica.lg_regabastec.ncodalm,
-                                                        logistica.lg_regabastec.mdetalle,
+                                                        logistica.lg_regabastec.mobserva,
                                                         logistica.lg_regabastec.nNivAten,
                                                         logistica.lg_regabastec.ncodpago,
                                                         logistica.lg_regabastec.nplazo,
@@ -155,7 +155,7 @@
                         $item['area']       = strtoupper($row['ccodarea'].' '.$row['cdesarea']);
                         $item['transporte'] = $row['transporte'];
                         $item['concepto']   = $row['cconcepto'];
-                        $item['detalle']    = $row['mdetalle'];
+                        $item['detalle']    = $row['mobserva'];
                         $item['total']      = number_format($row['ntotal'], 2, '.', ',');
                         $item['moneda']     = $row['dmoneda'];
                         $item['tipo']       = $tipo;

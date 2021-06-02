@@ -959,7 +959,7 @@
         //cambia el estado del pedido
         public function changeStatusHeader($codigo){
             try {
-                $cest = 1;
+                $cest = 2;
                 $query = $this->db->connect()->prepare("UPDATE lg_registro SET nEstadoDoc=:cest WHERE id_regmov=:idx");
                 $query->execute(["cest"=>$cest,"idx"=>$codigo]);
 
@@ -972,7 +972,7 @@
         //cambia el estado de los detalles
         public function changeStatusDetails($codigo){
             try {
-                $cest = 1;
+                $cest = 2;
                 $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nEstadoPed=:cest WHERE id_regmov=:idx AND nflgactivo = 1");
                 $query->execute(["cest"=>$cest,"idx"=>$codigo]);
 

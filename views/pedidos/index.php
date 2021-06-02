@@ -253,7 +253,7 @@
             <input type="hidden" name="cod_registro" id="cod_registro" value="2">
             <input type="hidden" name="cod_solicitante" id="cod_solicitante">
             <input type="hidden" name="cod_tipo" id="cod_tipo">
-            <input type="hidden" name="estado" id="estado" value="2">
+            <input type="hidden" name="estado" id="estado" value="1">
             <input type="hidden" name="atencion" id="atencion" value="3">
             <div class="process">
                 <div class="sides_process">

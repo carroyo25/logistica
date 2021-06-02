@@ -69,19 +69,19 @@ $(function() {
                         );
 
                         if ( data.nEstadoDoc == 1 ) {
-                            $("#registro, #documento")
-                                .removeClass('proceso')
-                                .addClass('emitido');
-
-                            $(".sides_process div").addClass('no_modificar');
-                            return false;                            
-                        }
-                        else if( data.nEstadoDoc == 2 ){
                             $(".sides_process div").removeClass('no_modificar');
                             $("#registro, #documento")
                                 .removeClass('emitido','aprobado')
                                 .addClass('proceso');
-                            return false
+                            return false                           
+                        }
+                        else if( data.nEstadoDoc == 2 ){
+                            $("#registro, #documento")
+                            .removeClass('proceso')
+                            .addClass('emitido');
+
+                            $(".sides_process div").addClass('no_modificar');
+                            return false;
                         }
                         else if( data.nEstadoDoc == 5 ){
                             $(".sides_process div").addClass('no_modificar');

@@ -36,7 +36,7 @@
                                                     WHERE
                                                         atenciones.ncodprm1 = 13 
                                                         AND estados.ncodprm1 = 4 
-                                                        AND logistica.lg_registro.nEstadoDoc = 5");
+                                                        AND logistica.lg_registro.nEstadoDoc = 3");
                 $query->execute();
                 $rowcount = $query->rowcount();
 
@@ -389,7 +389,7 @@
         }
 
         public function changeStatus($cod){
-            $estatus = 7;
+            $estatus = 4;
             $salida = "";
             try {
                 $query = $this->db->connect()->prepare("UPDATE lg_registro SET nEstadoReg=:reg, nEstadoDoc=:doc WHERE id_regmov=:cod");

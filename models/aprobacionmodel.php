@@ -36,7 +36,7 @@
                                             WHERE
                                                 atenciones.ncodprm1 = 13 
                                                 AND estados.ncodprm1 = 4
-                                                AND lg_registro.nEstadoDoc = 1");
+                                                AND lg_registro.nEstadoDoc = 2");
                 $query->execute();
                 $rowcount = $query->rowcount();
 
@@ -248,7 +248,7 @@
             try {
                 $mensaje = "";
                 //revisar este parte con un pedido aprobado
-                $query = $this->db->connect()->prepare("UPDATE lg_registro SET nEstadoDoc = 5,ncodaproba=:apro WHERE id_regmov= :cod");
+                $query = $this->db->connect()->prepare("UPDATE lg_registro SET nEstadoDoc = 3,ncodaproba=:apro WHERE id_regmov= :cod");
                 $query->execute(["cod"=>$cod,"apro"=>$_SESSION['iduser']]);
                 $rowcount = $query->rowcount();
 
@@ -273,7 +273,7 @@
                     $cap = $data[$i]->cantapr;
                     $est = $data[$i]->aprob == true ? 1 : 0;
                     $obs = $data[$i]->observ;
-                    $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nflgactivo=:est,ncantapro=:cap,cobserva=:obs,nEstadoPed = 5 WHERE nidpedi=:idd");
+                    $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nflgactivo=:est,ncantapro=:cap,cobserva=:obs,nEstadoPed = 3 WHERE nidpedi=:idd");
                     $query->execute(["idd"=>$idd,"cap"=>$cap,"est"=>$est,"obs"=>$obs]);
                 }
             } catch (PDOException $e) {

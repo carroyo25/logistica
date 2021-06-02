@@ -320,7 +320,7 @@
                                                         logistica.lg_regabastec.cper,
                                                         logistica.lg_regabastec.id_refpedi,
                                                         logistica.lg_regabastec.ffechadoc,
-                                                        logistica.lg_regabastec.mdetalle,
+                                                        logistica.lg_regabastec.mobserva,
                                                         logistica.lg_regabastec.cconcepto,
                                                         logistica.lg_regabastec.cdocPDF,
                                                         logistica.lg_regabastec.id_centi,
@@ -360,7 +360,7 @@
                         $item['costos']     = strtoupper($row['ccodcos'].' '.$row['cdescos']);
                         $item['area']       = strtoupper($row['ccodarea'].' '.$row['cdesarea']);
                         $item['concepto']   = $row['cconcepto'];
-                        $item['detalle']    = $row['mdetalle'];
+                        $item['detalle']    = $row['mobserva'];
                         $item['entidad']    = $row['crazonsoc'];
                         $item['ruc']        = $row['cnumdoc'];
                         $item['orden']      = str_pad($row['orden'],5,"0",STR_PAD_LEFT).'-'.$row['cper'];
@@ -428,7 +428,6 @@
                                     <td class="con_borde drch pr20">'.number_format($row['ncanti'], 2, '.', ',').'</td>
                                     <td class="con_borde centro"><input type="number" onClick="this.select();" class="drch pr10" value="'.number_format($row['ncanti'], 2, '.', ',').'"></td>
                                     <td class="con_borde"><select name="estado">'. $estados .'</select></td>
-                                    <td class="con_borde"></td>
                                     <td class="con_borde"></td>
                                     <td class="con_borde"><input type="date"></td>
                                 </tr>';

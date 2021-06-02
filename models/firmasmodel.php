@@ -26,7 +26,7 @@
                                                         tb_moneda.dmoneda,
                                                         tb_paramete2.cdesprm2,
                                                         lg_registro.cconcepto,
-                                                        lg_registro.mdetalle,
+                                                        lg_registro.mobserva,
                                                         lg_regabastec.nfirmaLog,
                                                         lg_regabastec.nfirmaFin,
                                                         lg_regabastec.nfirmaOpe,
@@ -98,7 +98,7 @@
                 logistica.lg_regabastec.ncodmon,
                 logistica.lg_regabastec.ntotal,
                 logistica.lg_regabastec.ncodalm,
-                logistica.lg_regabastec.mdetalle,
+                logistica.lg_regabastec.mobserva,
                 logistica.lg_regabastec.nNivAten,
                 logistica.lg_regabastec.ncodpago,
                 logistica.lg_regabastec.nplazo,
@@ -155,7 +155,7 @@
                         $item['area']       = strtoupper($row['ccodarea'].' '.$row['cdesarea']);
                         $item['transporte'] = $row['transporte'];
                         $item['concepto']   = $row['cconcepto'];
-                        $item['detalle']    = $row['mdetalle'];
+                        $item['detalle']    = $row['mobserva'];
                         $item['total']      = round($row['ntotal'],2);
                         $item['moneda']     = $row['dmoneda'];
                         $item['tipo']       = $tipo;
@@ -436,19 +436,20 @@
         public function signOrder($codigo,$cargo){
             try {
                 switch ($cargo) {
-                    case '7204':
+                    case '7204': //Henry Peña
                         $sql = $this->db->connect()->prepare("UPDATE lg_regabastec SET nfirmaLog=:fir,codperLog=:usr WHERE id_regmov=:cod");
                         break;
-                    case '7152':
+                    case '7152': //Jose Paniagua
                         $sql = $this->db->connect()->prepare("UPDATE lg_regabastec SET nfirmaOpe=:fir,codperOpe=:usr WHERE id_regmov=:cod");
                         break;
-                    case '1029':
+                    case '1029': //Mauricio Virreyra
                         $sql = $this->db->connect()->prepare("UPDATE lg_regabastec SET nfirmaFin=:fir,codperFin=:usr WHERE id_regmov=:cod");
                         break;
-                    case '5325':
-                        $sql = $this->db->connect()->prepare("UPDATE lg_regabastec SET nfirmaFin=:fir,codperFin=:usr WHERE id_regmov=:cod");
+                    case '1030': //Jorge Taborga
+                        $sql = $this->db->connect()->prepare("UPDATE lg_regabastec SET nfirmaOpe=:fir,codperOpe=:usr WHERE id_regmov=:cod");
                         break;
                 }
+
                 $sql->execute(["cod"=>$codigo,
                                 "usr"=>$_SESSION['codper'],
                                 "fir"=>1]);

@@ -166,10 +166,9 @@
                                         <th class="con_borde w30p">Descripcion</th>
                                         <th class="con_borde w5p">Unidad</th>
                                         <th class="con_borde w5p">Cantidad </br> Orden</th>
-                                        <th class="con_borde w5p">Cant. </br> Ingresada</th>
+                                        <th class="con_borde w5p">Cant. </br> a Ingresar</th>
                                         <th class="con_borde w10p">Estado </br> Bien</th>
                                         <th class="con_borde w10p">Ubicación </br> Física</th>
-                                        <th class="con_borde w10p">Lote</th>
                                         <th class="con_borde w10p">Fecha </br> Vencimiento</th>
                                     </tr>
                                 </thead>
