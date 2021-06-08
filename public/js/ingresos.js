@@ -19,6 +19,10 @@ $(function(){
         $("#detalle_pedido tbody").empty();
         $("#saveItem span").removeClass('parpadea');
         $("#importOrd").removeClass("oculto");
+        $("#detalle_serie tbody, #tableAdjuntos tbody, #detalle_ingreso tbody").empty();
+        $("#documento")
+                .removeClass("emitido")
+                .addClass("proceso");
 
         accion = "n";
 
@@ -59,6 +63,9 @@ $(function(){
                                                     autoriza:$("#cod_autoriza").val(),
                                                     cod_mov:$("#cod_movimento").val(),
                                                     num_mov:$("#movalmacen").val(),
+                                                    cod_pry:$("#cod_proyecto").val(),
+                                                    cod_area:$("#cod_area").val(),
+                                                    cod_cos:$("#cod_costos").val(),
                                                     detalles:JSON.stringify(DETALLES),
                                                     series:JSON.stringify(SERIES),
                                                     adjuntos:JSON.stringify(ADJUNTOS)
@@ -74,9 +81,19 @@ $(function(){
                 "text"
             );
         }else {
-            $.post(RUTA+"ingresos/actualizaIngreso", data,
+            $.post(RUTA+"ingresos/actualizaIngreso", {index:$("#id_ingreso").val(),
+                                                      guia:$("#nroguia").val(),
+                                                      autoriza:$("#cod_autoriza").val(),
+                                                      detalles:JSON.stringify(DETALLES),
+                                                      series:JSON.stringify(SERIES),
+                                                      adjuntos:JSON.stringify(ADJUNTOS)},
                 function (data, textStatus, jqXHR) {
-                    
+                    if (data){
+                        mostrarMensaje("msj_correcto","Registro actualizado...");
+                        $("#modalProcess").fadeOut();
+                    }else{
+                        mostrarMensaje("msj_error","Error.. no se actualizo el registro");
+                    }
                 },
                 "text"
             );
@@ -105,11 +122,14 @@ $(function(){
     $("#almacen").focus(function (e) { 
         e.preventDefault();
         
-        $("#cod_almacen").val("");
-        $(this).select();
-        $(".seleccion").fadeOut();
+        if (accion == "n") {
+            $("#cod_almacen").val("");
+            $(this).select();
+            $(".seleccion").fadeOut();
 
-        $(this).next(".seleccion").slideDown();
+            $(this).next(".seleccion").slideDown();
+        }
+        
 
         return false;
     });
@@ -139,11 +159,13 @@ $(function(){
     $("#tipomov").focus(function (e) { 
         e.preventDefault();
         
-        $("#cod_movimento").val("");
-        $(this).select();
-        $(".seleccion").fadeOut();
+        if (accion == "n") {
+            $("#cod_movimento").val("");
+            $(this).select();
+            $(".seleccion").fadeOut();
 
-        $(this).next(".seleccion").slideDown();
+            $(this).next(".seleccion").slideDown();
+        }
 
         return false;
     });
@@ -165,11 +187,13 @@ $(function(){
     $("#aprueba").focus(function (e) { 
         e.preventDefault();
         
-        $("#cod_autoriza").val("");
-        $(this).select();
-        $(".seleccion").fadeOut();
+        if (accion == "n") {
+            $("#cod_autoriza").val("");
+            $(this).select();
+            $(".seleccion").fadeOut();
 
-        $(this).next(".seleccion").slideDown();
+            $(this).next(".seleccion").slideDown();
+        }
 
         return false;
     });
@@ -228,6 +252,9 @@ $(function(){
                 $("#idorden").val(data.idord);
                 $("#idpedido").val(data.idped);
                 $("#id_entidad").val(data.ident);
+                $("#cod_proyecto").val(data.idproy);
+                $("#cod_area").val(data.idarea);
+                $("#cod_costos").val(data.idcost);
 
                 $.post(RUTA+"ingresos/detailsOrder", {codigo:data.codigo},
                     function (data, textStatus, jqXHR) {
@@ -255,13 +282,26 @@ $(function(){
         e.preventDefault();
         if ( $(this).data("action") == "register") {
             //llamar a la ventana de series de prouctos
+
             var descrip = $(this).parent().parent().find('td').eq(4).text(),
                 prodcod = $(this).parent().parent().find('td').eq(3).text(),
+                idprod  = $(this).parent().parent().find('td').eq(2).data('idprod'),
                 nroserials = $(this).parent().parent().find('td').eq(7).children().val();
 
             $("#descripProducto").text(descrip);
             $("#codigoProducto").text(prodcod);
             $("#nroItemSerial").text(nroserials);
+
+            if (accion == "u") {
+                $.post(RUTA+"ingresos/llamarSeries", {index:$("#id_ingreso").val(),prod:idprod},
+                    function (data, textStatus, jqXHR) {
+                        $("#detalle_series tbody")
+                        .empty()
+                        .append(data);
+                    },
+                    "text"
+                );
+            }
 
             $("#modalSerie").fadeIn();
         }else{
@@ -293,7 +333,7 @@ $(function(){
             var fila = '<tr>'+
                         '<td class="con_borde centro"><a href="'+ codigoPro +'"><i class="fas fa-trash-alt"></i></a></td>'+
                         '<td class="con_borde centro">'+(itemsfila+1)+'</td>'+
-                        '<td class="con_borde"><input type ="text" class="sin_borde"></td>'+
+                        '<td class="con_borde"><input type ="text" class="sin_borde mayusculas pl20"></td>'+
                         '<td class="con_borde"><input type ="text" class="sin_borde"></td>'+
                     '</tr>'
 
@@ -350,9 +390,18 @@ $(function(){
     $("#docsAtach").on("click", function (e) {
         e.preventDefault();
 
-        if ( $("#order_file").val().length == 0) {
+        if ( $("#nrord").val().length == 0) {
             mostrarMensaje("msj_error","Debe seleccionar una orden");
             return false;
+        }else {
+            $.post(RUTA + "ingresos/llamarAdjuntos", {index:$("#id_ingreso").val()},
+                    function (data, textStatus, jqXHR) {
+                        $("#tableAdjuntos tbody")
+                            .empty()
+                            .append(data);
+                    },
+                    "text"
+            );
         }
 
         $("#modalAtach").fadeIn();
@@ -525,6 +574,7 @@ $(function(){
     $("#tabla_ingresos tbody").on("click","a", function (e) {
         e.preventDefault();
 
+        $(".seleccion").fadeOut();
         $("#waitmodal").fadeIn();
 
         $.post(RUTA+"ingresos/llamaIngresoPorId", {nota:$(this).attr('href')},
@@ -532,9 +582,64 @@ $(function(){
                 $("#waitmodal").fadeOut();
                 $("#importOrd").addClass("oculto");
                 $("#modalProcess").fadeIn();
+
+                $("#id_ingreso").val(data.id_ingreso);
+                $("#id_entidad").val(data.id_entidad);
+                $("#cod_almacen").val(data.cod_almacen);
+                $("#cod_movimento").val(data.cod_movimento);
+                $("#cod_autoriza").val(data.cod_autoriza);
+                $("#cod_proyecto").val(data.cod_proyecto);
+                $("#cod_area").val(data.cod_area);
+                $("#cod_costos").val(data.cod_costos);
+                $("#order_file").val(data.order_file);
+                $("#cargo_almacen").val(data.cargo_almacen);
+                $("#idorden").val(data.idorden);
+                $("#idpedido").val(data.idpedido);
+                $("#estado").val(data.estado);
                 
                 $("#fechadoc").val(data.fechadoc);
                 $("#fechacont").val(data.fechacont);
+                $("#almacen").val(data.almacen);
+                $("#fechadoc").val(data.fechadoc);
+                $("#fechacont").val(data.fechacont);
+                $("#nro_ingreso").val(data.nro_ingreso);
+                $("#proyecto").val(data.proyecto);
+                $("#area").val(data.area);
+                $("#costos").val(data.costos);
+                $("#solicita").val(data.solicita);
+                $("#aprueba").val(data.aprueba);
+                $("#tipomov").val(data.tipomov);
+                $("#movalmacen").val(data.movalmacen);
+                $("#nrord").val(data.nrord);
+                $("#nroped").val(data.nroped);
+                $("#nruc").val(data.nruc);
+                $("#nroguia").val(data.nroguia);
+                $("#entidad").val(data.entidad);
+                $("#concepto").val(data.concepto);
+                $("#espec").val(data.espec);
+                $("#registro").val(data.registro);
+                $("#documento")
+                    .val(data.documento)
+                    .removeClass("proceso")
+                    .addClass(data.documento.toLowerCase());
+                $("#order_file").val(data.order_file);
+
+                $.post(RUTA+"ingresos/llamarDetallesCodigo", {index:data.id_ingreso},
+                    function (data, textStatus, jqXHR) {
+                        $("#detalle_ingreso tbody")
+                            .empty()
+                            .append(data);
+
+                        var items = $("#detalle_ingreso tbody tr").length;
+
+                        $("#items").val(items);
+                    },
+                    "text"
+                );
+
+                /**/
+
+                accion = "u";
             },
             "json"
         );
@@ -551,7 +656,7 @@ function getSeries(){
     TABLA.each(function(){
         var SERIE    = $(this).find('td').eq(2).children().val(),
             OBSERV   = $(this).find('td').eq(3).children().val(),
-            CODPRO   = $("#codigoProducto").text()
+            CODPRO   = $(this).parent().parent().find('td').eq(2).data('idprod')
 
             item = {};
 
@@ -577,7 +682,7 @@ function getDetails(){
             CODITEM     = $(this).find('td').eq(3).text(),
             DESCRIPCION = $(this).find('td').eq(4).text(),
             UNIDAD      = $(this).find('td').eq(5).text(),
-            CANTIDAD    = $(this).find('td').eq(7).children().val(),
+            CANTING     = $(this).find('td').eq(7).children().val(),
             NESTADO     = $(this).find("select[name='estado']").val(),
             TESTADO     = $(this).find("select[name='estado'] option:selected").text(),
             UBICACION   = $(this).find('td').eq(9).text(),
@@ -588,7 +693,8 @@ function getDetails(){
             CODUNI      = $(this).find('td').eq(2).data('coduni'),
             IDPROD      = $(this).find('td').eq(2).data('idprod'),
             IDDETPED    = $(this).find('td').eq(2).data('iddetpedido'),
-            IDDERORD    = $(this).find('td').eq(2).data('iddetorden')    
+            IDDERORD    = $(this).find('td').eq(2).data('iddetorden'),
+            CANTORD     = $(this).find('td').eq(6).text(),    
 
 
             item = {};
@@ -598,7 +704,7 @@ function getDetails(){
                 item["coditem"]     = CODITEM;
                 item["descripcion"] = DESCRIPCION;
                 item["unidad"]      = UNIDAD;
-                item["cantidad"]    = CANTIDAD;
+                item["cantidad"]    = CANTING;
                 item["nestado"]     = NESTADO;
                 item["cestado"]     = TESTADO;
                 item["ubicacion"]   = UBICACION;
@@ -611,6 +717,7 @@ function getDetails(){
                 item["idprod"]      = IDPROD;
                 item["iddetped"]    = IDDETPED;
                 item["iddetord"]    = IDDERORD;
+                item["cantord"]     = CANTORD;
             }
 
             DETALLES.push(item);
@@ -618,7 +725,6 @@ function getDetails(){
 
     return DETALLES;
 }
-
 
 function registerAtachs(){
     ADJUNTOS=[];

@@ -18,6 +18,9 @@
             <input type="hidden" name="cod_almacen" id="cod_almacen">
             <input type="hidden" name="cod_movimento" id="cod_movimento">
             <input type="hidden" name="cod_autoriza" id="cod_autoriza">
+            <input type="hidden" name="cod_proyecto" id="cod_proyecto">
+            <input type="hidden" name="cod_area" id="cod_area">
+            <input type="hidden" name="cod_costos" id="cod_costos">
             <input type="hidden" name="order_file" id="order_file">
             <input type="hidden" name="cargo_almacen" id="cargo_almacen">
             <input type="hidden" name="idorden" id="idorden">
@@ -108,9 +111,9 @@
                                 </div>
                                 <div class="input_process g4items">
                                     <label for="ruc" class="w100px">Nro. RUC:</label>
-                                    <input type="text" name="nruc" id="ruc" class="pl20 ">
+                                    <input type="text" name="nruc" id="nruc" class="pl20 ">
                                     <label for="nroguia" class="w150px">Nro. Guia Remisión:</label>
-                                    <input type="text" name="nroguia" id="nroguia" class="pl20">
+                                    <input type="text" name="nroguia" id="nroguia" class="pl20 mayusculas">
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="entidad" class="w100px">Razón Social :</label>
@@ -127,12 +130,12 @@
                             </div>
                             <div class="process_estate">
                                 <div class="input_process g2items">
-                                    <label for="registro" class="w100px">Est.Doc.:</label>
-                                    <input type="text" name="registro" id="registro" class="pl20 mayusculas proceso" readonly>
-                                </div>
-                                <div class="input_process g2items">
-                                    <label for="documento" class="w100px">Est.Registro:</label>
+                                    <label for="documento" class="w100px">Est.Doc.:</label>
                                     <input type="text" name="documento" id="documento" class="pl20 mayusculas proceso" readonly>
+                                </div>
+                                <div class="oculto">
+                                    <label for="registro" class="w100px">Est.Registro:</label>
+                                    <input type="text" name="registro" id="registro" class="pl20 mayusculas proceso" readonly>
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="items" class="w100px">Nro. Items</label>
@@ -165,7 +168,7 @@
                                         <th class="con_borde w10p">Codigo</th>
                                         <th class="con_borde w30p">Descripcion</th>
                                         <th class="con_borde w5p">Unidad</th>
-                                        <th class="con_borde w5p">Cantidad </br> Orden</th>
+                                        <th class="con_borde w5p">Cantidad </br> Pendiente</th>
                                         <th class="con_borde w5p">Cant. </br> a Ingresar</th>
                                         <th class="con_borde w10p">Estado </br> Bien</th>
                                         <th class="con_borde w10p">Ubicación </br> Física</th>
@@ -394,6 +397,21 @@
                             </div>
                         </div>
                     </div>   
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="dialogConfirm">
+        <div class="dialogContainer w35p">
+            <div class="dialogTitle">
+                <h4>Pregunta</h4>
+            </div>
+            <hr>
+            <div class="dialogBody">
+                <h1>No ha grabado.. ¿Descartar los cambios? </h1> <!--alt 168-->   
+                <div class="options">
+                    <button id="btnYes" class="botones">Si</button>
+                    <button id="btnNo" class="botones">No</button>
                 </div>
             </div>
         </div>

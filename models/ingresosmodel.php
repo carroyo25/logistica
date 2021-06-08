@@ -324,6 +324,9 @@
                                                         logistica.lg_regabastec.cconcepto,
                                                         logistica.lg_regabastec.cdocPDF,
                                                         logistica.lg_regabastec.id_centi,
+                                                        logistica.lg_regabastec.ncodpry,
+                                                        logistica.lg_regabastec.ncodarea,
+                                                        logistica.lg_regabastec.ncodcos,
                                                         logistica.cm_entidad.crazonsoc,
                                                         logistica.lg_registro.cnumero AS pedido,
                                                         logistica.tb_proyecto1.ccodpry,
@@ -369,6 +372,9 @@
                         $item['idord']      = $row['id_regmov'];
                         $item['idped']      = $row['id_refpedi'];
                         $item['ident']      = $row['id_centi'];
+                        $item['idproy']      = $row['ncodpry'];
+                        $item['idarea']      = $row['ncodarea'];
+                        $item['idcost']      = $row['ncodcos'];
                     }
                 }
 
@@ -492,7 +498,7 @@
             echo $filename;
         }
 
-        public function insertarIngreso($ningreso,$fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,$cod_mov,$num_mov,$detalles,$series,$adjuntos){
+        public function insertarIngreso($fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,$detalles,$series,$adjuntos,$proyecto,$area,$costos,$cod_mov){
             $guia_actual = $this->genNumber($origen);
             $mensaje = "Ok";
 
@@ -503,9 +509,10 @@
 
                 $fecha_explode = explode("-",$fecha); 
                 
-                $sql = $this->db->connect()->prepare("INSERT INTO al_regmovi1 SET id_regalm=:cod,ncodmov=:cmo,cper=:anio,cmes=:mes,ncodalm1=:cma,ffecdoc=:fec,
-                                                                ffecconta=:fco,id_centi=:idt,cnumguia=:ngi,idref_pedi=:ped,id_userAprob=:apro,nEstadoDoc=:est,
-                                                                nflgactivo=:flag,nnromov=:nmov,nnronota=:nnot,idref_abas=:ord");
+                $sql = $this->db->connect()->prepare("INSERT INTO al_regmovi1 SET id_regalm=:cod,ncodmov=:cmo,cper=:anio,cmes=:mes,ncodalm1=:cma,
+                                                                                    ffecdoc=:fec,ffecconta=:fco,id_centi=:idt,cnumguia=:ngi,idref_pedi=:ped,
+                                                                                    id_userAprob=:apro,nEstadoDoc=:est,nflgactivo=:flag,nnromov=:nmov,nnronota=:nnot,
+                                                                                    idref_abas=:ord,ncodpry=:pry,ncodcos=:cst,ncodarea=:are,ctipmov=:tip");
                 $sql->execute(["cod"=>$cod,
                                 "cmo"=>$cod_mov,
                                 "anio"=>$fecha_explode[0],
@@ -520,8 +527,12 @@
                                 "est"=>$estado,
                                 "flag"=>1,
                                 "nmov"=>$guia_actual["mov_nmr"],
-                                "nnot"=>$ningreso,
-                                "ord"=>$orden
+                                "nnot"=>$guia_actual["guia_nmr"],
+                                "ord"=>$orden,
+                                "pry"=>$proyecto,
+                                "are"=>$area,
+                                "cst"=>$costos,
+                                "tip"=>"I"
                                 ]);
                 $rowCount = $sql->rowcount();
                 
@@ -540,7 +551,30 @@
                 return $salidajson;
 
 
-            } catch (PDOException  $th) {
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function actualizarIngreso($index,$guia,$autoriza,$detalles,$series,$adjuntos) {
+            try {
+                $mensaje = "Ok";
+                $sql = $this->db->connect()->prepare("UPDATE al_regmovi1 SET cnumguia=:ngi,id_userAprob=:apro WHERE id_regalm=:cod");
+                
+                $sql->execute(["cod"=>$index,
+                                "ngi"=>$guia,
+                                "apro"=>$autoriza,
+                ]);
+
+                ///aca ira el codigo de acualizacion de detalles,adjuntos,y series
+                
+                $mensaje = "Registro actualizado";
+                $salidajson = array("mensaje"=>$mensaje,
+                                    "estado"=>true);
+                return $salidajson;
+
+            } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
             }
@@ -554,7 +588,7 @@
             for ($i=0; $i <= $nreg-1; $i++) { 
                 try {
                     $sql=$this->db->connect()->prepare("INSERT INTO al_regmovi2 SET id_regalm=:cod,ncodalm1=:ori,id_cprod=:cpro,ncantidad=:cant,ncoduni=:uni,
-                                        nfactor=:fac,niddetaped=:ped,niddetaord=:ord,nestadoreg=:est,nflgactivo=:flag,nfacmov=:tot");
+                                        nfactor=:fac,niddetaped=:ped,niddetaord=:ord,nestadoreg=:est,nflgactivo=:flag,nsaldo=:sal");
                     $sql->execute(["cod"=>$cod,
                                     "ori"=>$origen,
                                     "cpro"=>$datos[$rc]->idprod,
@@ -565,7 +599,7 @@
                                     "ord"=>$datos[$rc]->iddetord,
                                     "est"=>$estado,
                                     "flag"=>1,
-                                    "tot"=> $datos[$rc]->cantidad*$datos[$rc]->factor]);
+                                    "sal"=> $datos[$rc]->cantord - $datos[$rc]->cantidad]);
 
                     $rc++;
                 } catch (PDOException $th) {
@@ -575,7 +609,6 @@
             }
         }
 
-       
         public function insertarAdjuntos($cod,$adjuntos){
             try {
                 $data = json_decode($adjuntos);
@@ -584,12 +617,13 @@
 
                     $nomb = $ref[1];
                     $cref = $ref[0];
+                    $flag = 1;
 
                     $cmod = "REGISTRO ALMACEN";
 
-                    $query = $this->db->connect()->prepare("INSERT INTO lg_regdocumento (id_regmov,nidrefer,cmodulo,cdocumento) 
-                                                             VALUES (:codp,:cref,:cmod,:nomb)");
-                    $query->execute(["codp"=>$cod,"cref"=>$cref,"cmod"=>$cmod,"nomb"=>$nomb]);
+                    $query = $this->db->connect()->prepare("INSERT INTO lg_regdocumento (id_regmov,nidrefer,cmodulo,cdocumento,nflgactivo) 
+                                                             VALUES (:codp,:cref,:cmod,:nomb,:flag)");
+                    $query->execute(["codp"=>$cod,"cref"=>$cref,"cmod"=>$cmod,"nomb"=>$nomb,"flag"=>$flag]);
                 }
 
             } catch (PDOException $e) {
@@ -621,36 +655,266 @@
         public function cambiarNota($index){
             try {
                 $sql = $this->db->connect()->prepare("SELECT
-                                            al_regmovi1.id_regalm,
-                                            al_regmovi1.ncodmov,
-                                            al_regmovi1.nnromov,
-                                            al_regmovi1.nnronota,
-                                            al_regmovi1.ncodalm1,
-                                            al_regmovi1.ffecdoc,
-                                            al_regmovi1.id_centi,
-                                            al_regmovi1.cnumguia,
-                                            al_regmovi1.ncodpry,
-                                            al_regmovi1.ncodcos,
-                                            al_regmovi1.idref_pedi,
-                                            al_regmovi1.idref_abas,
-                                            al_regmovi1.id_userAprob,
-                                            al_regmovi1.nEstadoDoc,
-                                            al_regmovi1.nflgactivo,
-                                            al_regmovi1.ffecconta 
-                                        FROM
-                                            al_regmovi1
-                                        WHERE 
-                                            al_regmovi1.id_regalm=:cod");
+                                                        logistica.al_regmovi1.id_regalm,
+                                                        logistica.al_regmovi1.ncodmov,
+                                                        logistica.al_regmovi1.nnromov,
+                                                        logistica.al_regmovi1.nnronota,
+                                                        logistica.al_regmovi1.ncodalm1,
+                                                        logistica.al_regmovi1.ffecdoc,
+                                                        logistica.al_regmovi1.id_centi,
+                                                        logistica.al_regmovi1.cnumguia,
+                                                        logistica.al_regmovi1.ncodpry,
+                                                        logistica.al_regmovi1.ncodcos,
+                                                        logistica.al_regmovi1.ncodarea,
+                                                        logistica.al_regmovi1.idref_pedi,
+                                                        logistica.al_regmovi1.idref_abas,
+                                                        logistica.al_regmovi1.id_userAprob,
+                                                        logistica.al_regmovi1.nEstadoDoc,
+                                                        logistica.al_regmovi1.nflgactivo,
+                                                        logistica.al_regmovi1.ffecconta,
+                                                        logistica.tb_almacen.cdesalm,
+                                                        logistica.tb_proyecto1.cdespry,
+                                                        logistica.tb_area.cdesarea,
+                                                        logistica.tb_ccostos.cdescos,
+                                                        logistica.lg_regabastec.cnumero AS orden,
+                                                        logistica.cm_entidad.cnumdoc,
+                                                        logistica.cm_entidad.crazonsoc,
+                                                        logistica.lg_regabastec.cdocPDF,
+                                                        CONCAT( rrhh.tabla_aquarius.apellidos, ' ', rrhh.tabla_aquarius.nombres ) AS aprueba,
+                                                        rrhh.tabla_aquarius.dcargo,
+                                                        logistica.viewpedidos.cnumero AS pedido,
+                                                        CONCAT( logistica.viewpedidos.apellidos, ' ', logistica.viewpedidos.nombres ) AS solicitante,
+                                                        logistica.lg_movimiento.cdesmov,
+                                                        logistica.lg_regabastec.mobserva,
+                                                        logistica.viewpedidos.cconcepto,
+                                                        logistica.tb_paramete2.cdesprm2 
+                                                    FROM
+                                                        logistica.al_regmovi1
+                                                        INNER JOIN logistica.tb_almacen ON logistica.al_regmovi1.ncodalm1 = logistica.tb_almacen.ncodalm
+                                                        INNER JOIN logistica.tb_proyecto1 ON logistica.al_regmovi1.ncodpry = logistica.tb_proyecto1.ncodpry
+                                                        INNER JOIN logistica.tb_area ON logistica.al_regmovi1.ncodarea = logistica.tb_area.ncodarea
+                                                        INNER JOIN logistica.tb_ccostos ON logistica.al_regmovi1.ncodcos = logistica.tb_ccostos.ncodcos
+                                                        INNER JOIN logistica.lg_regabastec ON logistica.al_regmovi1.idref_abas = logistica.lg_regabastec.id_regmov
+                                                        INNER JOIN logistica.cm_entidad ON logistica.al_regmovi1.id_centi = logistica.cm_entidad.id_centi
+                                                        INNER JOIN rrhh.tabla_aquarius ON logistica.al_regmovi1.id_userAprob = rrhh.tabla_aquarius.internal
+                                                        INNER JOIN logistica.viewpedidos ON logistica.al_regmovi1.idref_pedi = logistica.viewpedidos.id_regmov
+                                                        INNER JOIN logistica.lg_movimiento ON logistica.al_regmovi1.ncodmov = logistica.lg_movimiento.ncodmov
+                                                        INNER JOIN logistica.tb_paramete2 ON logistica.al_regmovi1.nEstadoDoc = logistica.tb_paramete2.ccodprm2 
+                                                    WHERE
+                                                        logistica.al_regmovi1.id_regalm = :cod
+                                                        AND logistica.tb_paramete2.ncodprm1 = 4");
                 $sql->execute(["cod"=>$index]);
 
                 $rs = $sql->fetchAll();
 
-                $salidajson = array("idnota"=>$rs[0]['id_regalm'],
+                $salidajson = array("id_ingreso"=>$rs[0]['id_regalm'],
+                                    "cod_almacen"=>$rs[0]['ncodalm1'],
+                                    "cod_movimento"=>$rs[0]['ncodmov'],
+                                    "id_entidad"=>$rs[0]['id_centi'],
+                                    "cod_autoriza"=>$rs[0]['id_userAprob'],
+                                    "cod_proyecto"=>$rs[0]['ncodpry'],
+                                    "cod_area"=>$rs[0]['ncodarea'],
+                                    "cod_costos"=>$rs[0]['ncodcos'],
+                                    "order_file"=>$rs[0]['cdocPDF'],
+                                    "cargo_almacen"=>$rs[0]['dcargo'],
+                                    "idorden"=>$rs[0]['idref_abas'],
+                                    "idpedido"=>$rs[0]['idref_pedi'],
+                                    
+                                    "almacen"=>$rs[0]['cdesalm'],
                                     "fechadoc"=>$rs[0]['ffecdoc'],
-                                    "fechacont"=>$rs[0]['ffecconta'],);
-
+                                    "fechacont"=>$rs[0]['ffecconta'],
+                                    "nro_ingreso"=>str_pad($rs[0]['nnronota'],5,"0",STR_PAD_LEFT),
+                                    "proyecto"=>$rs[0]['cdespry'],
+                                    "area"=>$rs[0]['cdesarea'],
+                                    "costos"=>$rs[0]['cdescos'],
+                                    "solicita"=>$rs[0]['solicitante'],
+                                    "aprueba"=>$rs[0]['aprueba'],
+                                    "tipomov"=>$rs[0]['cdesmov'],
+                                    "movalmacen"=>str_pad($rs[0]['nnromov'],5,"0",STR_PAD_LEFT),
+                                    "nrord"=>str_pad($rs[0]['orden'],5,"0",STR_PAD_LEFT),
+                                    "nroped"=>$rs[0]['pedido'],
+                                    "nruc"=>$rs[0]['cnumdoc'],
+                                    "nroguia"=>$rs[0]['cnumguia'],
+                                    "entidad"=>$rs[0]['crazonsoc'],
+                                    "concepto"=>$rs[0]['cconcepto'],
+                                    "espec"=>$rs[0]['mobserva'],
+                                    "documento"=>$rs[0]['cdesprm2'],
+                                    "order_file"=>$rs[0]['cdocPDF']
+                                );
                 return $salidajson;
 
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function listaDetallesCodigo($index){
+            try {
+                $sql = $this->db->connect()->prepare("SELECT
+                                                        al_regmovi2.id_regalm,
+                                                        al_regmovi2.niddeta,
+                                                        al_regmovi2.ncodalm1,
+                                                        al_regmovi2.id_cprod,
+                                                        al_regmovi2.ncantidad,
+                                                        al_regmovi2.nfactor,
+                                                        al_regmovi2.nsaldo,
+                                                        al_regmovi2.niddetaped,
+                                                        al_regmovi2.niddetaord,
+                                                        al_regmovi2.nestadoreg,
+                                                        al_regmovi2.nflgactivo,
+                                                        al_regmovi2.fregsys,
+                                                        cm_producto.ccodprod,
+                                                        cm_producto.cdesprod,
+                                                        cm_producto.ncodmed,
+                                                        tb_unimed.cabrevia 
+                                                    FROM
+                                                        al_regmovi2
+                                                        INNER JOIN cm_producto ON al_regmovi2.id_cprod = cm_producto.id_cprod
+                                                        INNER JOIN tb_unimed ON cm_producto.ncodmed = tb_unimed.ncodmed 
+                                                    WHERE
+                                                        al_regmovi2.nflgactivo = 1 
+                                                        AND al_regmovi2.id_regalm = :cod");
+                $sql->execute(["cod"=>$index]);
+                $rowCount= $sql->rowcount();
+                $salida = "";
+                $estados = $this->getParameters();
+                $cont=0;
+
+                if ($rowCount > 0) {
+                    while ($row = $sql->fetch()) {
+                        $salida .=$cont++;
+                        $salida.='<tr class="lh1_2rem pointertr" data-id="'.$row['niddeta'].'">
+                                    <td class="con_borde centro"><a href="" data-action="register"><i class="fas fa-barcode"></i></a></td>
+                                    <td class="con_borde centro"><a href="" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
+                                    <td class="centro con_borde" data-iddetpedido ="'.$row['niddetaped'].'"
+                                                                 data-iddetorden ="'.$row['niddetaord'].'"    
+                                                                 data-factor="'.$row['nfactor'].'"
+                                                                 data-coduni="'.$row['ncodmed'].'"
+                                                                 data-idprod="'.$row['id_cprod'].'">
+                                                                '.str_pad($cont,3,"0",STR_PAD_LEFT).'
+                                    </td>
+                                    <td class="centro con_borde">'.$row['ccodprod'].'</td>
+                                    <td class="pl20 con_borde">'.$row['cdesprod'].'</td>
+                                    <td class="con_borde centro">'.$row['cabrevia'].'</td>
+                                    <td class="con_borde drch pr20">'.number_format($row['nsaldo'], 2, '.', ',').'</td>
+                                    <td class="con_borde centro"><input type="number" onClick="this.select();" class="drch pr10" value="'.number_format($row['nsaldo'], 2, '.', ',').'"></td>
+                                    <td class="con_borde"><select name="estado">'. $estados .'</select></td>
+                                    <td class="con_borde"></td>
+                                    <td class="con_borde"><input type="date"></td>
+                                </tr>';
+                    }
+                }
+
+                return $salida;
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function listarSeriesCodigo($index,$prod){
+            try {
+                $salida = "";
+                $sql = $this->db->connect()->prepare("SELECT
+                                                    cm_prodserie.id_cprod,
+                                                    cm_prodserie.ncodserie,
+                                                    cm_prodserie.cdesserie,
+                                                    cm_prodserie.idref_alma,
+                                                    cm_prodserie.nflgactivo 
+                                                FROM
+                                                    cm_prodserie 
+                                                WHERE
+                                                    cm_prodserie.id_cprod = :prod 
+                                                    AND cm_prodserie.idref_alma = :cod 
+                                                    AND cm_prodserie.nflgactivo = 1");
+                $sql->execute(["cod"=>$index,"prod"=>$prod]);
+                $rowCount = $sql->rowcount();
+
+                if ($rowCount > 0) {
+                    while ($rs = $sql->fetch() ) {
+                        $salida  .="<tr></tr>"; 
+                    }
+                }
+
+                return $salida;
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function listarAdjuntosCodigos($index){
+            try {
+                $salida = "";
+                $sql = $this->db->connect()->prepare("SELECT
+                                                    lg_regdocumento.id_regmov,
+                                                    lg_regdocumento.cdocumento,
+                                                    lg_regdocumento.nflgactivo,
+                                                    lg_regdocumento.nidrefer 
+                                                FROM
+                                                    lg_regdocumento 
+                                                WHERE
+                                                    lg_regdocumento.id_regmov = :cod 
+                                                    AND lg_regdocumento.nflgactivo = 1");
+                $sql->execute(["cod"=>$index]);
+                $rowCount = $sql->rowcount();
+                if ($rowCount > 0) {
+                    while ($rs = $sql->fetch()) {
+                        $salida .= '<tr><td>'.$rs['cdocumento'].'</td><td></td></tr>';
+                    }
+                }
+
+                return $salida;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function eliminarDetalles($index){
+            try {
+                //code...
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function listarSeriesProducto($idx,$prod){
+            try {
+                $salida = "";
+
+                $sql = $this->db->connect()->prepare("SELECT
+                                                    cm_prodserie.id_cprod,
+                                                    cm_prodserie.ncodserie,
+                                                    cm_prodserie.cdesserie,
+                                                    cm_prodserie.idref_alma,
+                                                    cm_prodserie.nflgactivo 
+                                                FROM
+                                                    cm_prodserie 
+                                                WHERE
+                                                    cm_prodserie.id_cprod =:prod 
+                                                    AND cm_prodserie.idref_alma =:cod 
+                                                    AND cm_prodserie.nflgactivo = 1");
+                $sql->execute(["cod"=>$idx,"prod"=>$prod]);
+                $rowCount = $sql->rowcount();
+                $cont = 1;
+
+                if ($rowCount > 0) {
+                    while ($rs = $sql->fetch()) {
+                        $salida.= '<tr>
+                            <td class="con_borde centro"><a href="'.$rs['ncodserie'].'"><i class="fas fa-trash-alt"></i></a></td>
+                            <td class="con_borde centro">'.$cont.'</td>
+                            <td class="con_borde pl20 mayusculas">'.$rs['cdesserie'].'</td>
+                            <td class="con_borde"></td>
+                        </tr>';
+                    }
+                }
+
+                echo $salida;
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;

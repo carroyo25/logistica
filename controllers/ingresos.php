@@ -100,7 +100,6 @@
         }
 
         function nuevoIngreso(){
-            $ningreso = $_POST['ningreso'];
             $fecha = $_POST['fecha'];
             $origen = $_POST['origen'];
             $fcontable = $_POST['fcoontable'];
@@ -110,13 +109,28 @@
             $pedido = $_POST['pedido'];
             $estado = $_POST['estado'];
             $autoriza = $_POST['autoriza'];
+            $detalles = $_POST['detalles'];
+            $series = $_POST['series'];
+            $adjuntos = $_POST['adjuntos'];
+            $proyecto = $_POST['cod_pry'];
+            $area = $_POST['cod_area'];
+            $costos = $_POST['cod_cos'];
             $cod_mov = $_POST['cod_mov'];
-            $num_mov = $_POST['num_mov'];
+
+            $result = $this->model->insertarIngreso($fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,$detalles,$series,$adjuntos,$proyecto,$area,$costos,$cod_mov);
+
+            echo json_encode($result);
+        }
+
+        function actualizaIngreso(){
+            $index = $_POST['index']; 
+            $guia = $_POST['guia'];
+            $autoriza = $_POST['autoriza'];
             $detalles = $_POST['detalles'];
             $series = $_POST['series'];
             $adjuntos = $_POST['adjuntos'];
 
-            $result = $this->model->insertarIngreso($ningreso,$fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,$cod_mov,$num_mov,$detalles,$series,$adjuntos);
+            $result = $this->model->actualizarIngreso($index,$guia,$autoriza,$detalles,$series,$adjuntos);
 
             echo json_encode($result);
         }
@@ -129,5 +143,29 @@
             echo json_encode($result);
         }
         
+        function llamarDetallesCodigo(){
+            $idx = $_POST['index'];
+
+            $result = $this->model->listaDetallesCodigo($idx);
+
+            echo $result;
+        }
+
+        function llamarAdjuntos(){
+            $idx = $_POST['index'];
+
+            $result = $this->model->listarAdjuntosCodigos($idx);
+
+            echo $result;
+        }
+
+        function llamarSeries(){
+            $idx = $_POST['index'];
+            $prod = $_POST['prod'];
+
+            $result = $this->model->listarSeriesProducto($idx,$prod);
+
+            echo $result;
+        }
     }
 ?>

@@ -1719,12 +1719,12 @@ hr {
   z-index: 5 !important; }
 
 .emitido, .activo {
-  background: dodgerblue;
+  background: dodgerblue !important;
   color: white;
   font-weight: 800; }
 
 .rechazado, .inactivo {
-  background: orange;
+  background: orange !important;
   color: white;
   font-weight: 800; }
 
@@ -1739,7 +1739,7 @@ hr {
   font-weight: 700; }
 
 .proceso {
-  background: yellow;
+  background: yellow !important;
   outline: none;
   font-weight: 800; }
 

@@ -2166,13 +2166,13 @@ hr{
 
 //estado
 .emitido,.activo {
-    background: dodgerblue;
+    background: dodgerblue !important;
     color: white;
     font-weight: 800;
 }
 
 .rechazado, .inactivo {
-    background: orange;
+    background: orange !important;
     color: white;
     font-weight: 800;
 }
@@ -2190,7 +2190,7 @@ hr{
 }
 
 .proceso {
-    background: yellow;
+    background: yellow !important;
     outline: none;
     font-weight: 800;
 }
