@@ -48,7 +48,7 @@
                                     <td class="con_borde centro">'.$rs['anio'].'</td>
                                     <td class="con_borde centro">'.str_pad($rs['orden'],5,"0",STR_PAD_LEFT).'</td>
                                     <td class="con_borde centro">'.$rs['pedido'].'</td>
-                                    <td class="con_borde pl10">'.$rs['cnumguia'].'</td>
+                                    <td class="con_borde pl10">'.strtoupper($rs['cnumguia']).'</td>
                                     <td class="con_borde">'.$rs['cobserva'].'</td>
                                     <td class="con_borde centro '.strtolower($rs['estado']).'">'.$rs['estado'].'</td>
                                     <td class="con_borde centro"><a href="'.$rs['id_regalm'].'"><i class="far fa-edit"></i></a></td>
@@ -93,7 +93,7 @@
             }
         }
 
-        public function getParameters(){
+        public function getParameters($selected){
             $salida = "";
             try {
                 $sql= $this->db->connect()->query("SELECT
@@ -109,7 +109,9 @@
 
                 if ($rowCount > 0) {
                     while ($row = $sql->fetch()) {
-                        $salida.='<option value="'.$row['ncodprm2'].'">'.$row['cdesprm2'].'</option>';
+                        $select = $selected == $row['ncodprm2'] ? "selected":"";
+
+                        $salida.='<option value="'.$row['ncodprm2'].'" '.$select.'>'.$row['cdesprm2'].'</option>';
                     }
                 }
 
@@ -390,7 +392,7 @@
             try {
                 $salida = "";
 
-                $estados = $this->getParameters();
+                $estados = $this->getParameters(90);
 
                  $sql=$this->db->connect()->prepare("SELECT
                                                     lg_detaabastec.id_regmov,
@@ -568,6 +570,11 @@
                 ]);
 
                 ///aca ira el codigo de acualizacion de detalles,adjuntos,y series
+
+                $this->actualizarDetalles($detalles);
+                $this->insertarSeries($index,$series);
+                $this->insertarAdjuntos($index,$adjuntos);
+                $this->saveAction("ACTUALIZA",$index,"INGRESOS ALMACEN",$_SESSION['user']);
                 
                 $mensaje = "Registro actualizado";
                 $salidajson = array("mensaje"=>$mensaje,
@@ -639,12 +646,14 @@
 
             for ($i=0; $i <= $nreg-1; $i++) { 
                 try {
-                    $sql=$this->db->connect()->prepare("INSERT INTO cm_prodserie SET id_cprod=:prod,cdesserie=:serie,nflgactivo=:flag,idref_alma=:cod");
-                    $sql->execute([ "prod"=>$datos[$rc]->codpro,
+                    if ( $datos[$rc]->codpro !== null) {
+                        $sql=$this->db->connect()->prepare("INSERT INTO cm_prodserie SET id_cprod=:prod,cdesserie=:serie,nflgactivo=:flag,idref_alma=:cod");
+                        $sql->execute([ "prod"=>$datos[$rc]->codpro,
                                     "serie"=>$datos[$rc]->serie,
                                     "flag"=>1,
                                     "cod"=>$cod]);
-                    $rc++;
+                        $rc++;
+                    }
                 } catch (PDOException $th) {
                     echo $th;
                     return false;
@@ -778,13 +787,14 @@
                 $sql->execute(["cod"=>$index]);
                 $rowCount= $sql->rowcount();
                 $salida = "";
-                $estados = $this->getParameters();
                 $cont=0;
 
                 if ($rowCount > 0) {
                     while ($row = $sql->fetch()) {
+                        $swstate =  $row['nsaldo'] == 0 ? 'desactivado': '';
+
                         $salida .=$cont++;
-                        $salida.='<tr class="lh1_2rem pointertr" data-id="'.$row['niddeta'].'">
+                        $salida.='<tr class="lh1_2rem pointertr '.$swstate.'" data-id="'.$row['niddeta'].'">
                                     <td class="con_borde centro"><a href="" data-action="register"><i class="fas fa-barcode"></i></a></td>
                                     <td class="con_borde centro"><a href="" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
                                     <td class="centro con_borde" data-iddetpedido ="'.$row['niddetaped'].'"
@@ -799,7 +809,7 @@
                                     <td class="con_borde centro">'.$row['cabrevia'].'</td>
                                     <td class="con_borde drch pr20">'.number_format($row['nsaldo'], 2, '.', ',').'</td>
                                     <td class="con_borde centro"><input type="number" onClick="this.select();" class="drch pr10" value="'.number_format($row['nsaldo'], 2, '.', ',').'"></td>
-                                    <td class="con_borde"><select name="estado">'. $estados .'</select></td>
+                                    <td class="con_borde"><select name="estado">'.  $this->getParameters($row['nestadoreg']) .'</select></td>
                                     <td class="con_borde"></td>
                                     <td class="con_borde"><input type="date"></td>
                                 </tr>';
@@ -874,9 +884,19 @@
             }
         }
 
-        public function eliminarDetalles($index){
+        public function actualizarDetalles($detalles){
             try {
-                //code...
+                $datos = json_decode($detalles);
+                $nreg = count($datos);
+                $rc = 0;
+
+                for ($i=0; $i < $nreg ; $i++) { 
+                    $sql = $this->db->connect()->prepare("UPDATE al_regmovi2 SET nsaldo=:sal WHERE niddetaped=:cod");
+                    $sql->execute(["cod"=>$datos[$i]->iddetped,
+                                   "sal"=>$datos[$i]->cantord - $datos[$i]->cantidad]);
+                }
+                
+
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
@@ -911,6 +931,8 @@
                             <td class="con_borde pl20 mayusculas">'.$rs['cdesserie'].'</td>
                             <td class="con_borde"></td>
                         </tr>';
+                        
+                        $cont++;
                     }
                 }
 

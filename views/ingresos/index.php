@@ -36,13 +36,13 @@
                                     <i class="far fa-folder-open"></i> Importar Orden 
                                 </button>
                                 <button type="button" id="saveDoc" title="Grabar Registro">
-                                    <span><i class="far fa-save"></i> Grabar Registro</span>
+                                    <span><i class="far fa-save"></i> Grabar Nota </span>
                                 </button>
                                 <button type="button" id="closeDoc" title="Cerrar Registro">
-                                    <i class="fas fa-ban"></i> Cerrar Registro
+                                    <i class="fas fa-ban"></i> Cerrar Nota
                                 </button>
                                 <button type="button" id="cancelDoc" title="Cancelar Registro">
-                                    <i class="fas fa-ban"></i> Cancelar Registro
+                                    <i class="fas fa-ban"></i> Cancelar Nota
                                 </button>
                             </div>
                         </div>
@@ -227,7 +227,7 @@
                 <div class="titulos">
                     <h4 id="descripProducto"></h4>
                     <h4 id="codigoProducto"></h4>
-                    <h4 id="nroItemSerial" class="oculto"></h4>
+                    <h4 id="nroItemSerial" class="noculto"></h4>
                     <a href="#" id="addSerials"><i class="far fa-calendar-plus"></i></a>
                 </div>
                 <form action="">

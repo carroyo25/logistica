@@ -1,7 +1,7 @@
 var atachs      = 0;
 var FILES       = [];
 var accion      = "";
-
+var itemsfila   = 0;
 
 $(function(){
     activar_opcion();
@@ -19,7 +19,7 @@ $(function(){
         $("#detalle_pedido tbody").empty();
         $("#saveItem span").removeClass('parpadea');
         $("#importOrd").removeClass("oculto");
-        $("#detalle_serie tbody, #tableAdjuntos tbody, #detalle_ingreso tbody").empty();
+        $("#detalle_series tbody, #tableAdjuntos tbody, #detalle_ingreso tbody").empty();
         $("#documento")
                 .removeClass("emitido")
                 .addClass("proceso");
@@ -241,7 +241,7 @@ $(function(){
                 $("#entidad").val(data.entidad);
                 $("#concepto").val(data.concepto);
                 $("#espec").val(data.detalle);
-                $("#ruc").val(data.ruc);
+                $("#nruc").val(data.ruc);
                 $("#entidad").val(data.entidad);
                 $("#nroped").val(data.pedido);
                 $("#nrord").val(data.orden);
@@ -284,15 +284,15 @@ $(function(){
             //llamar a la ventana de series de prouctos
 
             var descrip = $(this).parent().parent().find('td').eq(4).text(),
-                prodcod = $(this).parent().parent().find('td').eq(3).text(),
+                //prodcod = $(this).parent().parent().find('td').eq(3).text(),
                 idprod  = $(this).parent().parent().find('td').eq(2).data('idprod'),
                 nroserials = $(this).parent().parent().find('td').eq(7).children().val();
 
             $("#descripProducto").text(descrip);
-            $("#codigoProducto").text(prodcod);
+            $("#codigoProducto").text(idprod);
             $("#nroItemSerial").text(nroserials);
 
-            if (accion == "u") {
+            if ( accion == "u" ) {
                 $.post(RUTA+"ingresos/llamarSeries", {index:$("#id_ingreso").val(),prod:idprod},
                     function (data, textStatus, jqXHR) {
                         $("#detalle_series tbody")
@@ -318,6 +318,7 @@ $(function(){
 
         $("#modalSerie").fadeOut();
         $("#detalle_series tbody").empty();
+        itemsfila = 0;
 
         return false;
     });
@@ -326,18 +327,21 @@ $(function(){
         e.preventDefault();
 
         var maxSerial = $("#nroItemSerial").text();
-        var itemsfila = $("#detalle_series tbody tr").length;
         var codigoPro = $("#codigoProducto").text();
+        var itemShow = $("#detalle_series tbody tr").length + 1;
+        itemsfila++;
 
         if ( itemsfila <= maxSerial ) {
             var fila = '<tr>'+
                         '<td class="con_borde centro"><a href="'+ codigoPro +'"><i class="fas fa-trash-alt"></i></a></td>'+
-                        '<td class="con_borde centro">'+(itemsfila+1)+'</td>'+
+                        '<td class="con_borde centro">'+ itemShow +'</td>'+
                         '<td class="con_borde"><input type ="text" class="sin_borde mayusculas pl20"></td>'+
                         '<td class="con_borde"><input type ="text" class="sin_borde"></td>'+
                     '</tr>'
 
             $("#detalle_series").append(fila);
+            
+
         }else {
             mostrarMensaje("msj_error","Máximo número de series");
         }
@@ -349,7 +353,7 @@ $(function(){
         e.preventDefault();
 
         var maxSerial = $("#nroItemSerial").text();
-        var itemsfila = $("#detalle_series tbody tr").length;
+        //var itemsfila = $("#detalle_series tbody tr").length;
 
         if ( itemsfila == maxSerial ){
             $("#modalSerie").fadeOut();
@@ -364,7 +368,7 @@ $(function(){
     $("#orderDetail").on("click", function (e) {
         e.preventDefault();
 
-        if ( $("#order_file").val().length == 0) {
+        if ( $("#order_file").val().length == 0 ) {
             mostrarMensaje("msj_error","Debe seleccionar una orden");
             return false;
         }
@@ -637,8 +641,6 @@ $(function(){
                     "text"
                 );
 
-                /**/
-
                 accion = "u";
             },
             "json"
@@ -656,11 +658,11 @@ function getSeries(){
     TABLA.each(function(){
         var SERIE    = $(this).find('td').eq(2).children().val(),
             OBSERV   = $(this).find('td').eq(3).children().val(),
-            CODPRO   = $(this).parent().parent().find('td').eq(2).data('idprod')
+            CODPRO   = $("#codigoProducto").text();
 
             item = {};
 
-            if(SERIE !== ''){
+            if(SERIE !== undefined){
                 item['serie']   = SERIE;
                 item['observ']  = OBSERV;
                 item['codpro']  = CODPRO;

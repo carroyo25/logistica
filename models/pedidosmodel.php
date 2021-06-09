@@ -816,19 +816,6 @@
             }
         }
 
-        /*public function saveAction($accion,$codigo,$modulo,$user){
-            try {
-                $query = $this->db->connect()->prepare("INSERT INTO lg_seguimiento SET cmodulo=:cmod,id_regmov=:cod,cproceso=:acc,ncoduser=:usr");
-                $query->execute(["cmod" => $modulo,
-                                 "cod"  => $codigo,
-                                 "acc"  => $accion,
-                                 "usr"  => $user]);
-            } catch (PDOException $e) {
-                echo $e->getMessage();
-                return false;
-            }
-        }*/
-
         public function insertItemsTable($datos){
             try {
                 $data = json_decode($datos);
