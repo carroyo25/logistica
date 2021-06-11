@@ -307,7 +307,7 @@
         <div class="workOneForm">
             <div class="tilewindow">
                 <p class="workTitle">Ingresos Almacen</p>
-                <?php require 'views/menus.php'; ?>
+                <?php require 'views/menusimple.php'; ?>
             </div>       
             <div class="formulario">
                 <div class="banner">

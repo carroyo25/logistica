@@ -1,0 +1,225 @@
+<?php
+    class DespachoModel extends Model{
+
+        public function __construct()
+        {
+            parent::__construct();
+        }
+
+        public function getMainRecords() {
+            
+        }
+
+        public function getMovs(){
+            $salida = "";
+            try {
+                $sql= $this->db->connect()->query("SELECT
+                                                    lg_movimiento.ncodmov,
+                                                    lg_movimiento.cdesmov 
+                                                FROM
+                                                    lg_movimiento");
+                $sql->execute();
+                $rowCount = $sql->rowcount();
+
+                if ($rowCount > 0) {
+                    while ($row = $sql->fetch()) {
+                        $salida.='<li><a href="'.$row['ncodmov'].'">'.strtoupper($row['cdesmov']).'</a></li>';
+                    }
+                }
+
+                return $salida;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+
+        public function llamarNotas(){
+            $salida = "";
+            try {
+                $sql = $this->db->connect()->query("SELECT
+                                                        al_regmovi1.id_regalm,
+                                                        al_regmovi1.ctipmov,
+                                                        al_regmovi1.nnronota,
+                                                        al_regmovi1.ffecdoc,
+                                                        al_regmovi1.ncodpry,
+                                                        al_regmovi1.nflgactivo,
+                                                        tb_proyecto1.ccodpry,
+                                                        tb_proyecto1.cdespry,
+                                                        al_regmovi1.nEstadoDoc 
+                                                    FROM
+                                                        al_regmovi1
+                                                        INNER JOIN tb_proyecto1 ON al_regmovi1.ncodpry = tb_proyecto1.ncodpry 
+                                                    WHERE
+                                                        al_regmovi1.ctipmov = 'I' 
+                                                        AND al_regmovi1.nflgactivo = 1 
+                                                        AND al_regmovi1.nEstadoDoc = 8");
+                $sql->execute([]);
+                $rowCount = $sql->rowcount();
+                if ($rowCount > 1) {
+                    while ($rs = $sql->fetch()) {
+                        $salida .='<tr class="lh1_2rem pointertr">
+                                    <td class="con_borde pl20">'.str_pad($rs['nnronota'],5,"0",STR_PAD_LEFT).'</td>
+                                    <td class="con_borde pl20">'.$rs['ccodpry'].' - '.$rs['cdespry'].'</td>
+                                    <td class="con_borde pl20">'.date("d/m/Y", strtotime($rs['ffecdoc'])).'</td>
+                                    <td class="con_borde pl20"><a href="'.$rs['id_regalm'].'"><i class="fas fa-arrows-alt-h"></i></a></td>
+                                </tr>';
+                    }
+                }else{
+                    $salida .= '<tr><td colspan="4" class="centro">No se encontraron registros</td></tr>';
+                }
+
+                return $salida;
+                
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function llamarIngresoPorID($idx){
+            $salida = "";
+            try {
+                $sql = $this->db->connect()->prepare("SELECT
+                                                        logistica.al_regmovi1.id_regalm,
+                                                        logistica.al_regmovi1.ctipmov,
+                                                        logistica.al_regmovi1.nnromov,
+                                                        logistica.al_regmovi1.nnronota,
+                                                        logistica.al_regmovi1.cper,
+                                                        logistica.al_regmovi1.cmes,
+                                                        logistica.al_regmovi1.ncodalm1,
+                                                        logistica.al_regmovi1.ffecdoc,
+                                                        logistica.al_regmovi1.id_centi,
+                                                        logistica.al_regmovi1.cnumguia,
+                                                        logistica.al_regmovi1.ncodpry,
+                                                        logistica.al_regmovi1.ncodarea,
+                                                        logistica.al_regmovi1.ncodcos,
+                                                        logistica.al_regmovi1.idref_pedi,
+                                                        logistica.al_regmovi1.idref_abas,
+                                                        logistica.al_regmovi1.cobserva,
+                                                        logistica.al_regmovi1.id_userAprob,
+                                                        logistica.al_regmovi1.nEstadoDoc,
+                                                        logistica.al_regmovi1.nflgactivo,
+                                                        CONCAT(logistica.tb_almacen.ccodalm,' - ',logistica.tb_almacen.cdesalm) AS almacen,
+                                                        CONCAT(logistica.tb_proyecto1.ccodpry,' - ',logistica.tb_proyecto1.cdespry) AS proyecto,
+                                                        logistica.viewpedidos.cnumero AS nroped,
+                                                        CONCAT(logistica.viewpedidos.apellidos,' ',logistica.viewpedidos.nombres) AS solicita,
+                                                        logistica.viewpedidos.id_regmov,
+                                                        logistica.viewpedidos.mdetalle,
+                                                        CONCAT(rrhh.tabla_aquarius.apellidos,' ',rrhh.tabla_aquarius.nombres) AS aprueba,
+                                                        rrhh.tabla_aquarius.dcargo,
+                                                        LPAD(logistica.lg_regabastec.cnumero,6,0) AS nrorden,
+                                                        logistica.lg_regabastec.ffechadoc AS fechaOrden,
+	                                                    logistica.lg_regabastec.cdocPDF,
+                                                        logistica.viewpedidos.ffechadoc AS fechaPedido,
+                                                        logistica.viewpedidos.cconcepto,
+                                                        CONCAT(logistica.tb_paramete2.ccodprm2,' - ',logistica.tb_paramete2.cdesprm2) AS movimiento
+                                                    FROM
+                                                        logistica.al_regmovi1
+                                                        INNER JOIN logistica.tb_almacen ON al_regmovi1.ncodalm1 = tb_almacen.ncodalm
+                                                        INNER JOIN logistica.tb_proyecto1 ON al_regmovi1.ncodpry = tb_proyecto1.ncodpry
+                                                        INNER JOIN logistica.viewpedidos ON al_regmovi1.idref_pedi = viewpedidos.id_regmov
+                                                        INNER JOIN rrhh.tabla_aquarius ON logistica.al_regmovi1.id_userAprob = rrhh.tabla_aquarius.internal
+                                                        INNER JOIN logistica.lg_regabastec ON logistica.al_regmovi1.idref_abas = logistica.lg_regabastec.id_regmov
+                                                        INNER JOIN logistica.tb_paramete2 ON logistica.lg_regabastec.ctiptransp = logistica.tb_paramete2.ncodprm2 
+                                                    WHERE
+                                                        al_regmovi1.id_regalm = :cod 
+                                                        AND logistica.tb_paramete2.ncodprm1 = 7
+                                                    LIMIT 1");
+                $sql->execute(["cod"=>$idx]);
+                
+                $rowCount = $sql->rowcount();
+
+                if ($rowCount > 0) {
+                    $docData = array();
+                    //extrae los campos y los envia para el controlador
+                    while($row=$sql->fetch(PDO::FETCH_ASSOC)){
+                        $docData[] = $row;
+                    }
+                }
+
+                $regid = uniqid("des");
+                
+                $numdoc = $this->genNumberDoc($docData[0]['ncodalm1']);
+                $nummov = $this->genNumberMov($docData[0]['ncodalm1']);
+                
+                $header=array("idreg"=>$regid,"nrodoc"=>$numdoc,"nromov"=>$nummov);
+                array_push($docData,$header);
+                
+                return $docData;
+                
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function llamarDetalleIngresoPorID($idx){
+            $salida = "";
+            try {
+                $sql = $this->db->connect()->prepare("");
+                $sql->execute([]);
+
+                $rowCount = $sql->rowcount();
+                if ($rowCount > 1) {
+                    while ($row = $sql->fetch) {
+                        $salida .="";
+                    }
+                }else{
+                    $salida .= '<tr><td colspan="4" class="centro">No se encontraron registros</td></tr>';
+                }
+                
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        //ojo hacer el mismo procediiento para los ingreoso
+        public function genNumberDoc($cod){
+            try {
+                $sql = $this->db->connect()->prepare("SELECT
+                                                            COUNT(al_regmovi1.ncodalm1) AS numguia
+                                                        FROM
+                                                            al_regmovi1 
+                                                        WHERE
+                                                            al_regmovi1.ncodalm1 = :cod
+                                                        AND al_regmovi1.ncodalm1 = 'S'");
+                $sql->execute(["cod"=>$cod]);
+
+                $row = $sql->fetchAll();
+
+                $nro_doc =  str_pad($row[0]['numguia'] + 1,5,"0",STR_PAD_LEFT);                   
+
+                return $nro_doc ;
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function genNumberMov($cod){
+            try {
+                $sql = $this->db->connect()->prepare("SELECT
+                                                            COUNT(al_regmovi1.nnromov) AS nummov 
+                                                        FROM
+                                                            al_regmovi1 
+                                                        WHERE
+                                                            al_regmovi1.ncodalm1 = :cod");
+                $sql->execute(["cod"=>$cod]);
+
+                $row = $sql->fetchAll();
+
+                $nro_mov = str_pad($row[0]['nummov'] + 1,5,"0",STR_PAD_LEFT);
+
+                return $nro_mov;
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+    }
+?>
