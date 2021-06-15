@@ -25,6 +25,14 @@
 
             echo json_encode($result);
         }
+
+        function detallesIngresosId(){
+            $idx = $_POST['idx'];
+
+            $result = $this->model->llamarDetalleIngresoPorID($idx);
+
+            echo $result;
+        }
         
     }
 ?>

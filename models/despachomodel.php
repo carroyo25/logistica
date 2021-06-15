@@ -79,7 +79,6 @@
         }
 
         public function llamarIngresoPorID($idx){
-            $salida = "";
             try {
                 $sql = $this->db->connect()->prepare("SELECT
                                                         logistica.al_regmovi1.id_regalm,
@@ -158,17 +157,58 @@
         public function llamarDetalleIngresoPorID($idx){
             $salida = "";
             try {
-                $sql = $this->db->connect()->prepare("");
-                $sql->execute([]);
+                $sql = $this->db->connect()->prepare("SELECT
+                                                        al_regmovi2.id_regalm,
+                                                        al_regmovi2.niddeta,
+                                                        al_regmovi2.ncodalm1,
+                                                        al_regmovi2.id_cprod,
+                                                        al_regmovi2.ncantidad,
+                                                        al_regmovi2.nfactor,
+                                                        al_regmovi2.nsaldo,
+                                                        al_regmovi2.niddetaped,
+                                                        al_regmovi2.niddetaord,
+                                                        al_regmovi2.nestadoreg,
+                                                        cm_producto.ccodprod,
+                                                        cm_producto.cdesprod,
+                                                        cm_producto.ncodmed,
+                                                        tb_unimed.cabrevia,
+                                                        lg_detaabastec.ncanti,
+                                                        tb_paramete2.cdesprm2 
+                                                    FROM
+                                                        al_regmovi2
+                                                        INNER JOIN cm_producto ON al_regmovi2.id_cprod = cm_producto.id_cprod
+                                                        INNER JOIN tb_unimed ON cm_producto.ncodmed = tb_unimed.ncodmed
+                                                        INNER JOIN lg_detaabastec ON al_regmovi2.niddetaord = lg_detaabastec.niddeta
+                                                        INNER JOIN tb_paramete2 ON al_regmovi2.nestadoreg = tb_paramete2.ncodprm2 
+                                                    WHERE
+                                                        al_regmovi2.nflgactivo = 1 
+                                                        AND al_regmovi2.id_regalm = :cod 
+                                                        AND tb_paramete2.ncodprm1 = 21");
+                $sql->execute(["cod"=>$idx]);
 
                 $rowCount = $sql->rowcount();
-                if ($rowCount > 1) {
-                    while ($row = $sql->fetch) {
-                        $salida .="";
+                $item = 1;
+                if ($rowCount > 0) {
+                    while ($rs = $sql->fetch()) {
+                        $salida .='<tr>
+                                        <td class="con_borde centro"><a href="'.$rs['niddeta'].'" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
+                                        <td class="con_borde centro">'. str_pad($item++,3,0,STR_PAD_LEFT) .'</td>
+                                        <td class="con_borde centro">'.$rs['ccodprod'].'</td>
+                                        <td class="con_borde pl20">'.$rs['cdesprod'].'</td>
+                                        <td class="con_borde centro">'.$rs['cabrevia'].'</td>
+                                        <td class="con_borde drch pr10">'.number_format($rs['ncanti'], 2, '.', ',').'</td>
+                                        <td class="con_borde drch pr10">'.number_format($rs['ncantidad'], 2, '.', ',').'</td>
+                                        <td class="con_borde centro">'.$rs['cdesprm2'].'</td>
+                                        <td class="con_borde centro"></td>
+                                        <td class="con_borde centro"></td>
+                                   </tr>';
+                        $item++;
                     }
                 }else{
-                    $salida .= '<tr><td colspan="4" class="centro">No se encontraron registros</td></tr>';
+                    $salida .= '<tr><td colspan="10" class="centro">No se encontraron registros</td></tr>';
                 }
+
+                return $salida;
                 
             } catch (PDOException $th) {
                 echo $th->getMessage();
@@ -176,7 +216,7 @@
             }
         }
 
-        //ojo hacer el mismo procediiento para los ingreoso
+        //ojo hacer el mismo procedimiento para los ingreoso
         public function genNumberDoc($cod){
             try {
                 $sql = $this->db->connect()->prepare("SELECT

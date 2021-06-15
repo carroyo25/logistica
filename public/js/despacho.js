@@ -82,9 +82,10 @@ $(function(){
     $("#listaIngresos tbody").on("click","a", function (e) {
         e.preventDefault();
         
+        $("#modalNotas").fadeIn();
         $.post(RUTA+"despacho/notaId",{idx: $(this).attr("href")},
             function (data, textStatus, jqXHR) {
-                $("#id_ingreso").val(data.idingreso);
+                $("#id_ingreso").val(data[0].id_regalm);
                 $("#id_salid").val(data[1].idreg);
                 $("#id_entidad").val(data[0].id_centi);
                 $("#cod_almacen").val(data[0].ncodalm1);
@@ -109,12 +110,44 @@ $(function(){
                 $("#nrord").val(data[0].nrorden);
                 $("#fecord").val(data[0].fechaOrden);
                 $("#espec").val(data[0].cconcepto);
-                
-                $("#modalNotas").fadeOut();
+
+                $.post(RUTA+"despacho/detallesIngresosId",{idx:data[0].id_regalm},
+                    function (data, textStatus, jqXHR) {
+                        $("#detalle_despacho tbody")
+                            .empty()
+                            .append(data);
+                        $("#modalNotas").fadeOut();
+                    },
+                    "text"
+                );
             },
             "json"
         );
         
+        return false;
+    });
+
+    //acciones en la tabla de detalles
+    $("#detalle_despacho tbody").on("click","a", function (e) {
+        e.preventDefault();
+
+        return false;
+    });
+
+    //mostrar los datos para la guia de remision 
+    $("#guiaDetail").on("click", function (e) {
+        e.preventDefault();
+        
+        /*if ($("#id_ingreso").val().length == 0){
+            mostrarMensaje("msj_error","Seleccione una nota de ingreso");
+            return false;
+        }else if ($("#cod_movimento").val().length == 0){
+            mostrarMensaje("msj_error","Seleccione el tipo de movimiento");
+            return false;
+        }*/
+
+        $("#modalGuia").fadeIn();
+
         return false;
     });
 
@@ -141,6 +174,32 @@ $(function(){
 
         $(this).parent().parent().parent().slideUp();
         $("#saveDoc span").addClass('parpadea');
+
+        return false;
+    });
+
+    //lista de motivos de movimientos
+    $("#mottrans").focus(function (e) { 
+        e.preventDefault();
+        
+        if (accion == "n") {
+            $("#cot_motivo").val("");
+            $(this).select();
+            $(".seleccion").fadeOut();
+
+            $(this).next(".seleccion").slideDown();
+        }
+
+        return false;
+    });
+
+    $("#listaMotivosGuia").on("click","a", function (e) {
+        e.preventDefault();
+
+        $("#cot_motivo").val($(this).attr("href"));
+        $("#mottrans").val($(this).text());
+
+        $(this).parent().parent().parent().slideUp();
 
         return false;
     });

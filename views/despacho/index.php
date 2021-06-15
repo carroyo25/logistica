@@ -43,7 +43,7 @@
             <input type="hidden" name="id_salid" id="id_salid">
             <input type="hidden" name="id_entidad" id="id_entidad">
             <input type="hidden" name="cod_almacen" id="cod_almacen">
-            <input type="hidden" name="cod_movimento" id="cod_movimento">
+            <input type="hidden" name="cod_movimiento" id="cod_movimiento">
             <input type="hidden" name="cod_autoriza" id="cod_autoriza">
             <input type="hidden" name="cod_proyecto" id="cod_proyecto">
             <input type="hidden" name="cod_area" id="cod_area">
@@ -118,13 +118,13 @@
                                     <label for="nroped" class="w100px">Nro. Pedido</label>
                                     <input type="text" name="nroped" id="nroped" class="pl20">
                                     <label for="fecped" class="w100px">Fecha Doc.:</label>
-                                    <input type="date" name="fecped" id="fecped">
+                                    <input type="date" name="fecped" id="fecped" class="pl20">
                                 </div>
                                 <div class="input_process g4items">
                                     <label for="nrord" class="w100px">Nro. OC:</label>
                                     <input type="text" name="nrord" id="nrord" class="pl20 ">
                                     <label for="fecord" class="w100px">Fecha Doc.:</label>
-                                    <input type="date" name="fecord" id="fecord">
+                                    <input type="date" name="fecord" id="fecord" class="pl20">
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="espec" class="w100px" >Observaciones:</label>
@@ -160,7 +160,7 @@
                         </div>
                         <div class="process_items">
                         <div>
-                            <table class="con_borde w100p" id="detalle_ingreso">
+                            <table class="con_borde w100p" id="detalle_despacho">
                                 <thead>
                                     <tr>
                                         <th class="con_borde w2p">...</th>
@@ -169,7 +169,7 @@
                                         <th class="con_borde w30p">Descripcion</th>
                                         <th class="con_borde w5p">Unidad</th>
                                         <th class="con_borde w5p">Cantidad </br> Requerida</th>
-                                        <th class="con_borde w5p">Cant. </br> a Despachar</th>
+                                        <th class="con_borde w5p">Cant. a</br>Despachar</th>
                                         <th class="con_borde w10p">Estado </br> Bien</th>
                                         <th class="con_borde w10p">Ubicación </br> Física</th>
                                         <th class="con_borde w10p">Fecha </br> Vencimiento</th>
@@ -284,6 +284,194 @@
     </div>
     <div class="modal zindex5" id="waitmodal">
         <div class="loader"></div>
+    </div>
+    <div class="modal zindex3" id="modalGuia">
+        <div class="insideWindow w60p">
+            <h3>Guia de Remisión y despacho</h3>
+            <hr>
+            <form action="" id="formguia">
+                <input type="hidden" name="cod_motivo" id="cot_motivo">
+                <div class="gridMain g2items50">
+                    <div class="ladoIzquierdo">
+                        <div class="mb5px">
+                            <label class="mr4px">Numero Guia</label>
+                            <input type="text" name="serieguia" id="serieguia" class="w10p">
+                            <input type="text" name="nroguia" id="nroguia" class="w20p">
+                            <label for="packinlist">Packing List/Guia Madre</label>
+                            <input type="text" id="packinlist" name="packinlist" class="w23p">
+                        </div>
+                        <div class="mb5px">
+                            <label for="fecemin" class="mr5px">Fecha Emisión</label>
+                            <input type="date" name="fecemin" id="fecemin">
+                            <label for="feenttrans" class="mr5px">Fecha Ent.Transpor.</label>
+                            <input type="date" name="feenttrans" id="feenttrans">
+                        </div>
+                        <div>
+                            <h4>Datos del destinatario</h4>
+                            <div class="containData mb5px">
+                                <label for="ruc" class="w15p">R.U.C.</label>
+                                <input type="text" name="ruc" id="ruc" value="20504898173" readonly class="w80p mb5px">
+                                <label for="razondest" class="w15p">Razón Social</label>
+                                <input type="text" name="razondest" id="razondest" value="SERVICIOS PETROLEROS Y CONSTRUCCIONES SEPCON S.A.C" readonly class="w80p mb5px">
+                                <label for="direccdest" class="w15p ">Dirección</label>
+                                <input type="text" name="direccdest" id="direccdest" value="AV. SAN BORJA NORTE N° 445 - SAN BORJA-LIMA-PERU." class="w80p mb5px">
+                            </div>
+                        </div>
+                        <div>
+                            <h4>Domicilio de partida</h4>
+                            <div  class="containData">
+                                <label for="almorg" class="w15p">Alm.Origen</label>
+                                <input type="text" name="almorg" id="almorg" class="w80p mb5px">
+                            </div>
+                                <div class="ml30px">
+                                    <div>
+                                        <label for="viatiporg" class="w15p">Via Tipo</label>
+                                        <input type="text" name="viatiporg" id="viatiporg" class="mb5px w30p">
+                                        <label for="vianomorg" class="w15p">Via Nombre</label>
+                                        <input type="text" name="vianomorg" id="vianomorg" class="mb5px w30p">
+                                    </div>
+                                    <div>
+                                        <label for="nroorg" class="w15p">N°</label>
+                                        <input type="text" name="nroorg" id="nroorg" class="w20p mb5px">
+                                        <label for="intorg" class="w10p">Interior</label>
+                                        <input type="text" name="intorg" id="intorg" class="w20p mb5px">
+                                        <label for="zonaorg">Zona</label>
+                                        <input type="text" name="zonaorg" id="zonaorg" class="w18p mb5px">
+                                    </div>
+                                    <div>
+                                        <label for="deporg" class="w15p">Dep.</label>
+                                        <input type="text" name="deporg" id="deporg" class="mb5px w30p">
+                                        <label for="distorg" class="w15p">Distrito</label>
+                                        <input type="text" name="distorg" id="distorg" class="mb5px w30p">
+                                    </div>
+                                    <div>
+                                        <label for="provorg" class="w15p">Prov.</label>
+                                        <input type="text" name="provorg" id="provorg" class="mb5px w30p">
+                                        <label for="ubigorg" class="w15p">Ubigeo.</label>
+                                        <input type="text" name="ubigorg" id="ubigorg" class="mb5px w30p">
+                                    </div>
+                                </div>
+                        </div>
+                        <div>
+                            <h4>Motivo</h4>
+                            <div class="p_relative">
+                                <label for="mottras" class="w25p">Motivo Traslado</label>
+                                <input type="text" name="mottrans" id="mottrans" class="w70p mb5px">
+                                <div class="seleccion seleccion_pedido ml30px">
+                                    <ul id="listaMotivosGuia">
+                                        <?php echo $this->motivos?>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="modtras" class="w25p">Modalidad Traslado</label>
+                                <input type="text" name="modtras" id="modtras" class="w70p mb5px">
+                            </div>
+                            <div>
+                                <label for="tenvio" class="w25p">Tipo Envio</label>
+                                <input type="text" name="tenvio" id="tenvio" class="w70p mb5px">
+                            </div>
+                            <div>
+                                <label for="bultos" class="w25p">N° Bultos/Palets</label>
+                                <input type="number" name="bultos" id="bultos" class="w25p mb5px">
+                                <label for="peso">Peso Bruto Total</label>
+                                <input type="number" name="peso" id="peso" class="w25p mb5px">
+                                <label>Kg.</label>
+                            </div>
+                            <div>
+                                <label for="observaciones" class="w25p">Observaciones</label>
+                                <input type="text" name="observaciones" id="observaciones" class="w70p mb5px">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ladoDerecho">
+                        <div class="containData g2items17">
+                            <label for="autoriza" class="w15p">Autoriza</label>
+                            <input type="text" id="autoriza" name="autoriza" class="w75p mb5px">
+                            <label for="despacha" class="w15p">Despacha</label>
+                            <input type="text" id="despacha" name="despacha" class="w75p mb5px">
+                            <label for="destinatario" class="w15p">Destinatario</label>
+                            <input type="text" id="destinatario" name="destinatario" class="w75p mb5px">
+                            <label for="representate" class="w15p">Representante</label>
+                            <input type="text" id="representate" name="representate" class="w75p mb5px">
+                        </div>
+                        <div>
+                            <h4>Empresa de Transporte</h4>
+                            <div>
+                                <div>
+                                    <label for="ructransp" class="w15p">R.U.C.</label>
+                                    <input type="text" name="ructransp" id="ructransp" class="w75p mb5px">
+                                    <label for="raztransp" class="w15p">Razón Social</label>
+                                    <input type="text" name="raztransp" id="raztransp" class="w75p mb5px">
+                                    <label for="dirtransp" class="w15p">Dirección</label>
+                                    <input type="text" name="dirtransp" id="dirtransp" class="w75p mb5px">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>Domicilio de llegada</h4>
+                            <div>
+                                <label for="almdest" class="w15p">Alm.Destino</label>
+                                <input type="text" name="almdest" id="almdest"  class="w75p mb5px">
+                            </div>
+                            <div class="ml30px">
+                                <div>
+                                    <label for="viatipodest" class="w15p">Via Tipo</label>
+                                    <input type="text" name="viatipodest" id="viatipodest" class="mb5px w30p">
+                                    <label for="vianomodest">Via Nombre</label>
+                                    <input type="text" name="vianomodest" id="vianomodest" class="mb5px w30p">
+                                </div>
+                                <div>
+                                    <label for="viadest" class="w15p">N°</label>
+                                    <input type="text" name="viadest" id="viadest" class="w20p mb5px">
+                                    <label for="intdest" class="w10p">Interior</label>
+                                    <input type="text" name="intdest" id="intdest" class="w20p mb5px">
+                                    <label for="zondest">Zona</label>
+                                    <input type="text" name="zondest" id="zondest" class="w15p mb5px">
+                                </div>
+                                <div>
+                                    <label for="depdest" class="w15p">Dep.</label>
+                                    <input type="text" name="depdest" id="depdest" class="mb5px">
+                                    <label for="distdest" class="w15p">Dist.</label>
+                                    <input type="text" name="distdest" id="distdest" class="mb5px">
+                                </div>
+                                <div>
+                                    <label for="provdest" class="w15p">Prov.</label>
+                                    <input type="text" name="provdest" id="provdest" class="mb5px">
+                                    <label for="ubigdest" class="w15p">Ubigeo.</label>
+                                    <input type="text" name="ubigdest" id="ubigdest" class="mb5px">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>Unidad de Transporte y Conductor</h4>
+                            <div>
+                                <label for="dnicond" class="w30p">DNI Conductor</label>
+                                <input type="text"  id="dnicond" name="dnicond" class="w20p mb5px">
+                                <input type="text" name="detcond" id="detcond" class="w40p mb5px">
+                            </div>
+                            <div>
+                                <label for="licencia" class="w30p">N° Licencia de Conducir</label>
+                                <input type="text" name="licencia" id="licencia" class="w60p mb5px">
+                                <label for="certificado" class="w30p">N° Certificado de Inscripción</label>
+                                <input type="text" name="certificado" id="certificado"  class="w60p mb5px">
+                                <label for="marca" class="w30p">Marca de Vehículo</label>
+                                <input type="text" name="marca" id="marca" class="w60p mb5px">
+                                <label for="placa" class="w30p">N° Placa</label>
+                                <input type="text" name="placa" id="placa" class="w60p mb5px">
+                                <label for="configveh" class="w30p">Configuracion Vehicular</label>
+                                <input type="text" name="configveh" id="configveh" class="w60p mb5px">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="optionGuia">
+                    <button id="btnAceptarGuia">Aceptar</button>
+                    <button id="btnCancelarGuia">Cancelar</button>
+                </div>
+            </form>
+        </div>   
     </div>
     <script src="<?php echo constant('URL');?>public/js/jquery.js"></script>
     <script src="<?php echo constant('URL');?>public/js/funciones.js?<?php echo constant('VERSION')?>"></script>
