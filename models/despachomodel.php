@@ -10,6 +10,33 @@
             
         }
 
+        public function getParameters($param){
+            $salida = "";
+            try {
+                $sql= $this->db->connect()->prepare("SELECT
+                                                        tb_paramete2.ncodprm1,
+                                                        tb_paramete2.ncodprm2,
+                                                        tb_paramete2.cdesprm2 
+                                                    FROM
+                                                        tb_paramete2 
+                                                    WHERE
+                                                        ncodprm1 = :cod ");
+                $sql->execute(["cod"=>$param]);
+                $rowCount = $sql->rowcount();
+
+                if ($rowCount > 0) {
+                    while ($row = $sql->fetch()) {
+                        $salida.='<li><a href="'.$row['ncodprm2'].'">'.strtoupper($row['cdesprm2']).'</a></li>';
+                    }
+                }
+
+                return $salida;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
         public function getMovs(){
             $salida = "";
             try {
@@ -34,6 +61,84 @@
             }
         }
 
+        public function obtenerAlmacenes(){
+            try {
+                $salida = "";
+                $sql = $this->db->connect()->query("SELECT
+                                                    tb_almacen.ncodalm,
+                                                    tb_almacen.ccodalm,
+                                                    tb_almacen.cdesalm,
+                                                    tb_almacen.nflgactivo,
+                                                    tb_almacen.ncubigeo,
+                                                    tb_almacen.cdespais,
+                                                    tb_almacen.cdesdpto,
+                                                    tb_almacen.cdesprov,
+                                                    tb_almacen.cdesdist,
+                                                    tb_almacen.ctipovia,
+                                                    tb_almacen.cdesvia,
+                                                    tb_almacen.cnrovia,
+                                                    tb_almacen.cintevia,
+                                                    tb_almacen.czonavia 
+                                                FROM
+                                                    tb_almacen 
+                                                WHERE
+                                                    tb_almacen.nflgactivo
+                                                ORDER BY
+	                                                tb_almacen.cdesalm");
+                $sql->execute();
+                $rowCount = $sql->rowcount();
+
+                if ($rowCount > 0) {
+                    while ($row = $sql->fetch()) {
+                        $salida.='<li><a href="'.$row['ncodalm'].'" data-via="'.$row['ctipovia'].'" 
+                                                                    data-nombre="'.$row['cdespais'].'"
+                                                                    data-nro="'.$row['cnrovia'].'"
+                                                                    data-interior="'.$row['cintevia'].'"
+                                                                    data-zona="'.$row['czonavia'].'"
+                                                                    data-dpto="'.$row['cdesdpto'].'"
+                                                                    data-prov="'.$row['cdesprov'].'"
+                                                                    data-dist="'.$row['cdesdist'].'"
+                                                                    data-ubigeo="'.$row['ncubigeo'].'">'.strtoupper($row['cdesalm']).'</a></li>';
+                    }
+                }
+
+                return $salida;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function obtenerPersonal(){
+            $salida = "";
+            try {
+                $sql = $this->db->connectrrhh()->query("SELECT
+                                                        tabla_aquarius.internal,
+                                                        tabla_aquarius.apellidos,
+                                                        tabla_aquarius.nombres,
+                                                        tabla_aquarius.ccargo,
+                                                        tabla_aquarius.dcargo 
+                                                    FROM
+                                                        tabla_aquarius 
+                                                    WHERE
+                                                        tabla_aquarius.dcargo LIKE '%almacen%'
+                                                    ORDER BY
+                                                        tabla_aquarius.nombres");
+                $sql->execute();
+                $rowCount = $sql->rowcount();
+
+                if ($rowCount > 0) {
+                    while ($row = $sql->fetch()) {
+                        $salida.='<li><a href="'.$row['internal'].'" data-cargo="'.$row['dcargo'].'">'.strtoupper($row['nombres']." ".$row['apellidos']).'</a></li>';
+                    }
+                }
+
+                return $salida;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
 
         public function llamarNotas(){
             $salida = "";

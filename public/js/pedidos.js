@@ -515,7 +515,7 @@ $(function() {
         var descripcion = $(this).children('td:eq(1)').text() + " " + $(this).children('td:eq(2)').text() + " " + $(this).children('td:eq(3)').text();
         var unidad = $(this).children('td:eq(5)').text();
         var factor = $(this).children('td:eq(6)').text();
-        
+        var ncodmed = $(this).children('td:eq(0)').data('unidad')
         
         tipo = operacion == 1 ? "BIEN" : "SERV";
         
@@ -528,11 +528,10 @@ $(function() {
                     '<td class="con_borde centro"><a href="#" data-topcion="edit"><i class="far fa-edit"></i></a></td>'+
                     '<td class="con_borde centro"><a href="#" data-topcion="delete"><i class="fas fa-eraser"></i></a></td>'+
                     '<td class="con_borde drch pr20">'+ $.strPad(item,3) +'</td>'+
-                    '<td class="con_borde centro" data-indice="'+ indice +'">'+ codigo +'</td>'+
+                    '<td class="con_borde centro" data-indice="'+ indice +'" data-unidad="'+ ncodmed +'">'+ codigo +'</td>'+
                     '<td class="con_borde pl10">'+ descripcion +'</td>'+
                     '<td class="con_borde centro">'+ unidad +'</td>'+
                     '<td class="con_borde" contenteditable="true"><input type="number" class="drch"></td>'+
-                    '<td class="con_borde proceso centro">PROCESO</td>'+
                     '<td class="con_borde"></td>'+
                     '<td class="con_borde"></td>'+
                     '<td class="con_borde centro">'+ tipo +'</td>'+
@@ -919,7 +918,6 @@ $(function() {
                 mostrarMensaje("msj_info","No se hizo ninguna modificación");
             }
         }
-        
         return false;
     });
 
@@ -1249,8 +1247,8 @@ function registerItemsTable(codigo){
                 INDICE  = $(this).find('td').eq(3).data("indice"), 
                 CODITEM = $(this).find('td').eq(3).text(),
                 CANTIDAD= $(this).find('td').eq(6).children().val(),
-                ESTADO  = $(this).find('td').eq(7).text(),
-                UNIDAD  = $(this).find('td').eq(11).text(),
+                ESTADO  = 10,
+                UNIDAD  = $(this).find('td').eq(3).data("unidad"),
                 CODPED  = codigo;
             
             item = {};

@@ -60,6 +60,11 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="pagination">
+                    <ul>
+                        <?php echo $this->iniciales?>
+                    </ul>
+                </div>
             </div>
         </div>
         <a href="#" class="buttonClose"><i class="fas fa-reply-all"></i></a>
@@ -106,11 +111,8 @@
             </div>
         </div>
     </div>
-    <div class="modal" id="modalWait">
-        <div class="containerWait">
-            <h1 class="title">Cargando...</h1>
-            <div class="rainbow-marker-loader"></div>
-        </div>
+    <div class="modal zindex5" id="waitmodal">
+        <div class="loader"></div>
     </div>
     <div class="mensaje msj_error">
         <span></span>
@@ -438,11 +440,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- <tr>
-                                            <td>jromero</td>
-                                            <td>insert</td>
-                                            <td>2020-11-25 22:25:47</td>
-                                        </tr> -->
+                                        
                                     </tbody>
                                 </table>
                             </div>

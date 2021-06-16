@@ -270,7 +270,8 @@
                                     cm_producto
                                     WHERE cm_producto.nflgactivo = '1' AND  cm_producto.ntipoprod = '1'
                                     ORDER BY
-                                    cm_producto.ccodprod ASC");
+                                    cm_producto.ccodprod ASC
+                                    LIMIT 50");
                 $query->execute();
 
                 while($row = $query->fetch()){
@@ -380,9 +381,9 @@
                     $item['ncodmed']    = $row['ncodmed'];
                     $item['cdesmed']    = $row['cdesmed'];
 
-                    $grupo   = substr($row['ccodprod'],0,2);
-                    $clase   = substr($row['ccodprod'],2,2);
-                    $familia = substr($row['ccodprod'],4,4);
+                    $grupo   = substr($row['id_cprod'],1,2);
+                    $clase   = substr($row['id_cprod'],3,2);
+                    $familia = substr($row['id_cprod'],5,4);
 
                     $item['grupo']      = $this->getGroupName($grupo);
                     $item['clase']      = $this->getClassName($grupo,$clase);
@@ -549,6 +550,33 @@
 
             } catch (PDOException  $e) {
                 $e->getMessage();
+                return false;
+            }
+        }
+
+        public function getInitials(){
+            try {
+                $salida = "";
+                $query = $this->db->connect()->query("SELECT
+                                                            SUBSTR(cm_producto.cdesprod,1,1) AS inicial
+                                                        FROM
+                                                            cm_producto 
+                                                        WHERE
+                                                            cm_producto.nflgactivo = '1' 
+                                                            AND cm_producto.ntipoprod = 1
+                                                        GROUP BY
+                                                            inicial
+                                                        ORDER BY
+                                                            cm_producto.cdesprod ASC");
+                $query->execute();
+
+                while ($row = $query->fetch()) {
+                    $salida .= '<li><a href="'.$row['inicial'].'">'.$row['inicial'].'</a></li>';
+                }
+
+                return $salida;
+            } catch (PDOException $e) {
+                echo $e->getMessage();
                 return false;
             }
         }

@@ -385,7 +385,6 @@
                                         <th class="con_borde w35p">Descripcion</th>
                                         <th class="con_borde w5p">UM</th>
                                         <th class="con_borde w5p">Cantidad</th>
-                                        <th class="con_borde w5p">Estado</th>
                                         <th class="con_borde w8p">Atendido con orden</th>
                                         <th class="con_borde w8p">Nro. Parte</th>
                                         <th class="con_borde w8p">Tipo</th>

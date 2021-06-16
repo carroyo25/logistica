@@ -177,17 +177,14 @@
                                                         lg_detapedido.nEstadoPed,
                                                         tb_unimed.nfactor,
                                                         tb_unimed.cabrevia,
-                                                        estados.cdesprm2 AS estado,
                                                         cm_producto.ccodprod,
                                                         cm_producto.cdesprod 
                                                     FROM
                                                         lg_detapedido
                                                         INNER JOIN tb_unimed ON lg_detapedido.ncodmed = tb_unimed.ncodmed
-                                                        INNER JOIN tb_paramete2 AS estados ON lg_detapedido.nEstadoPed = estados.ccodprm2
                                                         INNER JOIN cm_producto ON lg_detapedido.id_cprod = cm_producto.id_cprod 
                                                     WHERE
-                                                        lg_detapedido.id_regmov =:cod 
-                                                        AND estados.ncodprm1 = 4 
+                                                        lg_detapedido.id_regmov =:cod
                                                         AND lg_detapedido.nflgactivo = 1");
                 $query->execute(["cod"=>$cod]);
                 $rowcount = $query->rowcount();
@@ -205,7 +202,6 @@
                             <td class="con_borde pl10">'. $row['cdesprod'] .'</td>
                             <td class="con_borde centro">'. $row['cabrevia'] .'</td>
                             <td class="con_borde" contenteditable="true"><input type="number" class="drch" value="'.$row['cantidad'] .'"></td>
-                            <td class="con_borde centro '. strtolower($row['estado']) .'">'. $row['estado'] .'</td>
                             <td class="con_borde"></td>
                             <td class="con_borde"></td>
                             <td class="con_borde centro">'. $t .'</td>
@@ -317,7 +313,8 @@
                                                             cm_producto.cnroparte,
                                                             tb_unimed.cdesmed,
                                                             tb_unimed.cabrevia,
-                                                            tb_unimed.nfactor 
+                                                            tb_unimed.nfactor,
+                                                            tb_unimed.ncodmed 
                                                         FROM
                                                             cm_producto
                                                             INNER JOIN tb_unimed ON cm_producto.ncodmed = tb_unimed.ncodmed 
@@ -331,7 +328,7 @@
 
                 while($row = $query->fetch()){
                     $salida.='<tr class="pointertr">
-                                <td data-idprod = "'.$row['id_cprod'].'">'.$row['ccodprod'].'</td>
+                                <td data-idprod = "'.$row['id_cprod'].'" data-unidad="'.$row['ncodmed'].'">'.$row['ccodprod'].'</td>
                                 <td>'.strtoupper($row['cdesprod']).'</td>
                                 <td>'.strtoupper($row['cmarca']).'</td>
                                 <td>'.strtoupper($row['cmodelo']).'</td>
@@ -364,7 +361,8 @@
                                                             cm_producto.cnroparte,
                                                             tb_unimed.cdesmed,
                                                             tb_unimed.cabrevia,
-                                                            tb_unimed.nfactor 
+                                                            tb_unimed.nfactor,
+                                                            tb_unimed.ncodmed 
                                                         FROM
                                                             cm_producto
                                                             INNER JOIN tb_unimed ON cm_producto.ncodmed = tb_unimed.ncodmed 
@@ -380,7 +378,7 @@
                 if ($rowcount > 0) {
                     while($row = $query->fetch()){
                         $salida.='<tr class="pointertr">
-                                    <td data-idprod = "'.$row['id_cprod'].'">'.$row['ccodprod'].'</td>
+                                    <td data-idprod = "'.$row['id_cprod'].'" data-unidad="'.$row['ncodmed'].'">'.$row['ccodprod'].'</td>
                                     <td>'.strtoupper($row['cdesprod']).'</td>
                                     <td>'.strtoupper($row['cmarca']).'</td>
                                     <td>'.strtoupper($row['cmodelo']).'</td>
@@ -417,7 +415,8 @@
                                                             cm_producto.cnroparte,
                                                             tb_unimed.cdesmed,
                                                             tb_unimed.cabrevia,
-                                                            tb_unimed.nfactor 
+                                                            tb_unimed.nfactor,
+                                                            tb_unimed.ncodmed 
                                                         FROM
                                                             cm_producto
                                                             INNER JOIN tb_unimed ON cm_producto.ncodmed = tb_unimed.ncodmed 
@@ -433,7 +432,7 @@
                 if ($rowcount > 0) {
                     while($row = $query->fetch()){
                         $salida.='<tr class="pointertr">
-                                    <td data-idprod = "'.$row['id_cprod'].'">'.$row['ccodprod'].'</td>
+                                    <td data-idprod = "'.$row['id_cprod'].'" data-unidad="'.$row['ncodmed'].'">'.$row['ccodprod'].'</td>
                                     <td>'.strtoupper($row['cdesprod']).'</td>
                                     <td>'.strtoupper($row['cmarca']).'</td>
                                     <td>'.strtoupper($row['cmodelo']).'</td>
@@ -822,7 +821,7 @@
                 for ($i=0; $i < count($data); $i++) {
                    $id   = $data[$i]->indice; 
                    $cant = $data[$i]->cantidad;
-                   $esta = 2;
+                   $esta = 10;
                    $unid = $data[$i]->unidad;
                    $codp = $data[$i]->codped;
                    $aten = 3;

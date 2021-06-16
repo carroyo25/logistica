@@ -94,7 +94,7 @@
 
         public function update($datos){
             try {
-                $query=$this->db->connect()->prepare("INSERT INTO tb_almacen SET ncubigeo=:ubi,ccodalm=:coa,cdesalm=:dea,
+                $query=$this->db->connect()->prepare("UPDATE tb_almacen SET ncubigeo=:ubi,ccodalm=:coa,cdesalm=:dea,
                                                                                 ctipovia=:vti,cdesvia=:vin,cnrovia=:num,czonavia=:zon,
                                                                                 nflgactivo=:est,cdesdpto=:dep,cdesprov=:pro,cdesdist=:dis
                                                                 WHERE ncodalm=:idx

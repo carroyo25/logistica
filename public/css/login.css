@@ -1718,6 +1718,9 @@ hr {
 .oculto {
   display: none; }
 
+.ml-23px {
+  margin-left: -23px; }
+
 .ml30px {
   margin-left: 30px; }
 

@@ -77,7 +77,7 @@
                             <div class="process_left">
                                 <div class="input_process g4items">
                                     <label for="nrosalida" class="w100px">Nro.Salida :</label>
-                                    <input type="text" name="nrosalida" id="nrosalida" class="pl10">
+                                    <input type="text" name="nrosalida" id="nrosalida" class="pl10" readonly>
                                     <label for="movalma" class="w100px">Mod.Almacen:</label>
                                     <input type="text" name="movalma" id="movalma" class="pl10" readonly>
                                 </div>
@@ -93,7 +93,7 @@
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="solicita" class="w100px">Solicita :</label>
-                                    <input type="text" name="solicita" id="solicita" class="pl20 mayusculas" placeholder="seleccione opcion">
+                                    <input type="text" name="solicita" id="solicita" class="pl20 mayusculas">
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="aprueba" class="w100px">Aprueba :</label>
@@ -290,7 +290,13 @@
             <h3>Guia de Remisión y despacho</h3>
             <hr>
             <form action="" id="formguia">
-                <input type="hidden" name="cod_motivo" id="cot_motivo">
+                <input type="hidden" name="codmodalidadguia" id="codmodalidadguia">
+                <input type="hidden" name="codtipoguia" id="codtipoguia">
+                <input type="hidden" name="codalmacendestino" id="codalmacendestino">
+                <input type="hidden" name="codautoriza" id="codautoriza">
+                <input type="hidden" name="coddespacha" id="coddespacha">
+                <input type="hidden" name="coddestinatario" id="coddestinatario">
+
                 <div class="gridMain g2items50">
                     <div class="ladoIzquierdo">
                         <div class="mb5px">
@@ -357,25 +363,30 @@
                             <div class="p_relative">
                                 <label for="mottras" class="w25p">Motivo Traslado</label>
                                 <input type="text" name="mottrans" id="mottrans" class="w70p mb5px">
+                            </div>
+                            <div class="p_relative">
+                                <label for="modtras" class="w25p">Modalidad Traslado</label>
+                                <input type="text" name="modtras" id="modtras" class="w70p mb5px">
                                 <div class="seleccion seleccion_pedido ml30px">
-                                    <ul id="listaMotivosGuia">
-                                        <?php echo $this->motivos?>
+                                    <ul id="listaModalidadGuia">
+                                        <?php echo $this->modalidad?>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="p_relative">
+                                <label for="tenvio" class="w25p">Tipo Envio</label>
+                                <input type="text" name="tenvio" id="tenvio" class="w70p mb5px">
+                                <div class="seleccion seleccion_pedido ml30px">
+                                    <ul id="listaTipoGuia">
+                                        <?php echo $this->tipoenvio?>
                                     </ul>
                                 </div>
                             </div>
                             <div>
-                                <label for="modtras" class="w25p">Modalidad Traslado</label>
-                                <input type="text" name="modtras" id="modtras" class="w70p mb5px">
-                            </div>
-                            <div>
-                                <label for="tenvio" class="w25p">Tipo Envio</label>
-                                <input type="text" name="tenvio" id="tenvio" class="w70p mb5px">
-                            </div>
-                            <div>
                                 <label for="bultos" class="w25p">N° Bultos/Palets</label>
-                                <input type="number" name="bultos" id="bultos" class="w25p mb5px">
+                                <input type="number" name="bultos" id="bultos" class="w25p mb5px drch pr20">
                                 <label for="peso">Peso Bruto Total</label>
-                                <input type="number" name="peso" id="peso" class="w25p mb5px">
+                                <input type="number" name="peso" id="peso" class="w25p mb5px drch pr20">
                                 <label>Kg.</label>
                             </div>
                             <div>
@@ -386,12 +397,34 @@
                     </div>
                     <div class="ladoDerecho">
                         <div class="containData g2items17">
-                            <label for="autoriza" class="w15p">Autoriza</label>
-                            <input type="text" id="autoriza" name="autoriza" class="w75p mb5px">
-                            <label for="despacha" class="w15p">Despacha</label>
-                            <input type="text" id="despacha" name="despacha" class="w75p mb5px">
-                            <label for="destinatario" class="w15p">Destinatario</label>
-                            <input type="text" id="destinatario" name="destinatario" class="w75p mb5px">
+                            <div class="p_relative">
+                                <label for="autoriza" class="w15p">Autoriza</label>
+                                <input type="text" id="autoriza" name="autoriza" class="w75p mb5px">
+                                <div class="seleccion seleccion_pedido ml-23px">
+                                    <ul id="listaAutoriza">
+                                        <?php echo $this->personal?>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="p_relative">
+                                <label for="despacha" class="w15p">Despacha</label>
+                                <input type="text" id="despacha" name="despacha" class="w75p mb5px">
+                                <div class="seleccion seleccion_pedido ml-23px">
+                                    <ul id="listaDespacha">
+                                        <?php echo $this->personal?>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="p_relative">
+                                <label for="destinatario" class="w15p">Destinatario</label>
+                                <input type="text" id="destinatario" name="destinatario" class="w75p mb5px">
+                                <div class="seleccion seleccion_pedido ml-23px">
+                                    <ul id="listaDestinatario">
+                                        <?php echo $this->personal?>
+                                    </ul>
+                                </div>
+                            </div>
+                            
                             <label for="representate" class="w15p">Representante</label>
                             <input type="text" id="representate" name="representate" class="w75p mb5px">
                         </div>
@@ -410,9 +443,14 @@
                         </div>
                         <div>
                             <h4>Domicilio de llegada</h4>
-                            <div>
+                            <div class="p_relative">
                                 <label for="almdest" class="w15p">Alm.Destino</label>
                                 <input type="text" name="almdest" id="almdest"  class="w75p mb5px">
+                                <div class="seleccion seleccion_pedido ml-23px">
+                                    <ul id="listaAlmacenDestino">
+                                        <?php echo $this->almacenes?>
+                                    </ul>
+                                </div>
                             </div>
                             <div class="ml30px">
                                 <div>

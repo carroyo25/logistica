@@ -151,7 +151,7 @@ $(function(){
         return false;
     });
 
-    //lista de motivos de movimientos
+    //lista de modalidad de movimientos
     $("#tipomov").focus(function (e) { 
         e.preventDefault();
         
@@ -178,12 +178,13 @@ $(function(){
         return false;
     });
 
-    //lista de motivos de movimientos
-    $("#mottrans").focus(function (e) { 
+
+     //lista de modalidad de movimientos
+     $("#modtras").focus(function (e) { 
         e.preventDefault();
         
         if (accion == "n") {
-            $("#cot_motivo").val("");
+            $("#codmodalidadguia").val("");
             $(this).select();
             $(".seleccion").fadeOut();
 
@@ -193,13 +194,173 @@ $(function(){
         return false;
     });
 
-    $("#listaMotivosGuia").on("click","a", function (e) {
+    $("#listaModalidadGuia").on("click","a", function (e) {
         e.preventDefault();
 
-        $("#cot_motivo").val($(this).attr("href"));
-        $("#mottrans").val($(this).text());
+        $("#codmodalidadguia").val($(this).attr("href"));
+        $("#modtras").val($(this).text());
 
         $(this).parent().parent().parent().slideUp();
+        $("#saveDoc span").addClass('parpadea');
+
+        return false;
+    });
+
+    //lista de tipo de envio
+    $("#tenvio").focus(function (e) { 
+        e.preventDefault();
+        
+        if (accion == "n") {
+            $("#codmodalidadguia").val("");
+            $(this).select();
+            $(".seleccion").fadeOut();
+
+            $(this).next(".seleccion").slideDown();
+        }
+
+        return false;
+    });
+
+    $("#listaTipoGuia").on("click","a", function (e) {
+        e.preventDefault();
+
+        $("#codtipoguia").val($(this).attr("href"));
+        $("#tenvio").val($(this).text());
+
+        $(this).parent().parent().parent().slideUp();
+
+        return false;
+    });
+    
+    $("#btnCancelarGuia").on("click", function (e) {
+        e.preventDefault();
+
+        $("#formguia")[0].reset();
+        $("#modalGuia").fadeOut();
+
+        return false;
+    });
+
+     //lista de tipo de envio
+     $("#almdest").focus(function (e) { 
+        e.preventDefault();
+        
+        if (accion == "n") {
+            $("#codalmacendestino").val("");
+            $(this).select();
+            $(".seleccion").fadeOut();
+
+            $(this).next(".seleccion").slideDown();
+        }
+
+        return false;
+    });
+
+    $("#listaAlmacenDestino").on("click","a", function (e) {
+        e.preventDefault();
+
+        $("#codalmacendestino").val($(this).attr("href"));
+        $("#almdest").val($(this).text());
+        $("#viatipodest").val($(this).data("via"));
+        $("#vianomodest").val();
+        $("#viadest").val();
+        $("#intdest").val($(this).data("interior"));
+        $("#zondest").val($(this).data("zona"));
+        $("#depdest").val($(this).data("dpto"));
+        $("#distdest").val($(this).data("dist"));
+        $("#provdest").val($(this).data("prov"));
+        $("#ubigdest").val($(this).data("ubigeo"));
+
+        $(this).parent().parent().parent().slideUp();
+
+        return false;
+    });
+
+
+    //lista Autoriza
+    $("#autoriza").focus(function (e) { 
+        e.preventDefault();
+        
+        if (accion == "n") {
+            $("#codautoriza").val("");
+            $(this).select();
+            $(".seleccion").fadeOut();
+
+            $(this).next(".seleccion").slideDown();
+        }
+
+        return false;
+    });
+
+    $("#listaAutoriza").on("click","a", function (e) {
+        e.preventDefault();
+
+        $("#codautoriza").val($(this).attr("href"));
+        $("#autoriza").val($(this).text());
+
+        $(this).parent().parent().parent().slideUp();
+
+        return false;
+    });
+
+    //lista despacha
+    $("#despacha").focus(function (e) { 
+        e.preventDefault();
+        
+        if (accion == "n") {
+            $("#coddespacha").val("");
+            $(this).select();
+            $(".seleccion").fadeOut();
+
+            $(this).next(".seleccion").slideDown();
+        }
+
+        return false;
+    });
+
+    $("#listaDespacha").on("click","a", function (e) {
+        e.preventDefault();
+
+        $("#coddespacha").val($(this).attr("href"));
+        $("#despacha").val($(this).text());
+
+        $(this).parent().parent().parent().slideUp();
+
+        return false;
+    });
+
+    //lista Destinatario
+    $("#destinatario").focus(function (e) { 
+        e.preventDefault();
+        
+        if (accion == "n") {
+            $("#coddestinatario").val("");
+            $(this).select();
+            $(".seleccion").fadeOut();
+
+            $(this).next(".seleccion").slideDown();
+        }
+
+        return false;
+    });
+
+    //DESTINATARIOS
+    $("#listaDestinatario").on("click","a", function (e) {
+        e.preventDefault();
+
+        $("#coddestinatario").val($(this).attr("href"));
+        $("#destinatario").val($(this).text());
+
+        $(this).parent().parent().parent().slideUp();
+
+        return false;
+    });
+    
+    $("#btnCancelarGuia").on("click", function (e) {
+        e.preventDefault();
+
+        $("#formguia")[0].reset();
+        $("#modalGuia").fadeOut();
 
         return false;
     });

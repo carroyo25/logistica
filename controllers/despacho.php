@@ -8,7 +8,11 @@
         function render(){
             $this->view->menu = $this->model->acordeon($_SESSION['id_user']);
             $this->view->registros = $this->model->getMainRecords();
-            $this->view->motivos    = $this->model->getMovs();
+            $this->view->modalidad = $this->model->getParameters(22);
+            $this->view->tipoenvio = $this->model->getParameters(7);
+            $this->view->almacenes = $this->model->obtenerAlmacenes();
+            $this->view->personal  = $this->model->obtenerPersonal();
+
             $this->view->render('despacho/index');
         }
 

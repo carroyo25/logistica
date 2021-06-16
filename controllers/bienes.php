@@ -8,6 +8,7 @@
         function render(){
             $this->view->menu = $this->model->acordeon($_SESSION['id_user']);
             $this->view->unidades = $this->model->listUnids();
+            $this->view->iniciales = $this->model->getInitials();
             $this->view->render('bienes/index');
         }
 

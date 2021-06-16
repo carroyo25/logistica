@@ -185,7 +185,6 @@
             $result = $this->model->getInitials();
 
             echo $result;
-
         }
 
         //sube los archivos adjuntos

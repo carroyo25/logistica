@@ -91,10 +91,14 @@ $(function(){
     $("#searchreg").on("click", function (e) {
         e.preventDefault();
 
+        $("#waitmodal").fadeIn();
+
         $.post(RUTA + 'bienes/getAllItems',function(data,textStatus,jqXHR){
             $("#tableSeekItems tbody")
             .empty()
             .append(data);
+
+            $("#waitmodal").fadeOut();
         })
 
         $("#modalSeekItems").fadeIn();
@@ -274,9 +278,9 @@ $(function(){
 
                 $("#cod_unidad").val(data.id_cprod);
                 $("#codigo").val(data.ccodprod);
-                $("#grupo").val(data.ccodprod.substr(0,2));
-                $("#clase").val(data.ccodprod.substr(2,2));
-                $("#familia").val(data.ccodprod.substr(4,4));
+                $("#grupo").val(data.ccodprod.substr(1,2));
+                $("#clase").val(data.ccodprod.substr(3,2));
+                $("#familia").val(data.ccodprod.substr(5,4));
                 $("#nombre_grupo").text(data.grupo);
                 $("#nombre_clase").text(data.clase);
                 $("#nombre_familia").text(data.familia);
@@ -298,7 +302,7 @@ $(function(){
                 $("#nro_parte").val(data.cnroparte);
                 $("#cod_anexo").val(data.ccodanexo);
 
-                var nombre = data.cdesprod + " " + data.cmarca + " " + data.cmodelo + " " + data.cnroparte
+                var nombre = data.cdesprod;
 
                 $(".banner p").text("Nombre: " + nombre.toUpperCase());
 
@@ -346,7 +350,7 @@ $(function(){
                 data.ngasrela   == 1 ? $("#producto_relacionado").prop('checked', true) : $("#producto_relacionado").prop('checked', false);
                 data.nicbper    == 1 ? $("#afecto_icbper").prop('checked', true) : $("#afecto_icbper").prop('checked', false);
 
-                data.cfoto.length > 0 ? $("#img_preview").attr("src",RUTA+"public/productos/"+data.cfoto) : $("#img_preview").attr("src",RUTA+"public/img/noimagen.jpg");
+                data.cfoto !=  null ? $("#img_preview").attr("src",RUTA+"public/productos/"+data.cfoto) : $("#img_preview").attr("src",RUTA+"public/img/noimagen.jpg");
 
                 $("#tipo_producto").val(data.ntipoprod);
                 $("#ruta_foto").val(data.cfoto);

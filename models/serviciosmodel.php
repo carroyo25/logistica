@@ -427,9 +427,9 @@
                     $item['ncodmed']    = $row['ncodmed'];
                     $item['cdesmed']    = $row['cdesmed'];
 
-                    $grupo   = substr($row['ccodprod'],0,2);
-                    $clase   = substr($row['ccodprod'],2,2);
-                    $familia = substr($row['ccodprod'],4,4);
+                    $grupo   = substr($row['ccodprod'],1,2);
+                    $clase   = substr($row['ccodprod'],3,2);
+                    $familia = substr($row['ccodprod'],5,4);
 
                     $item['grupo']      = $this->getGroupName($grupo);
                     $item['clase']      = $this->getClassName($grupo,$clase);

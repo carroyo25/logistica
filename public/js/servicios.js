@@ -339,9 +339,9 @@ $(function(){
 
                 $("#cod_unidad").val(data.id_cprod);
                 $("#codigo").val(data.ccodprod);
-                $("#grupo").val(data.ccodprod.substr(0,2));
-                $("#clase").val(data.ccodprod.substr(2,2));
-                $("#familia").val(data.ccodprod.substr(4,4));
+                $("#grupo").val(data.ccodprod.substr(1,2));
+                $("#clase").val(data.ccodprod.substr(3,2));
+                $("#familia").val(data.ccodprod.substr(5,4));
                 $("#nombre_grupo").text(data.grupo);
                 $("#nombre_clase").text(data.clase);
                 $("#nombre_familia").text(data.familia);
