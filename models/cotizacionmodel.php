@@ -36,7 +36,7 @@
                                                     WHERE
                                                         atenciones.ncodprm1 = 13 
                                                         AND estados.ncodprm1 = 4 
-                                                        AND logistica.lg_registro.nEstadoDoc = 3");
+                                                        AND logistica.lg_registro.nEstadoDoc = 2");
                 $query->execute();
                 $rowcount = $query->rowcount();
 
@@ -172,21 +172,18 @@
                 $query = $this->db->connect()->prepare("SELECT
                                                         lg_detapedido.nidpedi,
                                                         lg_detapedido.id_cprod,
-                                                        ROUND( lg_detapedido.ncantpedi, 2 ) AS cantidad,
+                                                        ROUND( lg_detapedido.ncantapro, 2 ) AS cantidad,
                                                         lg_detapedido.nEstadoPed,
                                                         tb_unimed.nfactor,
                                                         tb_unimed.cabrevia,
-                                                        estados.cdesprm2 AS estado,
                                                         cm_producto.ccodprod,
                                                         cm_producto.cdesprod 
                                                     FROM
                                                         lg_detapedido
                                                         INNER JOIN tb_unimed ON lg_detapedido.ncodmed = tb_unimed.ncodmed
-                                                        INNER JOIN tb_paramete2 AS estados ON lg_detapedido.nEstadoPed = estados.ccodprm2
                                                         INNER JOIN cm_producto ON lg_detapedido.id_cprod = cm_producto.id_cprod 
                                                     WHERE
-                                                        lg_detapedido.id_regmov =:cod 
-                                                        AND estados.ncodprm1 = 4 
+                                                        lg_detapedido.id_regmov =:cod
                                                         AND lg_detapedido.nflgactivo = 1");
                 $query->execute(["cod"=>$cod]);
                 $rowcount = $query->rowcount();
@@ -389,7 +386,7 @@
         }
 
         public function changeStatus($cod){
-            $estatus = 4;
+            $estatus = 3;
             $salida = "";
             try {
                 $query = $this->db->connect()->prepare("UPDATE lg_registro SET nEstadoReg=:reg, nEstadoDoc=:doc WHERE id_regmov=:cod");
@@ -397,8 +394,8 @@
                 $rowcount = $query->rowcount();
 
                 if ($rowcount > 0) {
-                    $this->changeDetailStatus($cod,7);
-                    $this->saveLog($cod,"Cotizaciones");
+                    $this->changeDetailStatus($cod,3);
+                    $this->saveAction("ESTIO DE MEECADO",$cod,"COTIZACIONES",$_SESSION['user']);
                     $salida = $this->getMainRecords();
                 }
 
@@ -413,16 +410,6 @@
             try {
                 $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nEstadoPed=:est WHERE id_regmov=:cod");
                 $query->execute(["cod"=>$cod,"est"=>$est]);
-            } catch (PDOException $e) {
-                echo $e->getMessage();
-                return false;
-            }
-        }
-
-        public function saveLog($cod,$action){
-            try {
-                $query = $this->db->connect()->prepare("INSERT INTO lg_seguimiento SET cmodulo=:mod, id_regmov=:cod, cproceso=:pro, ccoduser=:usr");
-                $query->execute(["mod"=>$action,"cod"=>$cod,"usr"=>$_SESSION['iduser'],"pro"=>"cotizar"]);
             } catch (PDOException $e) {
                 echo $e->getMessage();
                 return false;

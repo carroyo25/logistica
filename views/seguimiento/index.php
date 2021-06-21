@@ -41,7 +41,6 @@
                 <ul class="tabs">
                     <li><a href="tab1" class="option_tab_selected">Descripción de la Orden</a></li>
                     <li><a href="tab2">Descripción del Pedido</a> </li>
-                    <li><a href="tab3">Observaciones</a> </li>
                 </ul>
                 <div class="tab" id="tab1">
                     <form action="#" method="POST" id="formProcessOrder">
@@ -122,6 +121,9 @@
                         <div class="descrip_title">
                             <span>Detalles</span>
                             <div>
+                                <button type="button" id="btnAddComment" title="Firmar Orden">
+                                    <i class="far fa-comments"></i> Ver/Responder Observación
+                                </button>
                                 <button type="button" id="btnSendMail" title="Cierra la orden y la envia por correo">
                                     <i class="far fa-paper-plane"></i> Enviar Correo
                                 </button>
@@ -235,33 +237,39 @@
                             <textarea name="espec_items" id="espec_items" rows="3" class="w100p"></textarea>
                         </div>
                 </div>
-                <div class="oculto tab" id="tab3">
-                    <div>
-                        <button class="button_floating" id="addObservation"><span><i class="far fa-clipboard"></i> Agregar Observación</span> </button>
-                        <table class="con_borde w50p margin5px_auto" id="table_observacion">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th class="w5p">Fecha</th>
-                                    <th>Observación</th>
-                                    <th class="w5p">...</th>
-                                    <th class="w5p">...</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
         </div>
         <a href="#" id="closeModalProcess" class="buttonClose"><i class="fas fa-reply-all"></i></a>
     </div>
     <div class="modal zindex3" id="modalPreview">
         <div class="insidePreview">
-            <object data="" type="application/pdf"></object>
+           <!--  <object data="" type="application/pdf"></object> -->
+
+            <iframe src=""></iframe>
         </div>
         <a href="#" id="closeModalPreview" class="buttonClose"><i class="fas fa-reply-all"></i></a>
+    </div>
+    <div class="modal zindex3" id="modalObservaciones">
+        <div class="insideWindow w60p">
+            <h4 class="mb20px">Agregar Comentarios</h4>
+            <div>
+                <button class="button_floating" id="addObservation"><span><i class="far fa-clipboard"></i> Agregar Observación</span> </button>
+                <table class="con_borde table_dialog w70p" id="table_observacion">
+                    <thead class="table_title_black">
+                        <tr class="h35px">
+                            <th class="con_borde">Nombre</th>
+                            <th class="con_borde">Fecha</th>
+                            <th class="con_borde">Observación</th>
+                            <th class="con_borde">...</th>
+                            <th class="con_borde">...</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <a href="#" id="closeModalObservation" class="buttonClose"><i class="fas fa-reply-all"></i></a>
     </div>
     <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>

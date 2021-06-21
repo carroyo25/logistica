@@ -110,6 +110,8 @@ $(function(){
                 $("#nrord").val(data[0].nrorden);
                 $("#fecord").val(data[0].fechaOrden);
                 $("#espec").val(data[0].cconcepto);
+                $("#guia").val(data[0].cnumguia);
+                $("#entidad").val(data[0].crazonsoc);
 
                 $.post(RUTA+"despacho/detallesIngresosId",{idx:data[0].id_regalm},
                     function (data, textStatus, jqXHR) {
@@ -169,7 +171,8 @@ $(function(){
     $("#listaMotivo").on("click","a", function (e) {
         e.preventDefault();
 
-        $("#cod_movimento").val($(this).attr("href"));
+        console.log($(this).attr("href"))
+        $("#cod_movimiento").val($(this).attr("href"));
         $("#tipomov").val($(this).text());
 
         $(this).parent().parent().parent().slideUp();
@@ -364,4 +367,108 @@ $(function(){
 
         return false;
     });
+
+
+    //vista previa de la nota de salida
+    $("#previewSalida").on("click", function (e) {
+        e.preventDefault();
+
+        if ($("#nrosalida").val().length == 0) {
+            mostrarMensaje("msj_error","Selecione una guia de ingreso");
+            return false;
+        }else if ($("#cod_movimiento").val().length == 0){
+            mostrarMensaje("msj_error","Selecione el tipo de movimiento");
+            return false;
+        }
+
+        getDetails();
+
+        $.ajax({
+            type: "POST",
+            url: RUTA+"despacho/preview",
+            data:{  proyecto: $("#proyecto").val(),
+                    origen: $("#almacen").val(),
+                    movimiento: $("#tipomov").val(),
+                    fecha: $("#fechadoc").val(),
+                    orden: $("#nrord").val(),
+                    pedido: $("#nroped").val(),
+                    entidad: $("#entidad").val(),
+                    guia: $("#guia").val(),
+                    autoriza: $("#aprueba").val(),
+                    cargo:$("#cargo_almacen").val(),
+                    condicion: 0,
+                    tipo:"S",
+                    ndoc:$("#nrosalida").val(),
+                    details:JSON.stringify(DETALLES)},
+            dataType: "text",
+            success: function (response) {
+                
+                $("#modalVistaNotaSalida .insidePreview iframe")
+                    .attr("src","")
+                    .attr("src",response);
+
+                    $("#modalVistaNotaSalida").fadeIn();                
+            }
+        });
+
+        
+        return false;
+    });
+
+    $(".buttonClose").on("click", function (e) {
+        $(this).parent().fadeOut();
+    });
 })
+
+function getDetails(){
+    DETALLES = [];
+
+    var TABLA = $("#detalle_despacho tbody > tr");
+
+    TABLA.each(function(){
+        var ITEM        = $(this).find('td').eq(1).text(),
+            CODITEM     = $(this).find('td').eq(2).text(),
+            DESCRIPCION = $(this).find('td').eq(3).text(),
+            UNIDAD      = $(this).find('td').eq(4).text(),
+            CANTRQ      = $(this).find('td').eq(5).text(),
+            CANTDES     = $(this).find('td').eq(6).children().val(),
+            TESTADO     = $(this).find('td').eq(7).text(),
+            UBICACION   = $(this).find('td').eq(8).text(),
+            VENCE       = $(this).find('td').eq(11).text(),
+            NIDDETA     = $(this).find('td').eq(2).data('iddetalle'),
+            FACTOR      = $(this).find('td').eq(2).data('factor'),
+            CODUNI      = $(this).find('td').eq(2).data('coduni'),
+            IDPROD      = $(this).find('td').eq(2).data('idprod'),
+            IDDETPED    = $(this).find('td').eq(2).data('iddetpedido'),
+            IDDERORD    = $(this).find('td').eq(2).data('iddetorden'),
+            NESTADO     = $(this).find('td').eq(2).data('nestado'),
+                
+
+
+            item = {};
+
+            if (ITEM !== ''){
+                item["item"]        = ITEM;
+                item["coditem"]     = CODITEM;
+                item["descripcion"] = DESCRIPCION;
+                item["unidad"]      = UNIDAD;
+                item["cantidad"]    = CANTRQ;
+                item["cantdes"]     = CANTDES
+                item["cestado"]     = TESTADO;
+                item["nestado"]     = NESTADO;
+                item["ubicacion"]   = UBICACION;
+                item["vence"]       = VENCE;
+                item["niddeta"]     = NIDDETA;
+                item["factor"]      = FACTOR;
+                item["coditem "]    = ITEM;
+                item["coduni"]      = CODUNI;
+                item["idprod"]      = IDPROD;
+                item["iddetped"]    = IDDETPED;
+                item["iddetord"]    = IDDERORD;
+            }
+
+            DETALLES.push(item);
+    })
+
+    return DETALLES;
+}

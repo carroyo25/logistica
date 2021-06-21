@@ -37,7 +37,7 @@
                                                     WHERE
                                                         atenciones.ncodprm1 = 13 
                                                         AND estados.ncodprm1 = 4 
-                                                        AND logistica.lg_registro.nEstadoDoc = 4");
+                                                        AND logistica.lg_registro.nEstadoDoc = 3");
                 $query->execute();
                 $rowcount = $query->rowcount();
 
@@ -794,6 +794,8 @@
                                         "fact"=>$detalles[$i]->fact,
                                         "puni"=>$detalles[$i]->puni,
                                         "tota"=>$detalles[$i]->tota]);
+
+                                        $this->changeStatusDetails($detalles[$i]->idet);
                     } catch (PDOException $th) {
                         echo $th->getMessage();
                         return false;
@@ -833,7 +835,7 @@
 
         public function uploadfilesItems($datos,$codigo,$nfiles){
             try {
-                //tiene que crear otra tabla
+                //llevar a la tabla adjuntos
                 $data = json_decode($datos);
 
                 for ($i=0; $i < $nfiles; $i++) { 
@@ -857,6 +859,12 @@
                 $sql = $this->db->connect()->prepare("UPDATE lg_regcotiza2 SET cestadodoc=:estado WHERE niddet=:item");
                 $sql->execute(["item"=>$item,
                                 "estado"=>1]);
+
+                
+                $rowCount = $sql->rowcount();
+                if ($rowCount > 0) {
+                    $this->changeStatusDetails($item);
+                }
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
@@ -865,6 +873,30 @@
 
         public function cerrarPedido($pedido){
             
+        }
+
+        public function changeStatusDetails($codigo){
+            try {
+                $cest = 5;
+                $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nEstadoPed=:cest WHERE nidpedi=:idx AND nflgactivo = 1");
+                $query->execute(["cest"=>$cest,"idx"=>$codigo]);
+
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+        }
+
+        public function changePedDetails($pedido){
+            try {
+                $cest = 5; //Item en estado de orden de compra
+                $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nEstadoPed=:cest WHERE nidpedi=idx AND nflgactivo = 1");
+                $query->execute(["cest"=>$cest,"idx"=>$pedido]);
+
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
         }
     }
 ?>

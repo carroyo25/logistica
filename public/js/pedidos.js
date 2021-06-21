@@ -438,7 +438,9 @@ $(function() {
             "text"
         );
 
-        $.post(RUTA+"pedidos/ItemsByLetter", {tipo:operacion,letra:"1"},
+        var letrainicial = operacion == 1 ? "1":"S";
+
+        $.post(RUTA+"pedidos/ItemsByLetter", {tipo:operacion,letra:letrainicial},
                 function (data, textStatus, jqXHR) {
                     $("#tableItems tbody")
                         .empty()

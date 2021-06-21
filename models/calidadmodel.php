@@ -334,6 +334,8 @@
                                    "est"=>$datos[$i]->nestado,
                                    "obs"=>$datos[$i]->observ,
                                    "flg"=>1]);
+
+                    $this->changeDetailStatus($datos[$i]->iddetped);
                 }
 
                 
@@ -360,6 +362,16 @@
 
             } catch (PDOException $th) {
                 echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function changeDetailStatus($codigo){
+            try {
+                $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nEstadoPed = 8 WHERE nidpedi=:idp");
+                $query->execute(["idp"=>$codigo]);
+            } catch (PDOException $e) {
+                echo $e->getMessage();
                 return false;
             }
         }

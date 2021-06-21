@@ -406,13 +406,13 @@
 
                 if ($rowcount > 0){
                     while ($row = $sql->fetch()) {
-                        $salida.='<tr>
-                                    <td class="con_borde pl20 mayusculas">'.strtoupper($row['cnombres']).'</td>
-                                    <td class="con_borde centro"><input type="date" value="'.$row['ffecha'].'" readonly></td>
-                                    <td class="con_borde pl20">'.$row['ccomenta'].'</td>
-                                    <td class="con_borde centro"></td>
-                                    <td class="con_borde centro"></td>
-                                </tr>';
+                        $salida.='<tr class="h35px">
+                                        <td class="con_borde pl20 mayusculas">'.strtoupper($row['cnombres']).'</td>
+                                        <td class="con_borde centro"><input type="date" value="'.$row['ffecha'].'" class="sin_borde" readonly></td>
+                                        <td class="con_borde pl20 h35px">'.$row['ccomenta'].'</td>
+                                        <td class="con_borde centro"></td>
+                                        <td class="con_borde centro"></td>
+                                    </tr>';
                     }
                 }
 
@@ -441,7 +441,7 @@
                                                                 logistica.lg_regabastec.id_centi,
                                                                 logistica.lg_regabastec.ncodmon,
                                                                 logistica.lg_regabastec.ntotal,
-                                                                logistica.lg_regabastec.mdetalle,
+                                                                logistica.lg_regabastec.mobserva,
                                                                 logistica.lg_regabastec.nNivAten,
                                                                 logistica.lg_regabastec.ncodpago,
                                                                 logistica.lg_regabastec.cnumcot,
@@ -618,7 +618,7 @@
 
                         $pdf->Output($filename,'F');
 
-                        $this->passDocument($codigo,$file);
+                        //$this->passDocument($codigo,$file);
 
                         return $filename;
                     }
@@ -816,8 +816,12 @@
                         $item['ntotal']     = $row['ntotal'];
                         $item['nidpedi']    = $row['nidpedi'];
                         $item['ped']        = $ped;
-
+                        
+                        $this->changeDetailStatus($row['nidpedi']);
+                        
                         array_push($data,$item);
+
+                        //echo $row['nidpedi'];
                     }
                 }
 
@@ -958,6 +962,16 @@
                 $sql->execute(["idreg"=>$orden,"est"=>4]);
             } catch (PDOException $th) {
                 echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function changeDetailStatus($codigo){
+            try {
+                $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nEstadoPed = 6 WHERE nidpedi=:idp");
+                $query->execute(["idp"=>$codigo]);
+            } catch (PDOException $e) {
+                echo $e->getMessage();
                 return false;
             }
         }

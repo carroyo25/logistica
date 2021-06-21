@@ -184,7 +184,6 @@
                                         <th class="con_borde w3p">UM</th>
                                         <th class="con_borde w5p">Cantidad Pedida</th>
                                         <th class="con_borde w5p">Cantidad Aprobada</th>
-                                        <th class="con_borde w5p">Estado</th>
                                         <th class="con_borde w15p">Observaciones</th>
                                         <th class="con_borde w5p">Aprobado</th>
                                         <th class="con_borde oculto">Factor</th>

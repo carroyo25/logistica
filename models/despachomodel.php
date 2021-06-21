@@ -160,9 +160,9 @@
                                                         al_regmovi1.ctipmov = 'I' 
                                                         AND al_regmovi1.nflgactivo = 1 
                                                         AND al_regmovi1.nEstadoDoc = 8");
-                $sql->execute([]);
+                $sql->execute();
                 $rowCount = $sql->rowcount();
-                if ($rowCount > 1) {
+                if ($rowCount > 0) {
                     while ($rs = $sql->fetch()) {
                         $salida .='<tr class="lh1_2rem pointertr">
                                     <td class="con_borde pl20">'.str_pad($rs['nnronota'],5,"0",STR_PAD_LEFT).'</td>
@@ -205,20 +205,21 @@
                                                         logistica.al_regmovi1.id_userAprob,
                                                         logistica.al_regmovi1.nEstadoDoc,
                                                         logistica.al_regmovi1.nflgactivo,
-                                                        CONCAT(logistica.tb_almacen.ccodalm,' - ',logistica.tb_almacen.cdesalm) AS almacen,
-                                                        CONCAT(logistica.tb_proyecto1.ccodpry,' - ',logistica.tb_proyecto1.cdespry) AS proyecto,
+                                                        CONCAT( logistica.tb_almacen.ccodalm, ' - ', logistica.tb_almacen.cdesalm ) AS almacen,
+                                                        CONCAT( logistica.tb_proyecto1.ccodpry, ' - ', logistica.tb_proyecto1.cdespry ) AS proyecto,
                                                         logistica.viewpedidos.cnumero AS nroped,
-                                                        CONCAT(logistica.viewpedidos.apellidos,' ',logistica.viewpedidos.nombres) AS solicita,
+                                                        CONCAT( logistica.viewpedidos.apellidos, ' ', logistica.viewpedidos.nombres ) AS solicita,
                                                         logistica.viewpedidos.id_regmov,
                                                         logistica.viewpedidos.mdetalle,
-                                                        CONCAT(rrhh.tabla_aquarius.apellidos,' ',rrhh.tabla_aquarius.nombres) AS aprueba,
+                                                        CONCAT( rrhh.tabla_aquarius.apellidos, ' ', rrhh.tabla_aquarius.nombres ) AS aprueba,
                                                         rrhh.tabla_aquarius.dcargo,
-                                                        LPAD(logistica.lg_regabastec.cnumero,6,0) AS nrorden,
+                                                        LPAD( logistica.lg_regabastec.cnumero, 6, 0 ) AS nrorden,
                                                         logistica.lg_regabastec.ffechadoc AS fechaOrden,
-	                                                    logistica.lg_regabastec.cdocPDF,
+                                                        logistica.lg_regabastec.cdocPDF,
                                                         logistica.viewpedidos.ffechadoc AS fechaPedido,
                                                         logistica.viewpedidos.cconcepto,
-                                                        CONCAT(logistica.tb_paramete2.ccodprm2,' - ',logistica.tb_paramete2.cdesprm2) AS movimiento
+                                                        CONCAT( logistica.tb_paramete2.ccodprm2, ' - ', logistica.tb_paramete2.cdesprm2 ) AS movimiento,
+                                                        logistica.cm_entidad.crazonsoc 
                                                     FROM
                                                         logistica.al_regmovi1
                                                         INNER JOIN logistica.tb_almacen ON al_regmovi1.ncodalm1 = tb_almacen.ncodalm
@@ -226,11 +227,12 @@
                                                         INNER JOIN logistica.viewpedidos ON al_regmovi1.idref_pedi = viewpedidos.id_regmov
                                                         INNER JOIN rrhh.tabla_aquarius ON logistica.al_regmovi1.id_userAprob = rrhh.tabla_aquarius.internal
                                                         INNER JOIN logistica.lg_regabastec ON logistica.al_regmovi1.idref_abas = logistica.lg_regabastec.id_regmov
-                                                        INNER JOIN logistica.tb_paramete2 ON logistica.lg_regabastec.ctiptransp = logistica.tb_paramete2.ncodprm2 
+                                                        INNER JOIN logistica.tb_paramete2 ON logistica.lg_regabastec.ctiptransp = logistica.tb_paramete2.ncodprm2
+                                                        INNER JOIN logistica.cm_entidad ON logistica.al_regmovi1.id_centi = logistica.cm_entidad.id_centi 
                                                     WHERE
                                                         al_regmovi1.id_regalm = :cod 
-                                                        AND logistica.tb_paramete2.ncodprm1 = 7
-                                                    LIMIT 1");
+                                                        AND logistica.tb_paramete2.ncodprm1 = 7 
+                                                        LIMIT 1");
                 $sql->execute(["cod"=>$idx]);
                 
                 $rowCount = $sql->rowcount();
@@ -297,12 +299,18 @@
                     while ($rs = $sql->fetch()) {
                         $salida .='<tr>
                                         <td class="con_borde centro"><a href="'.$rs['niddeta'].'" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
-                                        <td class="con_borde centro">'. str_pad($item++,3,0,STR_PAD_LEFT) .'</td>
+                                        <td class="centro con_borde" data-iddetpedido ="'.$rs['niddetaped'].'"
+                                                                 data-iddetorden ="'.$rs['niddetaord'].'"    
+                                                                 data-factor="'.$rs['nfactor'].'"
+                                                                 data-coduni="'.$rs['ncodmed'].'"
+                                                                 data-idprod="'.$rs['id_cprod'].'
+                                                                 data-nestado="'.$rs['nestadoreg'].'">
+                                                                '.str_pad($item,3,"0",STR_PAD_LEFT).'
                                         <td class="con_borde centro">'.$rs['ccodprod'].'</td>
                                         <td class="con_borde pl20">'.$rs['cdesprod'].'</td>
                                         <td class="con_borde centro">'.$rs['cabrevia'].'</td>
                                         <td class="con_borde drch pr10">'.number_format($rs['ncanti'], 2, '.', ',').'</td>
-                                        <td class="con_borde drch pr10">'.number_format($rs['ncantidad'], 2, '.', ',').'</td>
+                                        <td class="con_borde drch pr10"><input type="number" value="'.number_format($rs['ncantidad'], 2, '.', ',').'" class="drch pr10px"></td>
                                         <td class="con_borde centro">'.$rs['cdesprm2'].'</td>
                                         <td class="con_borde centro"></td>
                                         <td class="con_borde centro"></td>
@@ -365,6 +373,62 @@
                 echo $th->getMessage();
                 return false;
             }
+        }
+
+        public function genPreview($ingreso,$condicion,$fecha,$proyecto,$origen,$movimiento,$orden,$pedido,$nguia,$nombre,$cargo,$entidad,$details,$tipo){
+            require_once("public/libsrepo/repoingreso.php");
+            try {
+                $datos = json_decode($details);
+                $fecha_explode = explode("-",$fecha);
+                $lc = 0;
+                $rc = 0;
+
+                $dia = $fecha_explode[2];
+                $mes = $fecha_explode[1];
+                $anio = $fecha_explode[0];
+
+                $filename = "public/temp/".uniqid("NS").".pdf";
+
+                if(file_exists($filename))
+                    unlink($filename);
+
+                $nreg = count($datos);
+
+                $pdf = new PDF($ingreso,$condicion,$dia,$mes,$anio,$proyecto,$origen,$movimiento,$orden,$pedido,$nguia,$nombre,$cargo,$tipo);
+                // Creación del objeto de la clase heredada
+                $pdf->AliasNbPages();
+                $pdf->AddPage();
+                $pdf->SetWidths(array(5,15,55,8,12,20,45,15,15));
+                $pdf->SetFont('Arial','',4);
+                $lc = 0;
+
+                for($i=1;$i<=$nreg;$i++){
+                        $pdf->SetAligns(array("C","L","L","L","R","L","L","L","L"));
+                        $pdf->Row(array(str_pad($i,3,"0",STR_PAD_LEFT),
+                                                $datos[$rc]->coditem,
+                                                utf8_decode($datos[$rc]->descripcion),
+                                                $datos[$rc]->unidad,
+                                                $datos[$rc]->cantdes,
+                                                "",
+                                                utf8_decode($entidad),
+                                                $datos[$rc]->cestado,
+                                                $datos[$rc]->ubicacion));
+                        $lc++;
+                        $rc++;
+                        
+                        if ($lc == 52) {
+                            $pdf->AddPage();
+                            $lc = 0;
+                        }	
+                    }
+                    
+                $pdf->Output($filename,'F');
+                echo $filename;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+            
         }
     }
 ?>

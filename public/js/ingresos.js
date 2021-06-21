@@ -534,6 +534,7 @@ $(function(){
                     cargo:$("#cargo_almacen").val(),
                     condicion: 0,
                     ndoc:$("#nro_ingreso").val(),
+                    tipo:"I",
                     details:JSON.stringify(DETALLES)},
             dataType: "text",
             success: function (response) {

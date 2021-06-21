@@ -405,10 +405,10 @@
 
                 if ($rowcount > 0){
                     while ($row = $sql->fetch()) {
-                        $salida.='<tr>
+                        $salida.='<tr class="h35px">
                                     <td class="con_borde pl20 mayusculas">'.strtoupper($row['cnombres']).'</td>
-                                    <td class="con_borde centro"><input type="date" value="'.$row['ffecha'].'" readonly></td>
-                                    <td class="con_borde pl20">'.$row['ccomenta'].'</td>
+                                    <td class="con_borde centro"><input type="date" value="'.$row['ffecha'].'" class="sin_borde" readonly></td>
+                                    <td class="con_borde pl20 h35px">'.$row['ccomenta'].'</td>
                                     <td class="con_borde centro"></td>
                                     <td class="con_borde centro"></td>
                                 </tr>';

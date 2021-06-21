@@ -1887,7 +1887,7 @@ hr{
     }
 }
 
-.tab{
+/*.tab{
     position: relative;
 
     .button_floating{
@@ -1918,6 +1918,37 @@ hr{
         }
     }
 
+}*/
+
+
+
+.button_floating{
+    padding: 12px;
+    position: absolute;
+    right: 10px;
+    color: #000;
+    background: darkturquoise;
+    font-weight: bold;
+    transition: .3s;
+    border-radius: 8px;
+    border: none;
+    top: 5px;
+
+    span{
+        display: flex;
+        align-items: center;
+
+        i{
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+    }
+    
+
+    &:hover{
+        color:#fff;
+        box-shadow: 1px 3px 6px #000;
+    }
 }
 
 .firmas{
@@ -2278,6 +2309,10 @@ hr{
 .mb5px {
     margin-bottom: 5px;
 }
+
+.mb20px{
+    margin-bottom: 20px;
+}
 //estado
 .emitido,.activo {
     background: dodgerblue !important;
@@ -2331,6 +2366,11 @@ hr{
 
 .table_dialog{
     border-collapse: collapse;
+}
+
+.table_title_black{
+    background-color: #000;
+    color: #fff;
 }
 
 .pointertr{

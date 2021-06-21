@@ -179,17 +179,14 @@
                                                         lg_detapedido.nEstadoPed,
                                                         tb_unimed.nfactor,
                                                         tb_unimed.cabrevia,
-                                                        estados.cdesprm2 AS estado,
                                                         cm_producto.ccodprod,
                                                         cm_producto.cdesprod 
                                                     FROM
                                                         lg_detapedido
                                                         INNER JOIN tb_unimed ON lg_detapedido.ncodmed = tb_unimed.ncodmed
-                                                        INNER JOIN tb_paramete2 AS estados ON lg_detapedido.nEstadoPed = estados.ccodprm2
                                                         INNER JOIN cm_producto ON lg_detapedido.id_cprod = cm_producto.id_cprod 
                                                     WHERE
                                                         lg_detapedido.id_regmov =:cod 
-                                                        AND estados.ncodprm1 = 4 
                                                         AND lg_detapedido.nflgactivo = 1");
                 $query->execute(["cod"=>$cod]);
                 $rowcount = $query->rowcount();
@@ -206,7 +203,6 @@
                             <td class="con_borde centro">'. $row['cabrevia'] .'</td>
                             <td class="con_borde drch pr10">'.$row['cantidad'] .'</td>
                             <td class="con_borde" contenteditable="true"><input type="number" class="drch" value="'.$row['cantidad'].'"></td>
-                            <td class="con_borde centro '. strtolower($row['estado']) .'">'. $row['estado'] .'</td>
                             <td class="con_borde"><input type="text" class="pl10 sin_borde h35px w100p no_outline"></td>
                             <td class="con_borde centro"><input type="checkbox" checked></td>
                             <td class="con_borde oculto">'. $row['nfactor'] .'</td>
@@ -417,24 +413,23 @@
             $pdf->SetWidths(array(10,15,70,8,10,17,15,15,15,15));
             $pdf->SetFont('Arial','',5);
             
+            
             $query = $this->db->connect()->prepare("SELECT
                                                     lg_detapedido.nidpedi,
                                                     lg_detapedido.id_cprod,
                                                     ROUND( lg_detapedido.ncantpedi, 2 ) AS cantidad,
+                                                    ROUND( lg_detapedido.ncantapro, 2 ) AS aprobada,
                                                     lg_detapedido.nEstadoPed,
                                                     tb_unimed.nfactor,
                                                     tb_unimed.cabrevia,
-                                                    estados.cdesprm2 AS estado,
                                                     cm_producto.ccodprod,
                                                     cm_producto.cdesprod 
                                                 FROM
                                                     lg_detapedido
                                                     INNER JOIN tb_unimed ON lg_detapedido.ncodmed = tb_unimed.ncodmed
-                                                    INNER JOIN tb_paramete2 AS estados ON lg_detapedido.nEstadoPed = estados.ccodprm2
                                                     INNER JOIN cm_producto ON lg_detapedido.id_cprod = cm_producto.id_cprod 
                                                 WHERE
                                                     lg_detapedido.id_regmov =:cod 
-                                                    AND estados.ncodprm1 = 4 
                                                     AND lg_detapedido.nflgactivo = 1");
 
             $query->execute(["cod"=>$cod]);

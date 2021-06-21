@@ -1511,34 +1511,65 @@ hr {
         color: #000;
         background: #c2c2c2; }
 
-.tab {
-  position: relative; }
-  .tab .button_floating {
-    padding: 20px;
-    position: absolute;
-    right: 10px;
-    color: #000;
-    background: darkturquoise;
-    font-weight: bold;
-    -webkit-transition: .3s;
-    -o-transition: .3s;
-    transition: .3s;
-    border-radius: 8px;
-    border: none; }
-    .tab .button_floating span {
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: center;
-      -ms-flex-align: center;
-      align-items: center; }
-      .tab .button_floating span i {
-        font-size: 1.5rem;
-        margin-right: 10px; }
-    .tab .button_floating:hover {
-      color: #fff;
-      -webkit-box-shadow: 1px 3px 6px #000;
-      box-shadow: 1px 3px 6px #000; }
+/*.tab{
+    position: relative;
+
+    .button_floating{
+        padding: 20px;
+        position: absolute;
+        right: 10px;
+        color: #000;
+        background: darkturquoise;
+        font-weight: bold;
+        transition: .3s;
+        border-radius: 8px;
+        border: none;
+
+        span{
+            display: flex;
+            align-items: center;
+
+            i{
+                font-size: 1.5rem;
+                margin-right: 10px;
+            }
+        }
+        
+
+        &:hover{
+            color:#fff;
+            box-shadow: 1px 3px 6px #000;
+        }
+    }
+
+}*/
+.button_floating {
+  padding: 12px;
+  position: absolute;
+  right: 10px;
+  color: #000;
+  background: darkturquoise;
+  font-weight: bold;
+  -webkit-transition: .3s;
+  -o-transition: .3s;
+  transition: .3s;
+  border-radius: 8px;
+  border: none;
+  top: 5px; }
+  .button_floating span {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center; }
+    .button_floating span i {
+      font-size: 1.5rem;
+      margin-right: 10px; }
+  .button_floating:hover {
+    color: #fff;
+    -webkit-box-shadow: 1px 3px 6px #000;
+    box-shadow: 1px 3px 6px #000; }
 
 .firmas {
   border: 1px solid;
@@ -1811,6 +1842,9 @@ hr {
 .mb5px {
   margin-bottom: 5px; }
 
+.mb20px {
+  margin-bottom: 20px; }
+
 .emitido, .activo {
   background: dodgerblue !important;
   color: white;
@@ -1853,6 +1887,10 @@ hr {
 
 .table_dialog {
   border-collapse: collapse; }
+
+.table_title_black {
+  background-color: #000;
+  color: #fff; }
 
 .pointertr {
   cursor: pointer; }

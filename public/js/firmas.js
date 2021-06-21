@@ -34,9 +34,9 @@ $(function(){
             case "tab2":
                 obtenerPedido($("#pedido").val());
                 break;
-            case "tab3":
+            /* case "tab3":
                 obtenerMensajes($("#orden").val());
-                break;
+                break; */
         }
 
         return false;
@@ -59,20 +59,28 @@ $(function(){
         return false;
     });
 
-    //pestania de observaciones
+    //ventana de observaciones
     $("#addObservation").on("click", function (e) {
         e.preventDefault();
 
         var date = fechaActual();
 
-        var $row = '<tr><td class="con_borde pl20 mayusculas">'+$(".userData h3").text()+'</td>'+
-                        '<td class="con_borde centro"><input type="date" value="'+ date +'" readonly></td>'+
-                        '<td class="con_borde"><input type="text" class="sin_borde pl20"></td>'+
+        var $row = '<tr class="h35px"><td class="con_borde pl20 mayusculas">'+$(".userData h3").text()+'</td>'+
+                        '<td class="con_borde centro"><input type="date" class="sin_borde" value="'+ date +'" readonly></td>'+
+                        '<td class="con_borde"><input type="text" class="sin_borde pl20 w100p h35px" placeholder="Escriba su comentario"></td>'+
                         '<td class="con_borde centro"><a href="#" id="saveComment"><i class="far fa-save"></i></a></td>'+
                         '<td class="con_borde centro"><a href="#" id="deleteComment"><i class="far fa-trash-alt"></i></a></td>'+
                     '</tr>';
 
         $("#table_observacion").append($row);
+
+        return false;
+    });
+
+    $("#closeModalObservation").on("click", function (e) {
+        e.preventDefault();
+
+        $("#modalObservaciones").fadeOut();
 
         return false;
     });
@@ -138,6 +146,14 @@ $(function(){
             "text"
         );
     
+        return false;
+    });
+
+    $("#btnAddComment").on("click", function (e) {
+        e.preventDefault();
+
+        obtenerMensajes($("#orden").val());
+
         return false;
     });
 })
@@ -254,6 +270,8 @@ function obtenerMensajes(codigo) {
             $("#table_observacion tbody")
                 .empty()
                 .append(data);
+
+                $("#modalObservaciones").fadeIn();
         },
         "text"
     );

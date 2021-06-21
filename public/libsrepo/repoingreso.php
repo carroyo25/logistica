@@ -2,7 +2,7 @@
 	require_once "public/fpdf/mc_table.inc.php";
 
 	class PDF extends PDF_MC_Table{
-        public function __construct($ndoc,$condicion,$dia,$mes,$anio,$proyecto,$origen,$movimiento,$orden,$nped,$nguia,$nautoriza,$cautoriza)
+        public function __construct($ndoc,$condicion,$dia,$mes,$anio,$proyecto,$origen,$movimiento,$orden,$nped,$nguia,$nautoriza,$cautoriza,$tipo)
         {
             parent::__construct();
             $this->ndoc         = $ndoc;
@@ -18,15 +18,12 @@
             $this->nguia        = $nguia;
             $this->nautoriza    = $nautoriza;
             $this->cautoriza    = $cautoriza;
+			$this->tipo			= $tipo;
         }
 	// Cabecera de página
 		function Header(){
-		   
-            if ($this->condicion == 0) {
-                $condicion = "VISTA PREVIA";
-            }else {
-                $condicion = "EMITIDO";
-            }
+			$condicion = $this->condicion == 0 ? "VISTA PREVIA" : "EMITIDO";
+			$documento = $this->tipo == "I" ? "NOTA DE INGRESO" : "NOTA DE SALIDA"; 
 
 		    $this->Rect(10,10,30,20); //marco de la imagen
         	$this->Rect(10,10,190,20); //marco general
@@ -38,7 +35,7 @@
 			$this->SetTextColor(0,0,0);
 
 	 		$this->SetFillColor(229, 229, 229);
-	        $this->Cell(190,7,'REGISTRO DE INGRESO',0,1,'C');
+	        $this->Cell(190,7,$documento,0,1,'C');
 	        $this->SetFont('Arial','B',10);
 	        $this->Cell(190,6,utf8_decode('N° ').$this->ndoc,0,1,'C'); //pasa dato
 	        $this->Cell(190,7,$condicion,0,0,'C'); //pasa dato condicion

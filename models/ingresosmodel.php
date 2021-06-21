@@ -449,7 +449,7 @@
             }
         }
 
-        public function genPreview($ingreso,$condicion,$fecha,$proyecto,$origen,$movimiento,$orden,$pedido,$nguia,$nombre,$cargo,$entidad,$details){
+        public function genPreview($ingreso,$condicion,$fecha,$proyecto,$origen,$movimiento,$orden,$pedido,$nguia,$nombre,$cargo,$entidad,$details,$tipo){
             require_once("public/libsrepo/repoingreso.php");
             
             $datos = json_decode($details);
@@ -468,7 +468,7 @@
 
             $nreg = count($datos);
 
-            $pdf = new PDF($ingreso,$condicion,$dia,$mes,$anio,$proyecto,$origen,$movimiento,$orden,$pedido,$nguia,$nombre,$cargo);
+            $pdf = new PDF($ingreso,$condicion,$dia,$mes,$anio,$proyecto,$origen,$movimiento,$orden,$pedido,$nguia,$nombre,$cargo,$tipo);
             // Creación del objeto de la clase heredada
             $pdf->AliasNbPages();
             $pdf->AddPage();
@@ -608,11 +608,23 @@
                                     "flag"=>1,
                                     "sal"=> $datos[$rc]->cantord - $datos[$rc]->cantidad]);
 
+                    $this->changeDetailStatus($datos[$rc]->iddetped);
+
                     $rc++;
                 } catch (PDOException $th) {
                     echo $th;
                     return false;
                 }
+            }
+        }
+
+        public function changeDetailStatus($codigo){
+            try {
+                $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nEstadoPed = 7 WHERE nidpedi=:idp");
+                $query->execute(["idp"=>$codigo]);
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
             }
         }
 
@@ -894,6 +906,8 @@
                     $sql = $this->db->connect()->prepare("UPDATE al_regmovi2 SET nsaldo=:sal WHERE niddetaped=:cod");
                     $sql->execute(["cod"=>$datos[$i]->iddetped,
                                    "sal"=>$datos[$i]->cantord - $datos[$i]->cantidad]);
+
+                    $this->changeDetailStatus($datos[$i]->iddetped);
                 }
                 
 

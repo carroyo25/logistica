@@ -29,7 +29,7 @@
                     <div class="descrip_title">
                     <span>Datos Generales</span>
                         <div>
-                            <button type="button" id="saveItem" title="Grabar Pedido" class="oculto">
+                            <button type="button" id="saveItem" title="Grabar Pedido">
                                 <span><i class="far fa-save"></i> Grabar Cuadro</span> 
                             </button>
                             <button type="button" id="cancelItem" title="Cancelar Pedido">

@@ -745,7 +745,7 @@
                                  "usr"  => $datos['usr'],
                                  "conc" => $datos['conc'],
                                  "espe" => $datos['espe'],
-                                 "est"  => $datos['est'],
+                                 "est"  => 1,
                                  "aten" => $datos['aten'],
                                  "cper" => $cper,
                                  "cmes" => $cmes,
@@ -821,7 +821,7 @@
                 for ($i=0; $i < count($data); $i++) {
                    $id   = $data[$i]->indice; 
                    $cant = $data[$i]->cantidad;
-                   $esta = 10;
+                   $esta = 1;
                    $unid = $data[$i]->unidad;
                    $codp = $data[$i]->codped;
                    $aten = 3;
@@ -931,7 +931,7 @@
 			    }else {
                     $mensaje = true;
                     $this->changeStatusHeader($data[0]->codped);
-                    $this->changeStatusDetails($data[0]->codped);
+                    //$this->changeStatusDetails($data[0]->codped);
                 }
                 
                 return $existe;
@@ -956,8 +956,10 @@
         }
 
         //cambia el estado de los detalles
+        // por si acso cambbiar de acuero al modelo $cest = 2;
         public function changeStatusDetails($codigo){
             try {
+                
                 $cest = 2;
                 $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nEstadoPed=:cest WHERE id_regmov=:idx AND nflgactivo = 1");
                 $query->execute(["cest"=>$cest,"idx"=>$codigo]);
@@ -1041,24 +1043,21 @@
             $pdf->SetFont('Arial','',5);
             
             $query = $this->db->connect()->prepare("SELECT
-                                            lg_detapedido.nidpedi,
-                                            lg_detapedido.id_cprod,
-                                            ROUND( lg_detapedido.ncantpedi, 2 ) AS cantidad,
-                                            lg_detapedido.nEstadoPed,
-                                            tb_unimed.nfactor,
-                                            tb_unimed.cabrevia,
-                                            estados.cdesprm2 AS estado,
-                                            cm_producto.ccodprod,
-                                            cm_producto.cdesprod 
-                                        FROM
-                                            lg_detapedido
-                                            INNER JOIN tb_unimed ON lg_detapedido.ncodmed = tb_unimed.ncodmed
-                                            INNER JOIN tb_paramete2 AS estados ON lg_detapedido.nEstadoPed = estados.ccodprm2
-                                            INNER JOIN cm_producto ON lg_detapedido.id_cprod = cm_producto.id_cprod 
-                                        WHERE
-                                            lg_detapedido.id_regmov =:cod 
-                                            AND estados.ncodprm1 = 4 
-                                            AND lg_detapedido.nflgactivo = 1");
+                                                    lg_detapedido.nidpedi,
+                                                    lg_detapedido.id_cprod,
+                                                    ROUND( lg_detapedido.ncantpedi, 2 ) AS cantidad,
+                                                    lg_detapedido.nEstadoPed,
+                                                    tb_unimed.nfactor,
+                                                    tb_unimed.cabrevia,
+                                                    cm_producto.ccodprod,
+                                                    cm_producto.cdesprod 
+                                                FROM
+                                                    lg_detapedido
+                                                    INNER JOIN tb_unimed ON lg_detapedido.ncodmed = tb_unimed.ncodmed
+                                                    INNER JOIN cm_producto ON lg_detapedido.id_cprod = cm_producto.id_cprod 
+                                                WHERE
+                                                    lg_detapedido.id_regmov =:cod
+                                                    AND lg_detapedido.nflgactivo = 1");
 
             $query->execute(["cod"=>$cod]);
             $rowcount = $query->rowcount();

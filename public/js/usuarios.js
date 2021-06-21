@@ -14,6 +14,7 @@ $(function(){
         e.preventDefault();
 
         $("form")[0].reset();
+        $("#detalle_modulos tbody").empty();
 
         $("#modalProcess").fadeIn();
 

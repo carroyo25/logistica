@@ -93,8 +93,9 @@
             $cargo = $_POST['cargo'];
             $entidad = $_POST['entidad'];
             $details = $_POST['details'];
+            $tipo = $_POST['tipo'];
 
-            $result = $this->model->genPreview($ingreso,$condicion,$fecha,$proyecto,$origen,$movimiento,$orden,$pedido,$guia,$autoriza,$cargo,$entidad,$details);
+            $result = $this->model->genPreview($ingreso,$condicion,$fecha,$proyecto,$origen,$movimiento,$orden,$pedido,$guia,$autoriza,$cargo,$entidad,$details,$tipo);
 
             echo $result;
         }

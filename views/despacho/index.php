@@ -52,6 +52,7 @@
             <input type="hidden" name="cargo_almacen" id="cargo_almacen">
             <input type="hidden" name="idorden" id="idorden">
             <input type="hidden" name="idpedido" id="idpedido">
+            <input type="hidden" name="entidad" id="entidad">
             <input type="hidden" name="estado" id="estado" value= "2">
 
             <div class="process">
@@ -136,6 +137,10 @@
                                     <label for="documento" class="w100px">Est.Doc.:</label>
                                     <input type="text" name="documento" id="documento" class="pl20 mayusculas proceso" readonly>
                                 </div>
+                                <div class="input_process g2items">
+                                    <label for="guia" class="w100px">Nro. Guia:</label>
+                                    <input type="text" name="guia" id="guia" class="pl20 mayusculas" readonly>
+                                </div>
                             </div>
                         </div>
                         <div class="descrip_title">
@@ -150,7 +155,7 @@
                                 <button type="button" id="guiaDetail" title="Guia de Remision - Envio y transporte">
                                     <i class="fas fa-envelope-open-text"></i> Guia de Remision - Envio y transporte
                                 </button>
-                                <button type="button" id="preview" title="Vista Previa R SALIDA">
+                                <button type="button" id="previewSalida" title="Vista Previa R SALIDA">
                                     <i class="fas fa-envelope-open-text"></i> Vista Previa R SALIDA
                                 </button>
                                 <button type="button" id="previewGuia" title="Vista Previa GUIA REMISION">
@@ -362,7 +367,7 @@
                             <h4>Motivo</h4>
                             <div class="p_relative">
                                 <label for="mottras" class="w25p">Motivo Traslado</label>
-                                <input type="text" name="mottrans" id="mottrans" class="w70p mb5px">
+                                <input type="text" name="mottrans" id="mottrans" class="w70p mb5px mayusculas">
                             </div>
                             <div class="p_relative">
                                 <label for="modtras" class="w25p">Modalidad Traslado</label>
@@ -424,20 +429,20 @@
                                     </ul>
                                 </div>
                             </div>
-                            
-                            <label for="representate" class="w15p">Representante</label>
-                            <input type="text" id="representate" name="representate" class="w75p mb5px">
                         </div>
                         <div>
                             <h4>Empresa de Transporte</h4>
                             <div>
                                 <div>
+
                                     <label for="ructransp" class="w15p">R.U.C.</label>
                                     <input type="text" name="ructransp" id="ructransp" class="w75p mb5px">
                                     <label for="raztransp" class="w15p">Razón Social</label>
                                     <input type="text" name="raztransp" id="raztransp" class="w75p mb5px">
                                     <label for="dirtransp" class="w15p">Dirección</label>
                                     <input type="text" name="dirtransp" id="dirtransp" class="w75p mb5px">
+                                    <label for="representate" class="w15p">Representante</label>
+                                    <input type="text" id="representate" name="representate" class="w75p mb5px">
                                 </div>
                             </div>
                         </div>
@@ -510,6 +515,12 @@
                 </div>
             </form>
         </div>   
+    </div>
+    <div class="modal zindex3" id="modalVistaNotaSalida">
+        <div class="insidePreview">
+            <iframe src=""></iframe>
+        </div>
+        <a href="#" id="modalVistaNotaSalida" class="buttonClose"><i class="fas fa-reply-all"></i></a>
     </div>
     <script src="<?php echo constant('URL');?>public/js/jquery.js"></script>
     <script src="<?php echo constant('URL');?>public/js/funciones.js?<?php echo constant('VERSION')?>"></script>

@@ -17,7 +17,7 @@
                 <ul class="tabs">
                     <li><a href="tab1" class="option_tab_selected">Descripción de la Orden</a></li>
                     <li><a href="tab2">Descripción del Pedido</a> </li>
-                    <li><a href="tab3">Observaciones</a> </li>
+                    <!-- <li><a href="tab3">Observaciones</a> </li> -->
                 </ul>
                 <div class="tab" id="tab1">
                     <form action="#" method="POST" id="formProcessOrder">
@@ -96,6 +96,9 @@
                         <div class="descrip_title">
                             <span>Detalles</span>
                             <div>
+                                <button type="button" id="btnAddComment" title="Firmar Orden">
+                                    <i class="far fa-comments"></i> Ver/Agregar Observación
+                                </button>
                                 <button type="button" id="btnSignature" title="Firmar Orden">
                                     <i class="fas fa-signature"></i> Firmar Orden
                                 </button>
@@ -206,7 +209,7 @@
                             <textarea name="espec_items" id="espec_items" rows="3" class="w100p"></textarea>
                         </div>
                 </div>
-                <div class="oculto tab" id="tab3">
+                <!-- <div class="oculto tab" id="tab3">
                     <div>
                         <button class="button_floating" id="addObservation"><span><i class="far fa-clipboard"></i> Agregar Observación</span> </button>
                         <table class="con_borde w50p margin5px_auto" id="table_observacion">
@@ -223,7 +226,7 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
         <a href="#" id="closeModalProcess" class="buttonClose"><i class="fas fa-reply-all"></i></a>
@@ -323,6 +326,28 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="modal zindex3" id="modalObservaciones">
+        <div class="insideWindow w60p">
+            <h4 class="mb20px">Agregar Comentarios</h4>
+            <div>
+                <button class="button_floating" id="addObservation"><span><i class="far fa-clipboard"></i> Agregar Observación</span> </button>
+                <table class="con_borde table_dialog w70p" id="table_observacion">
+                    <thead class="table_title_black">
+                        <tr class="h35px">
+                            <th class="con_borde">Nombre</th>
+                            <th class="con_borde">Fecha</th>
+                            <th class="con_borde">Observación</th>
+                            <th class="con_borde">...</th>
+                            <th class="con_borde">...</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <a href="#" id="closeModalObservation" class="buttonClose"><i class="fas fa-reply-all"></i></a>
     </div>
     <script src="<?php echo constant('URL');?>public/js/jquery.js"></script>
     <script src="<?php echo constant('URL');?>public/js/funciones.js?<?php echo constant('VERSION')?>"></script>
