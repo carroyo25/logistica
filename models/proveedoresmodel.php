@@ -147,8 +147,7 @@
             }
         }
 
-        public function insert($datos)
-        {
+        public function insert($datos){
             try {
                 $id = uniqid();
                 $query = $this->db->connect()->prepare("INSERT INTO cm_entidad SET nflgactivo=:est,id_centi=:idx,ctipdoc=:cdoc,ctipper=:cper,ctipenti=:cent,

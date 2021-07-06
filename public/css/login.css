@@ -1785,6 +1785,12 @@ hr {
 .h60vh {
   height: 62vh; }
 
+.va-top {
+  vertical-align: top; }
+
+.paall_5px {
+  padding: 5px; }
+
 .g2items1_5 {
   -webkit-column-gap: 10px;
   column-gap: 10px;

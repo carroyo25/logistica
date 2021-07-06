@@ -109,7 +109,7 @@ $(function(){
                 $("#fecped").val(data[0].fechaPedido);
                 $("#nrord").val(data[0].nrorden);
                 $("#fecord").val(data[0].fechaOrden);
-                $("#espec").val(data[0].cconcepto);
+                //$("#espec").val(data[0].cconcepto);
                 $("#guia").val(data[0].cnumguia);
                 $("#entidad").val(data[0].crazonsoc);
 
@@ -143,10 +143,19 @@ $(function(){
         /*if ($("#id_ingreso").val().length == 0){
             mostrarMensaje("msj_error","Seleccione una nota de ingreso");
             return false;
-        }else if ($("#cod_movimento").val().length == 0){
+        }else if ($("#cod_movimiento").val().length == 0){
             mostrarMensaje("msj_error","Seleccione el tipo de movimiento");
             return false;
         }*/
+
+
+        $.post(RUTA+"despacho/nuevoNroGuia",
+            function (data, textStatus, jqXHR) {
+                $("#serieguia").val('001 - ');
+                $("#nroguia").val(data);
+            },
+            "text"
+        );
 
         $("#modalGuia").fadeIn();
 
@@ -171,7 +180,6 @@ $(function(){
     $("#listaMotivo").on("click","a", function (e) {
         e.preventDefault();
 
-        console.log($(this).attr("href"))
         $("#cod_movimiento").val($(this).attr("href"));
         $("#tipomov").val($(this).text());
 
@@ -244,6 +252,14 @@ $(function(){
         return false;
     });
 
+    $("#btnAceptarGuia").on("click", function (e) {
+        e.preventDefault();
+
+        $("#formguia").trigger("submit");
+
+        return false;
+    });
+
      //lista de tipo de envio
      $("#almdest").focus(function (e) { 
         e.preventDefault();
@@ -265,14 +281,49 @@ $(function(){
         $("#codalmacendestino").val($(this).attr("href"));
         $("#almdest").val($(this).text());
         $("#viatipodest").val($(this).data("via"));
-        $("#vianomodest").val();
-        $("#viadest").val();
+        $("#vianomodest").val($(this).data("nombre"));
+        $("#viadest").val($(this).data("nro"));
         $("#intdest").val($(this).data("interior"));
         $("#zondest").val($(this).data("zona"));
         $("#depdest").val($(this).data("dpto"));
         $("#distdest").val($(this).data("dist"));
         $("#provdest").val($(this).data("prov"));
         $("#ubigdest").val($(this).data("ubigeo"));
+
+        $(this).parent().parent().parent().slideUp();
+
+        return false;
+    });
+
+    //lista de tipo de envio
+    $("#almorg").focus(function (e) { 
+        e.preventDefault();
+        
+        if (accion == "n") {
+            $("#codalmacendestino").val("");
+            $(this).select();
+            $(".seleccion").fadeOut();
+
+            $(this).next(".seleccion").slideDown();
+        }
+
+        return false;
+    });
+
+    $("#listaAlmacenOrigen").on("click","a", function (e) {
+        e.preventDefault();
+
+        $("#codalmacenorigen").val($(this).attr("href"));
+        $("#almorg").val($(this).text());
+        $("#viatiporg").val($(this).data("via"));
+        $("#vianomorg").val($(this).data("nombre"));
+        $("#nroorg").val($(this).data("nro"));
+        $("#intorg").val($(this).data("interior"));
+        $("#zonaorg").val($(this).data("zona"));
+        $("#deporg").val($(this).data("dpto"));
+        $("#distorg").val($(this).data("dist"));
+        $("#provorg").val($(this).data("prov"));
+        $("#ubigorg").val($(this).data("ubigeo"));
 
         $(this).parent().parent().parent().slideUp();
 
@@ -368,6 +419,35 @@ $(function(){
         return false;
     });
 
+    // //lista de entidades
+    $("#raztransp").focus(function (e) { 
+        e.preventDefault();
+        
+        if (accion == "n") {
+            $("#codentidad").val("");
+            $(this).select();
+            $(".seleccion").fadeOut();
+
+            $(this).next(".seleccion").slideDown();
+        }
+
+        return false;
+    });
+
+    $("#listaEntidad").on("click","a", function (e) {
+        e.preventDefault();
+
+        $("#codentidad").val($(this).attr("href"));
+        $("#raztransp").val($(this).text());
+        $("#ructransp").val($(this).data("ruc"));
+        $("#dirtransp").val($(this).data("direccion"));
+        $("#representate").val($(this).data(""));
+
+        $(this).parent().parent().parent().slideUp();
+
+        return false;
+    });
+
 
     //vista previa de la nota de salida
     $("#previewSalida").on("click", function (e) {
@@ -417,6 +497,112 @@ $(function(){
 
     $(".buttonClose").on("click", function (e) {
         $(this).parent().fadeOut();
+    });
+
+   //vista previa de la guia de salida cuando consulta
+    $("#previewGuia").on("click", function (e) {
+        e.preventDefault();
+
+        let idx = $("#id_guia").val();
+
+        /*$.post(RUTA+"despacho/guiaRemision", {data:idx},
+            function (data, textStatus, jqXHR) {
+                console.log(data);
+                //$("#modalVistaGuia").fadeIn();
+            },
+            "text"
+        );*/
+
+        return false;
+    });
+
+    //grabar y aneviar la guia
+    $("#formguia").on("submit", function (e) {
+        e.preventDefault();
+
+        let str = $(this).serialize();
+
+        let idx = $("#id_ingreso").val();
+        getDetails();
+
+        /*$.post(RUTA+"despacho/guiaRemision", {data:idx,form:str,details:JSON.stringify(DETALLES)},
+            function (data, textStatus, jqXHR) {
+                $("#modalVistaGuia .insidePreview iframe").attr("src",data);
+                $("#modalVistaGuia").fadeIn();
+            },
+            "text"
+        );*/
+
+        $.ajax({
+            type: "POST",
+            url: RUTA+"despacho/guiaRemision",
+            data: { codmodalidadguia:$("#codmodalidadguia").val(),
+                    codtipoguia:$("#codtipoguia").val(),
+                    codalmacendestino:$("#codalmacendestino").val(),
+                    codalmacenorigen:$("#codalmacenorigen").val(),
+                    codautoriza:$("#codautoriza").val(),
+                    coddespacha:$("#coddespacha").val(),
+                    coddestinatario:$("#coddestinatario").val(),
+                    codentidad:$("#codentidad").val(),
+                    codchofer:$("#codchofer").val(),
+                    serieguia:$("#serieguia").val(),
+                    nroguia:$("#nroguia").val(),
+                    packinlist:$("#packinlist").val(),
+                    fecemin:$("#fecemin").val(),
+                    feenttrans:$("#feenttrans").val(),
+                    ruc:$("#ruc").val(),
+                    razondest:$("#razondest").val(),
+                    direccdest:$("#direccdest").val(),
+                    almorg:$("#almorg").val(),
+                    viatiporg:$("#viatiporg").val(),
+                    vianomorg:$("#vianomorg").val(),
+                    nroorg:$("#nroorg").val(),
+                    intorg:$("#intorg").val(),
+                    zonaorg:$("#zonaorg").val(),
+                    deporg:$("#deporg").val(),
+                    distorg:$("#distorg").val(),
+                    provorg:$("#provorg").val(),
+                    ubigorg:$("#ubigorg").val(),
+                    mottrans:$("#mottrans").val(),
+                    modtras:$("#modtras").val(),
+                    tenvio:$("#tenvio").val(),
+                    bultos:$("#bultos").val(),
+                    peso:$("#peso").val(),
+                    observaciones:$("#observaciones").val(),
+                    autoriza:$("#autoriza").val(),
+                    despacha:$("#despacha").val(),
+                    destinatario:$("#destinatario").val(),
+                    raztransp:$("#raztransp").val(),
+                    ructransp:$("#ructransp").val(),
+                    dirtransp:$("#dirtransp").val(),
+                    representate:$("#representate").val(),
+                    almdest:$("#almdest").val(),
+                    vianomodest:$("#vianomodest").val(),
+                    intdest:$("#intdest").val(),
+                    zondest:$("#zondest").val(),
+                    viatipodest:$("#viatipodest").val(),
+                    depdest:$("#depdest").val(),
+                    distdest:$("#distdest").val(),
+                    provdest:$("#provdest").val(),
+                    ubigdest:$("#ubigdest").val(),
+                    dnicond:$("#dnicond").val(),
+                    detcond:$("#detcond").val(),
+                    licencia:$("#licencia").val(),
+                    certificado:$("#certificado").val(),
+                    marca:$("#marca").val(),
+                    placa:$("#placa").val(),
+                    configveh:$("#configveh").val(),
+                    detalles:$("#detalles").val(),
+                    proyecto:$("#proyecto").val(),
+                    details:JSON.stringify(DETALLES)},
+            dataType: "text",
+            success: function (response) {
+                $("#modalVistaGuia .insidePreview iframe").attr("src",response);
+                $("#modalVistaGuia").fadeIn();
+            }
+        });
+
+        return false;
     });
 })
 

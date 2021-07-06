@@ -91,7 +91,7 @@
                 if ($rowCount > 0) {
                     while ($row = $sql->fetch()) {
                         $salida.='<li><a href="'.$row['ncodalm'].'" data-via="'.$row['ctipovia'].'" 
-                                                                    data-nombre="'.$row['cdespais'].'"
+                                                                    data-nombre="'.$row['cdesvia'].'"
                                                                     data-nro="'.$row['cnrovia'].'"
                                                                     data-interior="'.$row['cintevia'].'"
                                                                     data-zona="'.$row['czonavia'].'"
@@ -250,7 +250,7 @@
                 $numdoc = $this->genNumberDoc($docData[0]['ncodalm1']);
                 $nummov = $this->genNumberMov($docData[0]['ncodalm1']);
                 
-                $header=array("idreg"=>$regid,"nrodoc"=>$numdoc,"nromov"=>$nummov);
+                $header = array("idreg"=>$regid,"nrodoc"=>$numdoc,"nromov"=>$nummov);
                 array_push($docData,$header);
                 
                 return $docData;
@@ -375,6 +375,67 @@
             }
         }
 
+        public function guardarGuia($codmodalidadguia,$codtipoguia,$codalmacendestino,$codalmacenorigen,$codautoriza,$coddespacha,
+                                    $coddestinatario,$codentidad,$codchofer,$serieguia,$nroguia,$packinlist,$fecemin,$feenttrans,
+                                    $ruc,$razondest,$direccdest,$almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,$viatipodest,$deporg,$distorg,
+                                    $provorg,$ubigorg,$mottrans,$modtras,$tenvio,$bultos,$peso,$observaciones,$autoriza,$despacha,$destinatario,
+                                    $raztransp,$ructransp,$dirtransp,$representate,$almdest,$vianomodest,$intdest,$zondest,$depdest,$distdest,
+                                    $provdest,$ubigdest,$dnicond,$detcond,$licencia,$certificado,$marca,$placa,$configveh,$proyecto,$detalles){
+
+            $guia = $this->genPreviewGuia($ruc,$razondest,$direccdest,$fecemin,$feenttrans,$raztransp,$ructransp,$dirtransp,
+                                    $almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,
+                                    $almdest,$vianomodest,$intdest,$zondest,$viatipodest,$modtras,$bultos,$peso,$observaciones,
+                                    $proyecto,$detalles);
+
+            return $guia;
+
+        }
+
+        public function genPreviewGuia( $ruc,$razondest,$direccdest,$fecemin,$feenttrans,$raztransp,$ructransp,$dirtransp,
+                                        $almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,
+                                        $almdest,$vianomodest,$intdest,$zondest,$viatipodest,$modtras,$bultos,$peso,$observaciones,
+                                        $proyecto,$detalles){
+            require_once("public/libsrepo/guiarepo.php");
+
+            $filename = "public/guias/".uniqid("GR").".pdf";
+
+            if(file_exists($filename))
+                unlink($filename);
+
+            try {
+                // Creación del objeto de la clase heredada
+                $ndoc = $this->genNroGuia();
+
+                $pdf = new PDF($ndoc,$fecemin,$ruc,$razondest,$direccdest,$raztransp,$ructransp,$dirtransp);
+                $pdf->AliasNbPages();
+                $pdf->AddPage();
+                $pdf->SetWidths(array(10,15,15,147));
+                $pdf->SetFillColor(255,255,255);
+                $pdf->SetTextColor(0,0,0);
+                
+                $pdf->SetFont('Arial','',4);
+                $lc = 0;
+
+                for($i=1;$i<=25;$i++){
+                    $pdf->SetX(13);
+                    $pdf->SetCellHeight(5);
+                    $pdf->SetAligns(array("R","R","C","L"));
+                    $pdf->Row(array($i,'5','GLN',utf8_decode('COMBUSTIBLE BIODIESEL B-5')));
+                    $lc++;
+                    if ($lc == 23) {
+                        $pdf->AddPage();
+                        $lc = 0;
+                    }	
+                }
+                
+                $pdf->Output($filename,'F');
+                return $filename;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
         public function genPreview($ingreso,$condicion,$fecha,$proyecto,$origen,$movimiento,$orden,$pedido,$nguia,$nombre,$cargo,$entidad,$details,$tipo){
             require_once("public/libsrepo/repoingreso.php");
             try {
@@ -429,6 +490,59 @@
                 return false;
             }
             
+        }
+
+        //generar el numero de guia de despacho
+        public function genNroGuia(){
+            try {
+                $sql = $this->db->connect()->query("SELECT
+                COUNT( alm_despacho1.id_regalm ) AS nrodespacho 
+            FROM
+                alm_despacho1");
+                $sql->execute();
+
+                $row= $sql->fetchAll();
+
+                return str_pad($row[0]['nrodespacho']+1,7,0,STR_PAD_LEFT);
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        //obtener transportes
+        public function obtenerEntidades(){
+            try {
+                $salida = "";
+                $query = $this->db->connect()->query("SELECT
+                                                        cm_entidad.id_centi,
+                                                        cm_entidad.crazonsoc,
+                                                        cm_entidad.cnumdoc,
+                                                        cm_entidad.cviadireccion 
+                                                    FROM
+                                                        cm_entidad 
+                                                    WHERE
+                                                        cm_entidad.nflgactivo = 1
+                                                        ORDER BY cm_entidad.crazonsoc");
+                $query->execute();
+
+                $rowcount = $query->rowcount();
+
+                if ($rowcount > 0 ){
+                    while ($row = $query->fetch()) {
+                        $salida.='<li><a href="'.$row['id_centi'].'" 
+                                        data-razon="'.$row['crazonsoc'].'"
+                                        data-ruc="'.$row['cnumdoc'].'"
+                                        data-direccion="'.$row['cviadireccion'].'">'.strtoupper($row['crazonsoc']).'</a></li>';
+                    }
+                }
+
+                return $salida;
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
         }
     }
 ?>

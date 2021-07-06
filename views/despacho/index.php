@@ -54,6 +54,7 @@
             <input type="hidden" name="idpedido" id="idpedido">
             <input type="hidden" name="entidad" id="entidad">
             <input type="hidden" name="estado" id="estado" value= "2">
+            <input type="hidden" name="docguia" id="docguia">
 
             <div class="process">
                 <div class="sides_process">
@@ -129,7 +130,7 @@
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="espec" class="w100px" >Observaciones:</label>
-                                    <textarea name="espec" id="espec" rows="2" readonly></textarea>
+                                    <textarea name="espec" id="espec" rows="2" class="mayusculas"></textarea>
                                 </div>
                             </div>
                             <div class="process_estate">
@@ -298,16 +299,19 @@
                 <input type="hidden" name="codmodalidadguia" id="codmodalidadguia">
                 <input type="hidden" name="codtipoguia" id="codtipoguia">
                 <input type="hidden" name="codalmacendestino" id="codalmacendestino">
+                <input type="hidden" name="codalmacenorigen" id="codalmacenorigen">
                 <input type="hidden" name="codautoriza" id="codautoriza">
                 <input type="hidden" name="coddespacha" id="coddespacha">
                 <input type="hidden" name="coddestinatario" id="coddestinatario">
+                <input type="hidden" name="codentidad" id="codentidad">
+                <input type="hidden" name="codchofer" id="codchofer">
 
                 <div class="gridMain g2items50">
                     <div class="ladoIzquierdo">
                         <div class="mb5px">
                             <label class="mr4px">Numero Guia</label>
                             <input type="text" name="serieguia" id="serieguia" class="w10p">
-                            <input type="text" name="nroguia" id="nroguia" class="w20p">
+                            <input type="text" name="nroguia" id="nroguia" class="w20p drch pr20">
                             <label for="packinlist">Packing List/Guia Madre</label>
                             <input type="text" id="packinlist" name="packinlist" class="w23p">
                         </div>
@@ -330,9 +334,14 @@
                         </div>
                         <div>
                             <h4>Domicilio de partida</h4>
-                            <div  class="containData">
+                            <div  class="containData p_relative">
                                 <label for="almorg" class="w15p">Alm.Origen</label>
                                 <input type="text" name="almorg" id="almorg" class="w80p mb5px">
+                                <div class="seleccion seleccion_pedido ml-23px">
+                                    <ul id="listaAlmacenOrigen">
+                                        <?php echo $this->almacenes?>
+                                    </ul>
+                                </div>
                             </div>
                                 <div class="ml30px">
                                     <div>
@@ -396,7 +405,7 @@
                             </div>
                             <div>
                                 <label for="observaciones" class="w25p">Observaciones</label>
-                                <input type="text" name="observaciones" id="observaciones" class="w70p mb5px">
+                                <textarea name="observaciones" id="observaciones" class="w70p mb5px va-top paall_5px" rows="5"></textarea>
                             </div>
                         </div>
                     </div>
@@ -434,11 +443,17 @@
                             <h4>Empresa de Transporte</h4>
                             <div>
                                 <div>
-
+                                    <div class="p_relative">
+                                        <label for="raztransp" class="w15p">Razón Social</label>
+                                        <input type="text" name="raztransp" id="raztransp" class="w75p mb5px">
+                                        <div class="seleccion seleccion_pedido ml-23px">
+                                            <ul id="listaEntidad">
+                                                <?php echo $this->entidad?>
+                                            </ul>
+                                        </div>
+                                    </div>
                                     <label for="ructransp" class="w15p">R.U.C.</label>
                                     <input type="text" name="ructransp" id="ructransp" class="w75p mb5px">
-                                    <label for="raztransp" class="w15p">Razón Social</label>
-                                    <input type="text" name="raztransp" id="raztransp" class="w75p mb5px">
                                     <label for="dirtransp" class="w15p">Dirección</label>
                                     <input type="text" name="dirtransp" id="dirtransp" class="w75p mb5px">
                                     <label for="representate" class="w15p">Representante</label>
@@ -510,7 +525,7 @@
                 </div>
                 <hr>
                 <div class="optionGuia">
-                    <button id="btnAceptarGuia">Aceptar</button>
+                    <button id="btnAceptarGuia">Vista Previa</button>
                     <button id="btnCancelarGuia">Cancelar</button>
                 </div>
             </form>
@@ -521,6 +536,12 @@
             <iframe src=""></iframe>
         </div>
         <a href="#" id="modalVistaNotaSalida" class="buttonClose"><i class="fas fa-reply-all"></i></a>
+    </div>
+    <div class="modal zindex3" id="modalVistaGuia">
+        <div class="insidePreview">
+            <iframe src=""></iframe>
+        </div>
+        <a href="#" id="modalVistaGuia" class="buttonClose"><i class="fas fa-reply-all"></i></a>
     </div>
     <script src="<?php echo constant('URL');?>public/js/jquery.js"></script>
     <script src="<?php echo constant('URL');?>public/js/funciones.js?<?php echo constant('VERSION')?>"></script>
