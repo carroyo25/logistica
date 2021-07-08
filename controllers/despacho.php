@@ -107,6 +107,7 @@
             $intdest = $_POST['intdest'];
             $zondest = $_POST['zondest'];
             $viatipodest = $_POST['viatipodest'];
+            $nrodest = $_POST['nrodest'];
             $depdest = $_POST['depdest'];
             $distdest = $_POST['distdest'];
             $provdest = $_POST['provdest'];
@@ -123,7 +124,7 @@
 
             $result = $this->model->guardarGuia($codmodalidadguia,$codtipoguia,$codalmacendestino,$codalmacenorigen,$codautoriza,$coddespacha,
                                                     $coddestinatario,$codentidad,$codchofer,$serieguia,$nroguia,$packinlist,$fecemin,$feenttrans,
-                                                    $ruc,$razondest,$direccdest,$almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,$viatipodest,$deporg,$distorg,
+                                                    $ruc,$razondest,$direccdest,$almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,$viatipodest,$nrodest,$deporg,$distorg,
                                                     $provorg,$ubigorg,$mottrans,$modtras,$tenvio,$bultos,$peso,$observaciones,$autoriza,$despacha,$destinatario,
                                                     $raztransp,$ructransp,$dirtransp,$representate,$almdest,$vianomodest,$intdest,$zondest,$depdest,$distdest,
                                                     $provdest,$ubigdest,$dnicond,$detcond,$licencia,$certificado,$marca,$placa,$configveh,$proyecto,$detalles);
@@ -135,6 +136,10 @@
             $result = $this->model->genNroGuia();
 
             echo $result;
+        }
+
+        function grabaSalida() {
+            
         }
     }
 ?>

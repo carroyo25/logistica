@@ -618,7 +618,7 @@
 
                         $pdf->Output($filename,'F');
 
-                        //$this->passDocument($codigo,$file);
+                        $this->passDocument($codigo,$file);
 
                         return $filename;
                     }
@@ -913,6 +913,7 @@
                     $this->saveAction("CORREO",$orden,"SEGUIMIENTO",$_SESSION['user']);
                 }
 
+                echo $filename;
                 return $enviado;
                 
             } catch (PDOException $th) {
@@ -935,7 +936,7 @@
 
                 if ($rowCount > 0) {
                     while ($rs = $sql->fetch()) {
-                       $filename = $rs['cdocPDF'];
+                       $filename = $rs['id_regmov'].".pdf";
                     }
                 }
 

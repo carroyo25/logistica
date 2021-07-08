@@ -20,7 +20,7 @@
                         <label>Entidad</label>
                         <input type="text" name="name_ent" id="name_ent" readonly>
                         <label>Correo</label>
-                        <input type="email" name="mail_ent" id="mail_ent">
+                        <input type="mail" name="mail_ent" id="mail_ent">
                     </div>
                     <br>
                     <textarea name="mail_msg" id="mail_msg" class="w100p" rows="7" placeholder="Escribir Mensaje"></textarea>

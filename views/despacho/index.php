@@ -481,7 +481,7 @@
                                 </div>
                                 <div>
                                     <label for="viadest" class="w15p">N°</label>
-                                    <input type="text" name="viadest" id="viadest" class="w20p mb5px">
+                                    <input type="text" name="nrodest" id="nrodest" class="w20p mb5px">
                                     <label for="intdest" class="w10p">Interior</label>
                                     <input type="text" name="intdest" id="intdest" class="w20p mb5px">
                                     <label for="zondest">Zona</label>
@@ -506,19 +506,19 @@
                             <div>
                                 <label for="dnicond" class="w30p">DNI Conductor</label>
                                 <input type="text"  id="dnicond" name="dnicond" class="w20p mb5px">
-                                <input type="text" name="detcond" id="detcond" class="w40p mb5px">
+                                <input type="text" name="detcond" id="detcond" class="w40p mb5px mayusculas">
                             </div>
                             <div>
                                 <label for="licencia" class="w30p">N° Licencia de Conducir</label>
-                                <input type="text" name="licencia" id="licencia" class="w60p mb5px">
+                                <input type="text" name="licencia" id="licencia" class="w60p mb5px mayusculas">
                                 <label for="certificado" class="w30p">N° Certificado de Inscripción</label>
-                                <input type="text" name="certificado" id="certificado"  class="w60p mb5px">
+                                <input type="text" name="certificado" id="certificado"  class="w60p mb5px mayusculas">
                                 <label for="marca" class="w30p">Marca de Vehículo</label>
-                                <input type="text" name="marca" id="marca" class="w60p mb5px">
+                                <input type="text" name="marca" id="marca" class="w60p mb5px mayusculas">
                                 <label for="placa" class="w30p">N° Placa</label>
-                                <input type="text" name="placa" id="placa" class="w60p mb5px">
+                                <input type="text" name="placa" id="placa" class="w60p mb5px mayusculas">
                                 <label for="configveh" class="w30p">Configuracion Vehicular</label>
-                                <input type="text" name="configveh" id="configveh" class="w60p mb5px">
+                                <input type="text" name="configveh" id="configveh" class="w60p mb5px mayusculas">
                             </div>
                         </div>
                     </div>

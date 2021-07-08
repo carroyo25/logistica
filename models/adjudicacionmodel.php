@@ -37,7 +37,7 @@
                                                     WHERE
                                                         atenciones.ncodprm1 = 13 
                                                         AND estados.ncodprm1 = 4 
-                                                        AND logistica.lg_registro.nEstadoDoc = 3");
+                                                        AND logistica.lg_registro.nEstadoDoc = 4");
                 $query->execute();
                 $rowcount = $query->rowcount();
 

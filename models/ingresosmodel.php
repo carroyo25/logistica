@@ -819,6 +819,7 @@
                                     <td class="centro con_borde">'.$row['ccodprod'].'</td>
                                     <td class="pl20 con_borde">'.$row['cdesprod'].'</td>
                                     <td class="con_borde centro">'.$row['cabrevia'].'</td>
+                                    <td class="con_borde centro">'.number_format($row['ncantidad'], 2, '.', ',').'</td>
                                     <td class="con_borde drch pr20">'.number_format($row['nsaldo'], 2, '.', ',').'</td>
                                     <td class="con_borde centro"><input type="number" onClick="this.select();" class="drch pr10" value="'.number_format($row['nsaldo'], 2, '.', ',').'"></td>
                                     <td class="con_borde"><select name="estado">'.  $this->getParameters($row['nestadoreg']) .'</select></td>

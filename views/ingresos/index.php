@@ -168,6 +168,7 @@
                                         <th class="con_borde w10p">Codigo</th>
                                         <th class="con_borde w30p">Descripcion</th>
                                         <th class="con_borde w5p">Unidad</th>
+                                        <th class="con_borde w5p">Cantidad </br> Pedida</th>
                                         <th class="con_borde w5p">Cantidad </br> Pendiente</th>
                                         <th class="con_borde w5p">Cant. </br> a Ingresar</th>
                                         <th class="con_borde w10p">Estado </br> Bien</th>
@@ -305,7 +306,7 @@
         <?php require 'views/acordeon.php'; ?>
         <div class="workOneForm">
             <div class="tilewindow">
-                <p class="workTitle">Ingresos Almacen</p>
+                <p class="workTitle">Recepcion de Ordenes</p>
                 <?php require 'views/menusimple.php'; ?>
             </div>       
             <div class="formulario">

@@ -36,7 +36,7 @@
                                                     WHERE
                                                         atenciones.ncodprm1 = 13 
                                                         AND estados.ncodprm1 = 4 
-                                                        AND logistica.lg_registro.nEstadoDoc = 2");
+                                                        AND logistica.lg_registro.nEstadoDoc = 3");
                 $query->execute();
                 $rowcount = $query->rowcount();
 
@@ -386,7 +386,7 @@
         }
 
         public function changeStatus($cod){
-            $estatus = 3;
+            $estatus = 4;
             $salida = "";
             try {
                 $query = $this->db->connect()->prepare("UPDATE lg_registro SET nEstadoReg=:reg, nEstadoDoc=:doc WHERE id_regmov=:cod");
@@ -395,7 +395,7 @@
 
                 if ($rowcount > 0) {
                     $this->changeDetailStatus($cod,3);
-                    $this->saveAction("ESTIO DE MEECADO",$cod,"COTIZACIONES",$_SESSION['user']);
+                    $this->saveAction("ESTIO DE MERCADO",$cod,"COTIZACIONES",$_SESSION['user']);
                     $salida = $this->getMainRecords();
                 }
 

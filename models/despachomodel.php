@@ -377,36 +377,51 @@
 
         public function guardarGuia($codmodalidadguia,$codtipoguia,$codalmacendestino,$codalmacenorigen,$codautoriza,$coddespacha,
                                     $coddestinatario,$codentidad,$codchofer,$serieguia,$nroguia,$packinlist,$fecemin,$feenttrans,
-                                    $ruc,$razondest,$direccdest,$almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,$viatipodest,$deporg,$distorg,
+                                    $ruc,$razondest,$direccdest,$almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,$viatipodest,$nrodest,$deporg,$distorg,
                                     $provorg,$ubigorg,$mottrans,$modtras,$tenvio,$bultos,$peso,$observaciones,$autoriza,$despacha,$destinatario,
                                     $raztransp,$ructransp,$dirtransp,$representate,$almdest,$vianomodest,$intdest,$zondest,$depdest,$distdest,
                                     $provdest,$ubigdest,$dnicond,$detcond,$licencia,$certificado,$marca,$placa,$configveh,$proyecto,$detalles){
+            try {
+                //code...
+                $filename = "public/guias/".uniqid("GR").".pdf";
+                $ndoc = $this->genNroGuia();
 
-            $guia = $this->genPreviewGuia($ruc,$razondest,$direccdest,$fecemin,$feenttrans,$raztransp,$ructransp,$dirtransp,
-                                    $almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,
-                                    $almdest,$vianomodest,$intdest,$zondest,$viatipodest,$modtras,$bultos,$peso,$observaciones,
-                                    $proyecto,$detalles);
+                $guia = $this->genPreviewGuia($ruc,$razondest,$direccdest,$fecemin,$feenttrans,$raztransp,$ructransp,$dirtransp,
+                                    $vianomorg,$nroorg,$zonaorg,$distorg,
+                                    $vianomodest,$zondest,$viatipodest,$nrodest,$depdest,
+                                    $modtras,$bultos,$peso,$observaciones,$proyecto,$detalles,$marca,$placa,$detcond,$licencia,
+                                    $filename,$ndoc);
+                
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
 
             return $guia;
 
         }
 
         public function genPreviewGuia( $ruc,$razondest,$direccdest,$fecemin,$feenttrans,$raztransp,$ructransp,$dirtransp,
-                                        $almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,
-                                        $almdest,$vianomodest,$intdest,$zondest,$viatipodest,$modtras,$bultos,$peso,$observaciones,
-                                        $proyecto,$detalles){
+                                        $vianomorg,$nroorg,$zonaorg,$distorg,
+                                        $vianomodest,$zondest,$viatipodest,$nrodest,$depdest,
+                                        $modtras,$bultos,$peso,$observaciones,$proyecto,$detalles,$marca,$placa,$detcond,$licencia,
+                                        $filename,$ndoc){
             require_once("public/libsrepo/guiarepo.php");
 
-            $filename = "public/guias/".uniqid("GR").".pdf";
+            //$filename = "public/guias/".uniqid("GR").".pdf";
 
             if(file_exists($filename))
                 unlink($filename);
 
             try {
                 // Creación del objeto de la clase heredada
-                $ndoc = $this->genNroGuia();
+                
+                $datos = json_decode($detalles);
+                $nreg = count($datos);
 
-                $pdf = new PDF($ndoc,$fecemin,$ruc,$razondest,$direccdest,$raztransp,$ructransp,$dirtransp);
+                $pdf = new PDF($ndoc,$fecemin,$ruc,$razondest,$direccdest,$raztransp,$ructransp,$dirtransp,
+                                $vianomorg,$nroorg,$distorg,$zonaorg,$feenttrans,$modtras,
+                                $vianomodest,$nrodest,$zondest,$depdest,$marca,$placa,$detcond,$licencia);
                 $pdf->AliasNbPages();
                 $pdf->AddPage();
                 $pdf->SetWidths(array(10,15,15,147));
@@ -415,19 +430,33 @@
                 
                 $pdf->SetFont('Arial','',4);
                 $lc = 0;
+                $rc = 0;
 
-                for($i=1;$i<=25;$i++){
+                for($i=1;$i<=$nreg;$i++){
                     $pdf->SetX(13);
                     $pdf->SetCellHeight(5);
                     $pdf->SetAligns(array("R","R","C","L"));
-                    $pdf->Row(array($i,'5','GLN',utf8_decode('COMBUSTIBLE BIODIESEL B-5')));
+                    $pdf->Row(array(str_pad($i,3,"0",STR_PAD_LEFT),
+                                    $datos[$rc]->cantidad,
+                                    $datos[$rc]->unidad,
+                                    $datos[$rc]->coditem .' '. $datos[$rc]->descripcion));
                     $lc++;
+                    $rc++;
+
                     if ($lc == 23) {
                         $pdf->AddPage();
                         $lc = 0;
                     }	
                 }
-                
+
+                $pdf->Ln(1);
+                $pdf->SetX(13);
+                $pdf->MultiCell(190,2,utf8_decode($observaciones));
+                $pdf->Ln(2);
+                $pdf->SetX(13);
+                $pdf->Cell(190,4,"Bultos :". $bultos,0,1);
+                $pdf->SetX(13);
+                $pdf->Cell(190,4,"Peso   :". $peso. "Kgs",0,1);
                 $pdf->Output($filename,'F');
                 return $filename;
             } catch (PDOException $th) {

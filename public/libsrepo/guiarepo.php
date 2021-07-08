@@ -3,8 +3,9 @@
 
     class PDF extends PDF_MC_Table{
         // Cabecera de página
-            public function __construct($nguia,$fecha_emision,$ruc,$razondest,$direccdest,$raztransp,$ructransp,$dirtransp)
-            {
+            public function __construct($nguia,$fecha_emision,$ruc,$razondest,$direccdest,$raztransp,$ructransp,$dirtransp,
+                                        $vianomorg,$nroorg,$distorg,$zonaorg,$feenttrans,$modtras,$vianomodest,$nrodest,$zondest,$depdest,
+                                        $marca,$placa,$detcond,$licencia){
                 parent::__construct();
                 $this->nguia = $nguia;
                 $this->fecha_emision = $fecha_emision;
@@ -14,6 +15,20 @@
                 $this->raztransp = $raztransp;
                 $this->ructransp = $ructransp;
                 $this->dirtransp = $dirtransp;
+                $this->vianomorg = $vianomorg;
+                $this->nroorg = $nroorg;
+                $this->distorg = $distorg;
+                $this->zonaorg = $zonaorg;
+                $this->vianomodest = $vianomodest;
+                $this->nrodest = $nrodest;
+                $this->zondest = $zondest;
+                $this->depdest = $depdest;
+                $this->marca = $marca;
+                $this->placa = $placa;
+                $this->detcond = $detcond;
+                $this->licencia = $licencia;
+                $this->feenttrans = $feenttrans;
+                $this->modtras = $modtras;
             }
             function Header(){
                 $this->SetFillColor(229, 229, 229);
@@ -66,7 +81,7 @@
                 $this->Cell(25,5,utf8_decode("NOMBRE O RAZÓN SOCIAL:"),0,0);
                 $this->Cell(15,5,utf8_decode($this->raztransp),0,1);
                 $this->SetX(110);
-                $this->Cell(15,5,utf8_decode("DIRECCIÓN: "),0,0);
+                $this->Cell(12,5,utf8_decode("DIRECCIÓN: "),0,0);
                 $this->Cell(15,5,utf8_decode($this->dirtransp),0,1);
                 $this->SetX(110);
                 $this->Cell(15,5,"R.U.C",0,0);
@@ -75,21 +90,28 @@
                 $this->SetXY(13,72);
                 $this->SetFont('Arial','',7);
                 $this->Cell(92,5,"PUNTO DE PARTIDA",1,1,"C",true);
+                $this->SetX(15);
+                $this->Cell(92,5,utf8_decode($this->vianomorg ." ". $this->nroorg ." - ". $this->zonaorg),0,1);
     
                 $this->RoundedRect(108, 72, 92, 20, 1, '1234', 'D');
                 $this->SetXY(108,72);
                 $this->Cell(92,5,"PUNTO DE LLEGADA",1,1,"C",true);
+                $this->SetX(110);
+                $this->Cell(92,5,utf8_decode($this->vianomodest ." ". $this->nrodest ." ". $this->zondest ." - ". $this->depdest),0,1);
     
                 $this->RoundedRect(13, 94, 187, 20, 1, '1234', 'D');
                 $this->SetXY(13,94);
                 $this->Cell(187,5,"UNIDAD DE TRANSPORTE Y CONDUCTOR",1,1,"C",true);
                 $this->SetXY(15,100);
-                $this->Cell(92,5,utf8_decode("MARCA Y N° DE PLACA:"),0,0);
-                $this->Cell(92,5,utf8_decode("FECHA DE INICIO DEL TRASLADO:"),0,1);
+                $this->Cell(35,5,utf8_decode("MARCA Y N° DE PLACA:"),0,0);
+                $this->Cell(45,5,utf8_decode($this->marca . "-" .$this->placa),0,0);
+                $this->Cell(45,5,utf8_decode("FECHA DE INICIO DEL TRASLADO:"),0,0);
+                $this->Cell(92,5,$this->feenttrans,0,1);
                 $this->SetX(15);
-                $this->Cell(92,5,utf8_decode("REPRESENTANTE:"),0,0);
-                $this->Cell(92,5,utf8_decode("N°(S) DE LICENCIA(S) DE CONDUCIR:"),0,0);
-    
+                $this->Cell(35,5,utf8_decode("REPRESENTANTE:"),0,0);
+                $this->Cell(45,5,utf8_decode($this->detcond),0,0);
+                $this->Cell(45,5,utf8_decode("N°(S) DE LICENCIA(S) DE CONDUCIR:"),0,0);
+                $this->Cell(92,5,utf8_decode($this->licencia),0,1);
     
                 // Salto de línea
                 $this->Ln(1);
@@ -140,7 +162,7 @@
                 $this->Cell(25,4,utf8_decode("de la misma empresa:"),0,0);
                 $this->SetXY(37,274);
                 $this->Cell(15,4,utf8_decode("Otros:"),0,0);
-                $this->Cell(90,4,utf8_decode(""),"B",0);
+                $this->Cell(90,4,utf8_decode($this->modtras),"B",0);
     
                 $this->SetXY(70,256);
                 $this->Cell(25,4,utf8_decode("Para Transformación:"),0,0);

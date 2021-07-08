@@ -339,7 +339,6 @@ function dataUpdateItems(){
             item["cantped"]     = CANTPED;
             item["cantapr"]     = CANTAPR;
             item["descripcion"] = DESCRIPCION;
-            item["estado"]      = ESTADO;
             item["unidad"]      = UNIDAD;
             item["observ"]      = OBSERV;
             item["aprob"]       = APROB;

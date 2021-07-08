@@ -2,6 +2,7 @@ var atachs      = 0;
 var FILES       = [];
 var accion      = "";
 var itemsfila   = 0;
+var SERIES = [];
 
 $(function(){
     activar_opcion();
@@ -47,10 +48,10 @@ $(function(){
         }
 
         getDetails();
-        getSeries();
+        //getSeries();
         registerAtachs();
 
-        if ( accion == "n") {
+        if ( accion == "n" ) {
             $.post(RUTA + "ingresos/nuevoIngreso", {ningreso:$("#nro_ingreso").val(),
                                                     fecha:$("#fechadoc").val(),
                                                     origen:$("#cod_almacen").val(),
@@ -284,24 +285,23 @@ $(function(){
             //llamar a la ventana de series de prouctos
 
             var descrip = $(this).parent().parent().find('td').eq(4).text(),
-                //prodcod = $(this).parent().parent().find('td').eq(3).text(),
                 idprod  = $(this).parent().parent().find('td').eq(2).data('idprod'),
                 nroserials = $(this).parent().parent().find('td').eq(7).children().val();
 
+            $.post(RUTA+"ingresos/llamarSeries", {index:$("#id_ingreso").val(),prod:idprod},
+                function (data, textStatus, jqXHR) {
+                    $("#detalle_series tbody")
+                    .empty()
+                    .append(data);
+
+                    itemsfila = $("#detalle_ingreso tbody").length - 1;
+                },
+                "text"
+            );
+            
             $("#descripProducto").text(descrip);
             $("#codigoProducto").text(idprod);
             $("#nroItemSerial").text(nroserials);
-
-            if ( accion == "u" ) {
-                $.post(RUTA+"ingresos/llamarSeries", {index:$("#id_ingreso").val(),prod:idprod},
-                    function (data, textStatus, jqXHR) {
-                        $("#detalle_series tbody")
-                        .empty()
-                        .append(data);
-                    },
-                    "text"
-                );
-            }
 
             $("#modalSerie").fadeIn();
         }else{
@@ -356,7 +356,9 @@ $(function(){
         //var itemsfila = $("#detalle_series tbody tr").length;
 
         if ( itemsfila == maxSerial ){
+            getSeries();
             $("#modalSerie").fadeOut();
+            console.log(SERIES);
         }else{
             mostrarMensaje("msj_error","Faltan series del producto");
         }
@@ -652,8 +654,6 @@ $(function(){
 })
 
 function getSeries(){
-    SERIES = [];
-
     var TABLA = $("#detalle_series tbody > tr");
 
     TABLA.each(function(){

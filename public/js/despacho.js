@@ -520,18 +520,7 @@ $(function(){
     $("#formguia").on("submit", function (e) {
         e.preventDefault();
 
-        let str = $(this).serialize();
-
-        let idx = $("#id_ingreso").val();
         getDetails();
-
-        /*$.post(RUTA+"despacho/guiaRemision", {data:idx,form:str,details:JSON.stringify(DETALLES)},
-            function (data, textStatus, jqXHR) {
-                $("#modalVistaGuia .insidePreview iframe").attr("src",data);
-                $("#modalVistaGuia").fadeIn();
-            },
-            "text"
-        );*/
 
         $.ajax({
             type: "POST",
@@ -581,6 +570,7 @@ $(function(){
                     intdest:$("#intdest").val(),
                     zondest:$("#zondest").val(),
                     viatipodest:$("#viatipodest").val(),
+                    nrodest:$("#nrodest").val(),
                     depdest:$("#depdest").val(),
                     distdest:$("#distdest").val(),
                     provdest:$("#provdest").val(),
@@ -604,6 +594,19 @@ $(function(){
 
         return false;
     });
+
+    //grabar el documento de salida
+    $("#grabarDoc").on("click", function (e) {
+        e.preventDefault();
+
+        $.post(RUTA+"despacho/grabaSalida", data,
+            function (data, textStatus, jqXHR) {
+                console.log(data);
+            },
+            "texto"
+        );
+        return false;
+    });
 })
 
 function getDetails(){
@@ -612,8 +615,7 @@ function getDetails(){
     var TABLA = $("#detalle_despacho tbody > tr");
 
     TABLA.each(function(){
-        var ITEM        = $(this).find('td').eq(1).text(),
-            CODITEM     = $(this).find('td').eq(2).text(),
+        var CODITEM     = $(this).find('td').eq(2).text(),
             DESCRIPCION = $(this).find('td').eq(3).text(),
             UNIDAD      = $(this).find('td').eq(4).text(),
             CANTRQ      = $(this).find('td').eq(5).text(),
@@ -633,8 +635,7 @@ function getDetails(){
 
             item = {};
 
-            if (ITEM !== ''){
-                item["item"]        = ITEM;
+            if (CODITEM !== ''){
                 item["coditem"]     = CODITEM;
                 item["descripcion"] = DESCRIPCION;
                 item["unidad"]      = UNIDAD;
@@ -646,7 +647,6 @@ function getDetails(){
                 item["vence"]       = VENCE;
                 item["niddeta"]     = NIDDETA;
                 item["factor"]      = FACTOR;
-                item["coditem "]    = ITEM;
                 item["coduni"]      = CODUNI;
                 item["idprod"]      = IDPROD;
                 item["iddetped"]    = IDDETPED;
