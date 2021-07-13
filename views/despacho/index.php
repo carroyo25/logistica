@@ -40,7 +40,7 @@
     <div class="modal" id="modalProcess">
         <form action="#" autocomplete="off" id="formProcess">
             <input type="hidden" name="id_ingreso" id="id_ingreso">
-            <input type="hidden" name="id_salid" id="id_salid">
+            <input type="hidden" name="id_salida" id="id_salida">
             <input type="hidden" name="id_entidad" id="id_entidad">
             <input type="hidden" name="cod_almacen" id="cod_almacen">
             <input type="hidden" name="cod_movimiento" id="cod_movimiento">
@@ -53,8 +53,9 @@
             <input type="hidden" name="idorden" id="idorden">
             <input type="hidden" name="idpedido" id="idpedido">
             <input type="hidden" name="entidad" id="entidad">
-            <input type="hidden" name="estado" id="estado" value= "2">
+            <input type="hidden" name="estado" id="estado" value= "1">
             <input type="hidden" name="docguia" id="docguia">
+            <input type="hidden" name="docpdf" id="docpdf">
 
             <div class="process">
                 <div class="sides_process">

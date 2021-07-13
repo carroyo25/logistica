@@ -86,7 +86,7 @@ $(function(){
         $.post(RUTA+"despacho/notaId",{idx: $(this).attr("href")},
             function (data, textStatus, jqXHR) {
                 $("#id_ingreso").val(data[0].id_regalm);
-                $("#id_salid").val(data[1].idreg);
+                $("#id_salida").val(data[1].idreg);
                 $("#id_entidad").val(data[0].id_centi);
                 $("#cod_almacen").val(data[0].ncodalm1);
                 $("#cod_movimento").val();
@@ -140,13 +140,13 @@ $(function(){
     $("#guiaDetail").on("click", function (e) {
         e.preventDefault();
         
-        /*if ($("#id_ingreso").val().length == 0){
+        if ($("#id_ingreso").val().length == 0){
             mostrarMensaje("msj_error","Seleccione una nota de ingreso");
             return false;
         }else if ($("#cod_movimiento").val().length == 0){
             mostrarMensaje("msj_error","Seleccione el tipo de movimiento");
             return false;
-        }*/
+        }
 
 
         $.post(RUTA+"despacho/nuevoNroGuia",
@@ -330,7 +330,6 @@ $(function(){
         return false;
     });
 
-
     //lista Autoriza
     $("#autoriza").focus(function (e) { 
         e.preventDefault();
@@ -448,7 +447,6 @@ $(function(){
         return false;
     });
 
-
     //vista previa de la nota de salida
     $("#previewSalida").on("click", function (e) {
         e.preventDefault();
@@ -505,18 +503,10 @@ $(function(){
 
         let idx = $("#id_guia").val();
 
-        /*$.post(RUTA+"despacho/guiaRemision", {data:idx},
-            function (data, textStatus, jqXHR) {
-                console.log(data);
-                //$("#modalVistaGuia").fadeIn();
-            },
-            "text"
-        );*/
-
         return false;
     });
 
-    //grabar y aneviar la guia
+    //grabar y enviar la guia
     $("#formguia").on("submit", function (e) {
         e.preventDefault();
 
@@ -584,6 +574,8 @@ $(function(){
                     configveh:$("#configveh").val(),
                     detalles:$("#detalles").val(),
                     proyecto:$("#proyecto").val(),
+                    costos:$("#cod_costos").val(),
+                    salida:$("#id_salida").val(),
                     details:JSON.stringify(DETALLES)},
             dataType: "text",
             success: function (response) {
@@ -599,12 +591,50 @@ $(function(){
     $("#grabarDoc").on("click", function (e) {
         e.preventDefault();
 
-        $.post(RUTA+"despacho/grabaSalida", data,
+        getDetails();
+
+        $.post(RUTA+"despacho/grabaSalida", {
+            id_ingreso:$("#id_ingreso").val(),
+            id_salida:$("#id_salida").val(),
+            id_entidad:$("#id_entidad").val(),
+            cod_almacen:$("#cod_almacen").val(),
+            cod_movimiento:$("#cod_movimiento").val(),
+            cod_autoriza:$("#cod_autoriza").val(),
+            cod_proyecto:$("#cod_proyecto").val(),
+            cod_area:$("#cod_area").val(),
+            cod_costos:$("#cod_costos").val(),
+            order_file:$("#order_file").val(),
+            cargo_almacen:$("#cargo_almacen").val(),
+            idorden:$("#idorden").val(),
+            idpedido:$("#idpedido").val(),
+            entidad:$("#entidad").val(),
+            docguia:$("#docguia").val(),
+            nrosalida:$("#nrosalida").val(),
+            movalma:$("#movalma").val(),
+            fechadoc:$("#fechadoc").val(),
+            fechacont:$("#fechacont").val(),
+            proyecto:$("#proyecto").val(),
+            solicita:$("#solicita").val(),
+            aprueba:$("#aprueba").val(),
+            almacen:$("#almacen").val(),
+            tipomov:$("#tipomov").val(),
+            nroped:$("#nroped").val(),
+            fecped:$("#fecped").val(),
+            nrord:$("#nrord").val(),
+            fecord:$("#fecord").val(),
+            espec:$("#espec").val(),
+            documento:$("#documento").val(),
+            ingreso:$("id_ingreso").val(),
+            details:JSON.stringify(DETALLES)
+        },
             function (data, textStatus, jqXHR) {
-                console.log(data);
+                if (data){
+                    mostrarMensaje("msj_info","Documento registrado");
+                }
             },
             "texto"
         );
+
         return false;
     });
 })
@@ -620,17 +650,13 @@ function getDetails(){
             UNIDAD      = $(this).find('td').eq(4).text(),
             CANTRQ      = $(this).find('td').eq(5).text(),
             CANTDES     = $(this).find('td').eq(6).children().val(),
-            TESTADO     = $(this).find('td').eq(7).text(),
-            UBICACION   = $(this).find('td').eq(8).text(),
-            VENCE       = $(this).find('td').eq(11).text(),
-            NIDDETA     = $(this).find('td').eq(2).data('iddetalle'),
-            FACTOR      = $(this).find('td').eq(2).data('factor'),
-            CODUNI      = $(this).find('td').eq(2).data('coduni'),
-            IDPROD      = $(this).find('td').eq(2).data('idprod'),
-            IDDETPED    = $(this).find('td').eq(2).data('iddetpedido'),
-            IDDERORD    = $(this).find('td').eq(2).data('iddetorden'),
-            NESTADO     = $(this).find('td').eq(2).data('nestado'),
-                
+            FACTOR      = $(this).find('td').eq(1).data('factor'),
+            CODUNI      = $(this).find('td').eq(1).data('coduni'),
+            IDPROD      = $(this).find('td').eq(1).data('idprod'),
+            IDDETPED    = $(this).find('td').eq(1).data('iddetpedido'),
+            IDDERORD    = $(this).find('td').eq(1).data('iddetorden'),
+            CESTADO     = $(this).find('td').eq(7).text(),
+            UBICACION   = $(this).find('td').eq(8).text()
 
 
             item = {};
@@ -641,16 +667,13 @@ function getDetails(){
                 item["unidad"]      = UNIDAD;
                 item["cantidad"]    = CANTRQ;
                 item["cantdes"]     = CANTDES
-                item["cestado"]     = TESTADO;
-                item["nestado"]     = NESTADO;
-                item["ubicacion"]   = UBICACION;
-                item["vence"]       = VENCE;
-                item["niddeta"]     = NIDDETA;
                 item["factor"]      = FACTOR;
                 item["coduni"]      = CODUNI;
                 item["idprod"]      = IDPROD;
                 item["iddetped"]    = IDDETPED;
                 item["iddetord"]    = IDDERORD;
+                item['cestado']     = CESTADO;
+                item['ubicacion']   = UBICACION;
             }
 
             DETALLES.push(item);

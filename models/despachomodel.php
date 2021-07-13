@@ -245,7 +245,7 @@
                     }
                 }
 
-                $regid = uniqid("des");
+                $regid = uniqid("NS");
                 
                 $numdoc = $this->genNumberDoc($docData[0]['ncodalm1']);
                 $nummov = $this->genNumberMov($docData[0]['ncodalm1']);
@@ -303,7 +303,7 @@
                                                                  data-iddetorden ="'.$rs['niddetaord'].'"    
                                                                  data-factor="'.$rs['nfactor'].'"
                                                                  data-coduni="'.$rs['ncodmed'].'"
-                                                                 data-idprod="'.$rs['id_cprod'].'
+                                                                 data-idprod="'.$rs['id_cprod'].'"
                                                                  data-nestado="'.$rs['nestadoreg'].'">
                                                                 '.str_pad($item,3,"0",STR_PAD_LEFT).'
                                         <td class="con_borde centro">'.$rs['ccodprod'].'</td>
@@ -333,12 +333,12 @@
         public function genNumberDoc($cod){
             try {
                 $sql = $this->db->connect()->prepare("SELECT
-                                                            COUNT(al_regmovi1.ncodalm1) AS numguia
+                                                            COUNT(alm_movim1.ncodalm1) AS numguia
                                                         FROM
-                                                            al_regmovi1 
+                                                            alm_movim1 
                                                         WHERE
-                                                            al_regmovi1.ncodalm1 = :cod
-                                                        AND al_regmovi1.ncodalm1 = 'S'");
+                                                            alm_movim1.ncodalm1 = :cod
+                                                        AND alm_movim1.ncodalm1 = 'S'");
                 $sql->execute(["cod"=>$cod]);
 
                 $row = $sql->fetchAll();
@@ -356,11 +356,11 @@
         public function genNumberMov($cod){
             try {
                 $sql = $this->db->connect()->prepare("SELECT
-                                                            COUNT(al_regmovi1.nnromov) AS nummov 
+                                                            COUNT(alm_movim1.nnromov) AS nummov 
                                                         FROM
-                                                            al_regmovi1 
+                                                            alm_movim1 
                                                         WHERE
-                                                            al_regmovi1.ncodalm1 = :cod");
+                                                            alm_movim1.ncodalm1 = :cod");
                 $sql->execute(["cod"=>$cod]);
 
                 $row = $sql->fetchAll();
@@ -380,25 +380,68 @@
                                     $ruc,$razondest,$direccdest,$almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,$viatipodest,$nrodest,$deporg,$distorg,
                                     $provorg,$ubigorg,$mottrans,$modtras,$tenvio,$bultos,$peso,$observaciones,$autoriza,$despacha,$destinatario,
                                     $raztransp,$ructransp,$dirtransp,$representate,$almdest,$vianomodest,$intdest,$zondest,$depdest,$distdest,
-                                    $provdest,$ubigdest,$dnicond,$detcond,$licencia,$certificado,$marca,$placa,$configveh,$proyecto,$detalles){
+                                    $provdest,$ubigdest,$dnicond,$detcond,$licencia,$certificado,$marca,$placa,$configveh,$proyecto,$costos,
+                                    $salida,$detalles){
             try {
-                //code...
-                $filename = "public/guias/".uniqid("GR").".pdf";
+                $id = uniqid("GR");
+                $filename = "public/guias/".$id.".pdf";
                 $ndoc = $this->genNroGuia();
+                $fecha = explode("-",$fecemin);
 
-                $guia = $this->genPreviewGuia($ruc,$razondest,$direccdest,$fecemin,$feenttrans,$raztransp,$ructransp,$dirtransp,
+                $sql = $this->db->connect()->prepare("INSERT alm_despacho1 SET id_regalm = :id_regalm,ctipmov = :ctipmov,cper = :cper,cmes = :cmes,ncodalm1 = :ncodalm1,ncodalm2 = :ncodalm2,
+                                                                            ffecdoc = :ffecdoc,ffecenvio = :ffecenvio,ffecrecep = :ffecrecep,ffecconta = :ffecconta,id_centi = :id_centi,
+                                                                            cSerieguia = :cSerieguia,cnumguia = :cnumguia,ncodcos = :ncodcos,idref_salida = :idref_salida,cobserva = :cobserva,
+                                                                            id_userAprob = :id_userAprob,nEstadoDoc = :nEstadoDoc,nflgDespacho = :nflgDespacho,cdocPDF = :cdocPDF,
+                                                                            nflgactivo = :nflgactivo,cmottras = :cmottras,nmodtras = :nmodtras,nbultos = :nbultos,npeso = :npeso,
+                                                                            cdnicond = :cdnicond,cnomcond = :cnomcond,ccertificado = :ccertificado,cmarca = :cmarca,cplaca = :cplaca,
+                                                                            cconfveh = :cconfveh");
+                    $sql->execute([ "id_regalm" =>$id,
+                                    "ctipmov" =>$modtras,
+                                    "cper" =>$fecha[0],
+                                    "cmes" =>$fecha[1],
+                                    "ncodalm1" =>$codalmacenorigen,
+                                    "ncodalm2" =>$codalmacendestino,
+                                    "ffecdoc" =>$fecemin,
+                                    "ffecenvio" =>$feenttrans,
+                                    "ffecrecep" =>null,
+                                    "ffecconta" =>null,
+                                    "id_centi" =>$codentidad,
+                                    "cSerieguia" =>'001',
+                                    "cnumguia" =>$ndoc,
+                                    "ncodcos" =>$costos,
+                                    "idref_salida" =>$salida,
+                                    "cobserva" =>$observaciones,
+                                    "id_userAprob" =>$codautoriza,
+                                    "nEstadoDoc" =>1,
+                                    "nflgDespacho" =>1,
+                                    "cdocPDF" =>$filename,
+                                    "nflgactivo" =>1,
+                                    "cmottras" =>$mottrans,
+                                    "nmodtras" =>$modtras,
+                                    "nbultos" =>$bultos,
+                                    "npeso" =>$peso,
+                                    "cdnicond" =>$dnicond,
+                                    "cnomcond" =>$detcond,
+                                    "ccertificado" =>$certificado,
+                                    "cmarca" =>$marca,
+                                    "cplaca" =>$placa,
+                                    "cconfveh" =>$configveh]);
+                    $rowCount = $sql->rowcount();
+
+                    if ($rowCount > 0){
+                        $guia = $this->genPreviewGuia($ruc,$razondest,$direccdest,$fecemin,$feenttrans,$raztransp,$ructransp,$dirtransp,
                                     $vianomorg,$nroorg,$zonaorg,$distorg,
                                     $vianomodest,$zondest,$viatipodest,$nrodest,$depdest,
                                     $modtras,$bultos,$peso,$observaciones,$proyecto,$detalles,$marca,$placa,$detcond,$licencia,
                                     $filename,$ndoc);
+                    }
+                    
+                    return $guia;
                 
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
             }
-
-            return $guia;
-
         }
 
         public function genPreviewGuia( $ruc,$razondest,$direccdest,$fecemin,$feenttrans,$raztransp,$ructransp,$dirtransp,
@@ -406,9 +449,10 @@
                                         $vianomodest,$zondest,$viatipodest,$nrodest,$depdest,
                                         $modtras,$bultos,$peso,$observaciones,$proyecto,$detalles,$marca,$placa,$detcond,$licencia,
                                         $filename,$ndoc){
+            
             require_once("public/libsrepo/guiarepo.php");
 
-            //$filename = "public/guias/".uniqid("GR").".pdf";
+            $filename = "public/guias/".uniqid("GR").".pdf";
 
             if(file_exists($filename))
                 unlink($filename);
@@ -513,7 +557,8 @@
                     }
                     
                 $pdf->Output($filename,'F');
-                echo $filename;
+                
+                return $filename;
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
@@ -572,6 +617,129 @@
                 echo $e->getMessage();
                 return false;
             }
+        }
+
+        public function insertarSalida($id_ingreso,$id_salida,$id_entidad,$cod_almacen,$cod_movimiento,$cod_autoriza,
+                                        $cod_proyecto,$cod_area,$cod_costos,$order_file,$cargo_almacen,$idorden,$idpedido,
+                                        $entidad,$docguia,$nrosalida,$movalma,$fechadoc,$fechacont,$proyecto,$solicita,
+                                        $aprueba,$almacen,$tipomov,$nroped,$fecped,$nrord,$fecord,$espec,$documento,$details){
+            try {
+                
+                $fecha = explode("-",$fechadoc);
+                $numdoc = $this->genNumberDoc($cod_almacen);
+                $nummov = $this->genNumberMov($cod_almacen);
+                
+                $salida = "";
+                $sql = $this->db->connect()->prepare("INSERT INTO alm_movim1 SET id_regalm = :id,ctipmov = :ctipmov,ncodmov = :ncodmov,nnromov = :nnromov,
+                                                                    cper = :cper,cmes = :cmes,ncodalm1 = :ncodalm1,ffecdoc = :ffecdoc,ffecconta = :ffecconta,
+                                                                    id_centi = :id_centi,ncodpry = :ncodpry,ncodarea = :ncodarea,ncodcos = :ncodcos,
+                                                                    idref_pedi = :idref_pedi,idref_abas=:idref_abas,
+                                                                    cobserva = :cobserva,id_userAprob = :id_userAprob,nEstadoDoc = :nEstadoDoc,nflgactivo = :nflgactivo,
+                                                                    nflgDespacho = :nflgDespacho");
+                $sql->execute(["id"=>$id_salida,
+                                "ctipmov"=>$cod_movimiento,
+                                "ncodmov"=>$numdoc,
+                                "nnromov"=>$nummov,
+                                "cper"=>$fecha[0],
+                                "cmes"=>$fecha[1],
+                                "ncodalm1"=>$cod_almacen,
+                                "ffecdoc"=>$fechadoc,
+                                "ffecconta"=>$fechacont,
+                                "id_centi"=>$id_entidad,
+                                "ncodpry"=>$cod_proyecto,
+                                "ncodarea"=>$cod_area,
+                                "ncodcos"=>$cod_costos,
+                                "idref_pedi"=>$nroped,
+                                "idref_abas"=>$id_ingreso,
+                                "cobserva"=>$espec,
+                                "id_userAprob"=>$cod_autoriza,
+                                "nEstadoDoc"=>2,
+                                "nflgDespacho"=>1,
+                                "nflgactivo"=>1]);
+                $rowCount= $sql->rowcount();
+
+                if ($rowCount > 0){
+                    $salida = true;
+
+                    $this->insertarDetallesNota($cod_almacen,$details,$id_salida);
+                }
+
+                return $salida;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function insertarDetallesNota($almacen,$detalles,$cod){
+            $datos = json_decode($detalles);
+            $nreg = count($datos);
+            $rc = 0;
+
+            for ($i=0; $i < $nreg; $i++) { 
+                try {
+                    $sql=$this->db->connect()->prepare("INSERT INTO alm_movim2 SET id_regalm=:cod,ncodalm1=:ori,id_cprod=:cpro,ncantidad=:cant,ncoduni=:uni,
+                                                                                    nfactor=:fac,niddetaped=:ped,niddetaord=:ord,nflgactivo=:flag");
+                     $sql->execute(["cod"=>$cod,
+                                    "ori"=>$almacen,
+                                    "cpro"=>$datos[$rc]->idprod,
+                                    "cant"=>$datos[$rc]->cantidad,
+                                    "uni"=>$datos[$rc]->coduni,
+                                    "fac"=>$datos[$rc]->factor,
+                                    "ped"=>$datos[$rc]->iddetped,
+                                    "ord"=>$datos[$rc]->iddetord,
+                                    "flag"=>1]);
+
+                    $this->changeDetailStatus($datos[$rc]->iddetped);
+                    $rc++;
+                } catch (PDOException $th) {
+                    echo $th->getMessage();
+                    return false;
+                }
+            }
+        }
+
+        public function insertarDetallesGuia($almorig,$almdest,$detalles,$cod){
+            $datos = json_decode($detalles);
+            $nreg = count($datos);
+            $rc = 0;
+
+            for ($i=0; $i < $nreg; $i++) { 
+                try {
+                    $sql=$this->db->connect()->prepare("INSERT INTO alm_movim2 SET id_regalm=:cod,ncodalm1=:ori,id_cprod=:cpro,ncantidad=:cant,ncoduni=:uni,
+                                                                                    nfactor=:fac,niddetaped=:ped,niddetaord=:ord,nflgactivo=:flag");
+                     $sql->execute(["cod"=>$cod,
+                                    "ori"=>$almorig,
+                                    "des"=>$almdest,
+                                    "cpro"=>$datos[$rc]->idprod,
+                                    "cant"=>$datos[$rc]->cantidad,
+                                    "uni"=>$datos[$rc]->coduni,
+                                    "fac"=>$datos[$rc]->factor,
+                                    "ped"=>$datos[$rc]->iddetped,
+                                    "ord"=>$datos[$rc]->iddetord,
+                                    "flag"=>1]);
+
+                    $this->changeDetailStatus($datos[$rc]->iddetped);
+                    $rc++;
+                } catch (PDOException $th) {
+                    echo $th->getMessage();
+                    return false;
+                }
+            }
+        }
+
+        public function changeDetailStatus($codigo){
+            try {
+                $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nEstadoPed = 9 WHERE nidpedi=:idp");
+                $query->execute(["idp"=>$codigo]);
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+        }
+
+        public function cambiarEstadoSalida($codigo){
+
         }
     }
 ?>

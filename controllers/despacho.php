@@ -120,14 +120,17 @@
             $placa = $_POST['placa'];
             $configveh = $_POST['configveh'];
             $proyecto = $_POST['proyecto'];
+            $costos = $_POST['costos'];
+            $salida = $_POST['salida'];
             $detalles = $_POST['details'];
 
             $result = $this->model->guardarGuia($codmodalidadguia,$codtipoguia,$codalmacendestino,$codalmacenorigen,$codautoriza,$coddespacha,
-                                                    $coddestinatario,$codentidad,$codchofer,$serieguia,$nroguia,$packinlist,$fecemin,$feenttrans,
-                                                    $ruc,$razondest,$direccdest,$almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,$viatipodest,$nrodest,$deporg,$distorg,
-                                                    $provorg,$ubigorg,$mottrans,$modtras,$tenvio,$bultos,$peso,$observaciones,$autoriza,$despacha,$destinatario,
-                                                    $raztransp,$ructransp,$dirtransp,$representate,$almdest,$vianomodest,$intdest,$zondest,$depdest,$distdest,
-                                                    $provdest,$ubigdest,$dnicond,$detcond,$licencia,$certificado,$marca,$placa,$configveh,$proyecto,$detalles);
+                                                $coddestinatario,$codentidad,$codchofer,$serieguia,$nroguia,$packinlist,$fecemin,$feenttrans,
+                                                $ruc,$razondest,$direccdest,$almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,$viatipodest,$nrodest,$deporg,$distorg,
+                                                $provorg,$ubigorg,$mottrans,$modtras,$tenvio,$bultos,$peso,$observaciones,$autoriza,$despacha,$destinatario,
+                                                $raztransp,$ructransp,$dirtransp,$representate,$almdest,$vianomodest,$intdest,$zondest,$depdest,$distdest,
+                                                $provdest,$ubigdest,$dnicond,$detcond,$licencia,$certificado,$marca,$placa,$configveh,$proyecto,$costos,
+                                                $salida,$detalles);
 
             echo $result;
         }
@@ -139,7 +142,45 @@
         }
 
         function grabaSalida() {
-            
+            $id_ingreso = $_POST['id_ingreso'];
+            $id_salida = $_POST['id_salida'];
+            $id_entidad = $_POST['id_entidad'];
+            $cod_almacen = $_POST['cod_almacen'];
+            $cod_movimiento = $_POST['cod_movimiento'];
+            $cod_autoriza = $_POST['cod_autoriza'];
+            $cod_proyecto = $_POST['cod_proyecto'];
+            $cod_area = $_POST['cod_area'];
+            $cod_costos = $_POST['cod_costos'];
+            $order_file = $_POST['order_file'];
+            $cargo_almacen = $_POST['cargo_almacen'];
+            $idorden = $_POST['idorden'];
+            $idpedido = $_POST['idpedido'];
+            $entidad = $_POST['entidad'];
+            $docguia = $_POST['docguia'];
+            $nrosalida = $_POST['nrosalida'];
+            $movalma = $_POST['movalma'];
+            $fechadoc = $_POST['fechadoc'];
+            $fechacont = $_POST['fechacont'];
+            $proyecto = $_POST['proyecto'];
+            $solicita = $_POST['solicita'];
+            $aprueba = $_POST['aprueba'];
+            $almacen = $_POST['almacen'];
+            $tipomov = $_POST['tipomov'];
+            $nroped = $_POST['nroped'];
+            $fecped = $_POST['fecped'];
+            $nrord = $_POST['nrord'];
+            $fecord = $_POST['fecord'];
+            $espec = $_POST['espec'];
+            $documento = $_POST['documento'];
+            $details = $_POST['details'];
+
+           $result = $this->model->insertarSalida($id_ingreso,$id_salida,$id_entidad,$cod_almacen,$cod_movimiento,$cod_autoriza,
+                                                $cod_proyecto,$cod_area,$cod_costos,$order_file,$cargo_almacen,$idorden,$idpedido,
+                                                $entidad,$docguia,$nrosalida,$movalma,$fechadoc,$fechacont,$proyecto,$solicita,
+                                                $aprueba,$almacen,$tipomov,$nroped,$fecped,$nrord,$fecord,$espec,$documento,
+                                                $details);
+
+            echo $result;
         }
     }
 ?>
