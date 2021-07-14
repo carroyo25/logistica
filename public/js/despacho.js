@@ -629,7 +629,10 @@ $(function(){
         },
             function (data, textStatus, jqXHR) {
                 if (data){
-                    mostrarMensaje("msj_info","Documento registrado");
+                    mostrarMensaje("msj_correcto","Registro insertado...");
+                    $("#modalProcess").fadeOut();
+                }else{
+                    mostrarMensaje("msj_error","Error.. no se inserto el registro");
                 }
             },
             "texto"

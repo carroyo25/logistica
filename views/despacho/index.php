@@ -202,11 +202,11 @@
             <div class="formulario">
                 <div class="banner">
                     <div>
-                        <label for="tipo">Tipo</label>
-                        <select name="tipo" id="tipo">
+                        <label for="tipo">Almacen</label>
+                        <select name="almacen" id="almacen">
                             <option value="-1" class="oculto">Seleccione opcion</option>
-                            <option value="1">Bienes</option>
-                            <option value="2">Servicios</option>
+                            <option value="1">Almacen Pucallpa</option>
+                            <option value="2">Almacen Lurin</option>
                         </select>
                     </div>
                     <div>
@@ -219,6 +219,10 @@
                         </select>
                     </div>
                     <div>
+                        <label for="anio">Año</label>
+                        <input type="number" name="anio" id="anio" min="2020" max="3000">
+                    </div>
+                    <div>
                         <label for="mes">Mes</label>
                         <select name="mes" id="mes">
                             <option value="-1" class="oculto">Seleccione opcion</option>
@@ -228,10 +232,6 @@
                         </select>
                     </div>
                     <div>
-                        <label for="anio">Año</label>
-                        <input type="number" name="anio" id="anio" min="2020" max="3000">
-                    </div>
-                    <div>
                         <button type="button">Procesar</button>
                     </div>
                 </div>
@@ -239,15 +239,18 @@
                     <table class="w100p con_borde" id="tabla_guias">
                         <thead>
                             <tr>
-                                <th class="con_borde w7p">Num.</th>
-                                <th class="con_borde w7p">Emisión</th>
-                                <th class="con_borde">Concepto</th>
-                                <th class="con_borde">Area</th>
+                                <th class="con_borde w7p">Nro.Nota</th>
+                                <th class="con_borde w7p">Fecha</br>Registro</th>
+                                <th class="con_borde">Registro</br>Mov.Almacen</th>
+                                <th class="con_borde">Almacén</th>
                                 <th class="con_borde">Proyecto/Sede</th>
-                                <th class="con_borde">Logística</th>
-                                <th class="con_borde">Operaciones</th>
-                                <th class="con_borde">Financiera</th>
-                                <th class="con_borde">Atencion</th>
+                                <th class="con_borde">Año</br>Doc</th>
+                                <th class="con_borde">Nro.</br>Orden</th>
+                                <th class="con_borde">Guia Prov.</th>
+                                <th class="con_borde">Nro.</br>Pedido</th>
+                                <th class="con_borde">Guia</br>Remisión</th>
+                                <th class="con_borde">Observaciones</th>
+                                <th class="con_borde">Estado</th>
                                 <th class="con_borde">...</th>
                             </tr>
                         </thead>

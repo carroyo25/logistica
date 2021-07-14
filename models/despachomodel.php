@@ -7,7 +7,77 @@
         }
 
         public function getMainRecords() {
-            
+            $salida = "";
+            try {
+                $sql = $this->db->connect()->query("SELECT
+                                                        alm_despacho1.id_regalm,
+                                                        alm_despacho1.ctipmov,
+                                                        alm_despacho1.ncodmov,
+                                                        alm_despacho1.nnronota,
+                                                        alm_despacho1.nnromov,
+                                                        alm_despacho1.cper,
+                                                        alm_despacho1.ncodalm1,
+                                                        alm_despacho1.ffecdoc,
+                                                        YEAR ( alm_despacho1.ffecdoc ) AS anio,
+                                                        alm_despacho1.cSerieguia,
+                                                        alm_despacho1.cnumguia,
+                                                        alm_despacho1.ncodpry,
+                                                        alm_despacho1.idref_pedi,
+                                                        alm_despacho1.nEstadoDoc,
+                                                        alm_despacho1.idref_ord,
+                                                        alm_despacho1.idref_abas,
+                                                        tb_proyecto1.ccodpry,
+                                                        tb_proyecto1.cdespry,
+                                                        tb_almacen.cdesalm AS almacen,
+                                                        lg_registro.cnumero AS pedido,
+                                                        lg_regabastec.cnumero AS orden,
+                                                        al_regmovi1.cnumguia AS guiaprove,
+                                                        alm_despacho1.cobserva,
+                                                        tb_paramete2.cdesprm2 AS estado 
+                                                    FROM
+                                                        alm_despacho1
+                                                        INNER JOIN tb_proyecto1 ON alm_despacho1.ncodpry = tb_proyecto1.ncodpry
+                                                        INNER JOIN tb_almacen ON alm_despacho1.ncodalm1 = tb_almacen.ncodalm
+                                                        INNER JOIN lg_registro ON alm_despacho1.idref_pedi = lg_registro.id_regmov
+                                                        INNER JOIN lg_regabastec ON alm_despacho1.idref_ord = lg_regabastec.id_regmov
+                                                        INNER JOIN al_regmovi1 ON alm_despacho1.idref_abas = al_regmovi1.id_regalm
+                                                        INNER JOIN tb_paramete2 ON alm_despacho1.nEstadoDoc = tb_paramete2.ccodprm2 
+                                                    WHERE
+                                                        tb_paramete2.ncodprm1 = 4 
+                                                    LIMIT 30");
+                $sql->execute();
+                $rowCount = $sql->rowcount();
+
+                if  ($rowCount > 0) {
+                    while ($rs = $sql->fetch()) {
+                        $guiaRenision = $rs['cnumguia']!= null ? str_pad($rs['cnumguia'],5,"0",STR_PAD_LEFT):"";
+
+                        $salida.='<tr>
+                                    <td class="con_borde centro">'.str_pad($rs['nnronota'],5,"0",STR_PAD_LEFT).'</td>
+                                    <td class="con_borde centro">'.date("d/m/Y", strtotime($rs['ffecdoc'])).'</td>
+                                    <td class="con_borde centro">'.str_pad($rs['nnromov'],5,"0",STR_PAD_LEFT).'</td>
+                                    <td class="con_borde pl20">'.strtoupper($rs['almacen']).'</td>
+                                    <td class="con_borde pl20">'.strtoupper($rs['ccodpry']." ".$rs['cdespry']).'</td>
+                                    <td class="con_borde centro">'.$rs['anio'].'</td>
+                                    <td class="con_borde centro">'.str_pad($rs['orden'],5,"0",STR_PAD_LEFT).'</td>
+                                    <td class="con_borde centro">'.strtoupper($rs['guiaprove']).'</td>
+                                    <td class="con_borde centro">'.str_pad($rs['pedido'],5,"0",STR_PAD_LEFT).'</td>
+                                    <td class="con_borde centro">'.$guiaRenision.'</td>
+                                    <td class="con_borde centro">'.strtoupper($rs['cobserva']).'</td>
+                                    <td class="con_borde centro '.strtolower($rs['estado']).'">'.$rs['estado'].'</td>
+                                    <td class="con_borde centro"><a href="'.$rs['id_regalm'].'"><i class="far fa-edit"></i></a></td>
+                            </tr>';
+                    }
+                }else {
+                    $salida .='<tr><td colspan="13" class="centro">No hay registros para mostrar</td></tr>';
+                }
+
+                return $salida;
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
         }
 
         public function getParameters($param){
@@ -386,47 +456,43 @@
                 $id = uniqid("GR");
                 $filename = "public/guias/".$id.".pdf";
                 $ndoc = $this->genNroGuia();
-                $fecha = explode("-",$fecemin);
 
-                $sql = $this->db->connect()->prepare("INSERT alm_despacho1 SET id_regalm = :id_regalm,ctipmov = :ctipmov,cper = :cper,cmes = :cmes,ncodalm1 = :ncodalm1,ncodalm2 = :ncodalm2,
-                                                                            ffecdoc = :ffecdoc,ffecenvio = :ffecenvio,ffecrecep = :ffecrecep,ffecconta = :ffecconta,id_centi = :id_centi,
-                                                                            cSerieguia = :cSerieguia,cnumguia = :cnumguia,ncodcos = :ncodcos,idref_salida = :idref_salida,cobserva = :cobserva,
-                                                                            id_userAprob = :id_userAprob,nEstadoDoc = :nEstadoDoc,nflgDespacho = :nflgDespacho,cdocPDF = :cdocPDF,
-                                                                            nflgactivo = :nflgactivo,cmottras = :cmottras,nmodtras = :nmodtras,nbultos = :nbultos,npeso = :npeso,
-                                                                            cdnicond = :cdnicond,cnomcond = :cnomcond,ccertificado = :ccertificado,cmarca = :cmarca,cplaca = :cplaca,
-                                                                            cconfveh = :cconfveh");
-                    $sql->execute([ "id_regalm" =>$id,
-                                    "ctipmov" =>$modtras,
-                                    "cper" =>$fecha[0],
-                                    "cmes" =>$fecha[1],
-                                    "ncodalm1" =>$codalmacenorigen,
-                                    "ncodalm2" =>$codalmacendestino,
-                                    "ffecdoc" =>$fecemin,
-                                    "ffecenvio" =>$feenttrans,
-                                    "ffecrecep" =>null,
-                                    "ffecconta" =>null,
-                                    "id_centi" =>$codentidad,
-                                    "cSerieguia" =>'001',
-                                    "cnumguia" =>$ndoc,
-                                    "ncodcos" =>$costos,
-                                    "idref_salida" =>$salida,
-                                    "cobserva" =>$observaciones,
-                                    "id_userAprob" =>$codautoriza,
-                                    "nEstadoDoc" =>1,
-                                    "nflgDespacho" =>1,
-                                    "cdocPDF" =>$filename,
-                                    "nflgactivo" =>1,
-                                    "cmottras" =>$mottrans,
-                                    "nmodtras" =>$modtras,
-                                    "nbultos" =>$bultos,
-                                    "npeso" =>$peso,
-                                    "cdnicond" =>$dnicond,
-                                    "cnomcond" =>$detcond,
-                                    "ccertificado" =>$certificado,
-                                    "cmarca" =>$marca,
-                                    "cplaca" =>$placa,
-                                    "cconfveh" =>$configveh]);
+                $sql = $this->db->connect()->prepare("INSERT lg_docusunat SET id_refmov=:id_refmov,ccodtdoc=:ccodtdoc,ffechdoc=:ffechdoc,ffechreg=:ffechreg,ffechtrasl=:ffechtrasl,
+                                                                                ffechRecep=:ffechRecep,cserie=:cserie,cnumero=:cnumero,id_centi=:id_centi,cmotivo=:cmotivo,
+                                                                                ccodmodtrasl=:ccodmodtrasl,cdesmodtrasl=:cdesmodtrasl,ctipoenvio=:ctipoenvio,nbultos=:nbultos,
+                                                                                npesotot=:npesotot,cdniconduc=:cdniconduc,cdesconduc=:cdesconduc,cnrolicen=:cnrolicen,cnrocert=:cnrocert,
+                                                                                cmarcaveh=:cmarcaveh,cplacaveh=:cplacaveh,cconfigveh=:cconfigveh,ncodalm1=:ncodalm1,ncodalm2=:ncodalm2,
+                                                                                nEstadoImp=:nEstadoImp,cdocPDF=:cdocPDF,nflgactivo=:nflgactivo");
+                    $sql->execute([ "id_refmov"=>$id,
+                                    "ccodtdoc"=>'09',
+                                    "ffechdoc"=>$fecemin,
+                                    "ffechreg"=>null,
+                                    "ffechtrasl"=>$feenttrans,
+                                    "ffechRecep"=>null,
+                                    "cserie"=>'0001',
+                                    "cnumero"=>$ndoc,
+                                    "id_centi"=>$codentidad,
+                                    "cmotivo"=>$mottrans,
+                                    "ccodmodtrasl"=>$modtras,
+                                    "cdesmodtrasl"=>$observaciones,
+                                    "ctipoenvio"=>$tenvio,
+                                    "nbultos"=>$bultos,
+                                    "npesotot"=>$peso,
+                                    "cdniconduc"=>$dnicond,
+                                    "cdesconduc"=>$detcond,
+                                    "cnrolicen"=>$licencia,
+                                    "cnrocert"=>$certificado,
+                                    "cmarcaveh"=>$marca,
+                                    "cplacaveh"=>$placa,
+                                    "cconfigveh"=>$configveh,
+                                    "ncodalm1"=>$codalmacenorigen,
+                                    "ncodalm2"=>$codalmacendestino,
+                                    "nEstadoImp"=>null,
+                                    "cdocPDF"=>$filename,
+                                    "nflgactivo"=>1]);
                     $rowCount = $sql->rowcount();
+
+
 
                     if ($rowCount > 0){
                         $guia = $this->genPreviewGuia($ruc,$razondest,$direccdest,$fecemin,$feenttrans,$raztransp,$ructransp,$dirtransp,
@@ -437,7 +503,6 @@
                     }
                     
                     return $guia;
-                
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
@@ -630,10 +695,10 @@
                 $nummov = $this->genNumberMov($cod_almacen);
                 
                 $salida = "";
-                $sql = $this->db->connect()->prepare("INSERT INTO alm_movim1 SET id_regalm = :id,ctipmov = :ctipmov,ncodmov = :ncodmov,nnromov = :nnromov,
+                $sql = $this->db->connect()->prepare("INSERT INTO alm_despacho1 SET id_regalm = :id,ctipmov = :ctipmov,ncodmov = :ncodmov,nnromov = :nnromov,
                                                                     cper = :cper,cmes = :cmes,ncodalm1 = :ncodalm1,ffecdoc = :ffecdoc,ffecconta = :ffecconta,
                                                                     id_centi = :id_centi,ncodpry = :ncodpry,ncodarea = :ncodarea,ncodcos = :ncodcos,
-                                                                    idref_pedi = :idref_pedi,idref_abas=:idref_abas,
+                                                                    idref_pedi = :idref_pedi,idref_abas=:idref_abas,idref_ord=:idref_ord,nnronota=:nnronota,
                                                                     cobserva = :cobserva,id_userAprob = :id_userAprob,nEstadoDoc = :nEstadoDoc,nflgactivo = :nflgactivo,
                                                                     nflgDespacho = :nflgDespacho");
                 $sql->execute(["id"=>$id_salida,
@@ -649,11 +714,13 @@
                                 "ncodpry"=>$cod_proyecto,
                                 "ncodarea"=>$cod_area,
                                 "ncodcos"=>$cod_costos,
-                                "idref_pedi"=>$nroped,
+                                "idref_pedi"=>$idpedido,
                                 "idref_abas"=>$id_ingreso,
+                                "idref_ord"=>$idorden,
+                                "nnronota"=>$numdoc,
                                 "cobserva"=>$espec,
                                 "id_userAprob"=>$cod_autoriza,
-                                "nEstadoDoc"=>2,
+                                "nEstadoDoc"=>1,
                                 "nflgDespacho"=>1,
                                 "nflgactivo"=>1]);
                 $rowCount= $sql->rowcount();
@@ -678,8 +745,8 @@
 
             for ($i=0; $i < $nreg; $i++) { 
                 try {
-                    $sql=$this->db->connect()->prepare("INSERT INTO alm_movim2 SET id_regalm=:cod,ncodalm1=:ori,id_cprod=:cpro,ncantidad=:cant,ncoduni=:uni,
-                                                                                    nfactor=:fac,niddetaped=:ped,niddetaord=:ord,nflgactivo=:flag");
+                    $sql=$this->db->connect()->prepare("INSERT INTO alm_despacho2 SET id_regalm=:cod,ncodalm1=:ori,id_cprod=:cpro,ncantidad=:cant,ncoduni=:uni,
+                                                                                    nfactor=:fac,niddetaPed=:ped,niddetaOrd=:ord,nflgactivo=:flag");
                      $sql->execute(["cod"=>$cod,
                                     "ori"=>$almacen,
                                     "cpro"=>$datos[$rc]->idprod,
