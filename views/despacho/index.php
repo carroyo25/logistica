@@ -45,6 +45,7 @@
             <input type="hidden" name="cod_almacen" id="cod_almacen">
             <input type="hidden" name="cod_movimiento" id="cod_movimiento">
             <input type="hidden" name="cod_autoriza" id="cod_autoriza">
+            <input type="hidden" name="cod_solicita" id="cod_solicita">
             <input type="hidden" name="cod_proyecto" id="cod_proyecto">
             <input type="hidden" name="cod_area" id="cod_area">
             <input type="hidden" name="cod_costos" id="cod_costos">
@@ -81,7 +82,7 @@
                                 <div class="input_process g4items">
                                     <label for="nrosalida" class="w100px">Nro.Salida :</label>
                                     <input type="text" name="nrosalida" id="nrosalida" class="pl10" readonly>
-                                    <label for="movalma" class="w100px">Mod.Almacen:</label>
+                                    <label for="movalma" class="w100px">Mov.Almacen:</label>
                                     <input type="text" name="movalma" id="movalma" class="pl10" readonly>
                                 </div>
                                 <div class="input_process g4items">
@@ -136,8 +137,8 @@
                             </div>
                             <div class="process_estate">
                                 <div class="input_process g2items">
-                                    <label for="documento" class="w100px">Est.Doc.:</label>
-                                    <input type="text" name="documento" id="documento" class="pl20 mayusculas proceso" readonly>
+                                    <label for="estadoc" class="w100px">Est.Doc.:</label>
+                                    <input type="text" name="estadoc" id="estadoc" class="pl20 mayusculas proceso" readonly>
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="guia" class="w100px">Nro. Guia:</label>

@@ -1,0 +1,3 @@
+$(function(){
+    activar_opcion();
+})

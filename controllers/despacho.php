@@ -124,7 +124,7 @@
             $salida = $_POST['salida'];
             $detalles = $_POST['details'];
 
-            $result = $this->model->guardarGuia($codmodalidadguia,$codtipoguia,$codalmacendestino,$codalmacenorigen,$codautoriza,$coddespacha,
+            /*$result = $this->model->guardarGuia($codmodalidadguia,$codtipoguia,$codalmacendestino,$codalmacenorigen,$codautoriza,$coddespacha,
                                                 $coddestinatario,$codentidad,$codchofer,$serieguia,$nroguia,$packinlist,$fecemin,$feenttrans,
                                                 $ruc,$razondest,$direccdest,$almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,$viatipodest,$nrodest,$deporg,$distorg,
                                                 $provorg,$ubigorg,$mottrans,$modtras,$tenvio,$bultos,$peso,$observaciones,$autoriza,$despacha,$destinatario,
@@ -132,7 +132,7 @@
                                                 $provdest,$ubigdest,$dnicond,$detcond,$licencia,$certificado,$marca,$placa,$configveh,$proyecto,$costos,
                                                 $salida,$detalles);
 
-            echo $result;
+            echo $result;*/
         }
 
         function nuevoNroGuia(){
@@ -171,14 +171,29 @@
             $nrord = $_POST['nrord'];
             $fecord = $_POST['fecord'];
             $espec = $_POST['espec'];
-            $documento = $_POST['documento'];
+            //$documento = $_POST['documento'];
             $details = $_POST['details'];
 
            $result = $this->model->insertarSalida($id_ingreso,$id_salida,$id_entidad,$cod_almacen,$cod_movimiento,$cod_autoriza,
                                                 $cod_proyecto,$cod_area,$cod_costos,$order_file,$cargo_almacen,$idorden,$idpedido,
                                                 $entidad,$docguia,$nrosalida,$movalma,$fechadoc,$fechacont,$proyecto,$solicita,
-                                                $aprueba,$almacen,$tipomov,$nroped,$fecped,$nrord,$fecord,$espec,$documento,
-                                                $details);
+                                                $aprueba,$almacen,$tipomov,$nroped,$fecped,$nrord,$fecord,$espec,$details);
+
+            echo $result;
+        }
+
+        function salidaId() {
+            $idx = $_POST['idx'];
+
+            $result = $this->model->buscarSalidaId($idx);
+
+            echo json_encode($result);
+        }
+
+        function detallesGuiaId() {
+            $idx = $_POST['id'];
+
+            $result = $this->model->buscarDellatesId($idx);
 
             echo $result;
         }

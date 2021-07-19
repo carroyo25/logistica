@@ -492,15 +492,17 @@
                                     "nflgactivo"=>1]);
                     $rowCount = $sql->rowcount();
 
-
-
                     if ($rowCount > 0){
                         $guia = $this->genPreviewGuia($ruc,$razondest,$direccdest,$fecemin,$feenttrans,$raztransp,$ructransp,$dirtransp,
                                     $vianomorg,$nroorg,$zonaorg,$distorg,
                                     $vianomodest,$zondest,$viatipodest,$nrodest,$depdest,
                                     $modtras,$bultos,$peso,$observaciones,$proyecto,$detalles,$marca,$placa,$detcond,$licencia,
                                     $filename,$ndoc);
+                        
+                        
                     }
+
+
                     
                     return $guia;
             } catch (PDOException $th) {
@@ -687,7 +689,7 @@
         public function insertarSalida($id_ingreso,$id_salida,$id_entidad,$cod_almacen,$cod_movimiento,$cod_autoriza,
                                         $cod_proyecto,$cod_area,$cod_costos,$order_file,$cargo_almacen,$idorden,$idpedido,
                                         $entidad,$docguia,$nrosalida,$movalma,$fechadoc,$fechacont,$proyecto,$solicita,
-                                        $aprueba,$almacen,$tipomov,$nroped,$fecped,$nrord,$fecord,$espec,$documento,$details){
+                                        $aprueba,$almacen,$tipomov,$nroped,$fecped,$nrord,$fecord,$espec,$details){
             try {
                 
                 $fecha = explode("-",$fechadoc);
@@ -805,8 +807,180 @@
             }
         }
 
-        public function cambiarEstadoSalida($codigo){
+        public function cambiarEstadoSalida($codigo,$idguia){
+            try {
+                $sql = $this->db->connect()->prepare("");
+                $sql->execute(["cod"=>$codigo,
+                                "guia"=>$idguia,
+                                "estado"=>2]);
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
 
+        public function buscarSalidaId($idx){
+            try {
+                $sql = $this->db->connect()->prepare("SELECT
+                                                        logistica.alm_despacho1.id_regalm,
+                                                        logistica.alm_despacho1.ctipmov,
+                                                        logistica.alm_despacho1.ncodmov,
+                                                        logistica.alm_despacho1.nnromov,
+                                                        logistica.alm_despacho1.nnronota,
+                                                        logistica.alm_despacho1.ncodalm1,
+                                                        logistica.alm_despacho1.ffecdoc,
+                                                        logistica.alm_despacho1.id_centi,
+                                                        logistica.alm_despacho1.ncodpry,
+                                                        logistica.alm_despacho1.idref_ord,
+                                                        logistica.alm_despacho1.idref_pedi,
+                                                        logistica.alm_despacho1.idref_abas,
+                                                        logistica.alm_despacho1.cobserva,
+                                                        logistica.alm_despacho1.id_userAprob,
+                                                        logistica.alm_despacho1.nEstadoDoc,
+                                                        logistica.alm_despacho1.cdocPDF,
+                                                        logistica.alm_despacho1.nflgactivo,
+                                                        logistica.tb_almacen.cdesalm,
+                                                        logistica.alm_despacho1.ffecconta,
+                                                        logistica.tb_almacen.ccodalm,
+                                                        logistica.tb_proyecto1.ccodpry,
+                                                        logistica.tb_proyecto1.cdespry,
+                                                        CONCAT( autorizante.nombres, ' ', autorizante.apellidos ) AS autoriza,
+                                                        autorizante.dcargo,
+                                                        logistica.lg_registro.cnumero AS pedido,
+                                                        logistica.lg_registro.ffechadoc AS fechapedido,
+                                                        CONCAT( solicitante.nombres, ' ', solicitante.apellidos ) AS solicita,
+                                                        logistica.lg_regabastec.cnumero AS orden,
+                                                        logistica.lg_regabastec.ffechadoc AS fechaorden,
+                                                        logistica.lg_movimiento.cdesmov,
+                                                        logistica.tb_paramete2.cdesprm2,
+                                                        logistica.al_regmovi1.cnumguia,
+                                                        logistica.lg_regabastec.ncodcos,
+                                                        logistica.lg_regabastec.ncodarea,
+                                                        logistica.cm_entidad.crazonsoc,
+                                                        logistica.cm_entidad.cnumdoc 
+                                                    FROM
+                                                        logistica.alm_despacho1
+                                                        INNER JOIN logistica.tb_almacen ON alm_despacho1.ncodalm1 = tb_almacen.ncodalm
+                                                        INNER JOIN logistica.tb_proyecto1 ON alm_despacho1.ncodpry = tb_proyecto1.ncodpry
+                                                        INNER JOIN rrhh.tabla_aquarius AS autorizante ON logistica.alm_despacho1.id_userAprob = autorizante.internal
+                                                        INNER JOIN logistica.lg_registro ON logistica.alm_despacho1.idref_pedi = logistica.lg_registro.id_regmov
+                                                        INNER JOIN rrhh.tabla_aquarius AS solicitante ON logistica.lg_registro.ncodper = solicitante.internal
+                                                        INNER JOIN logistica.lg_regabastec ON logistica.alm_despacho1.idref_ord = logistica.lg_regabastec.id_regmov
+                                                        INNER JOIN logistica.lg_movimiento ON logistica.alm_despacho1.ctipmov = logistica.lg_movimiento.ncodmov
+                                                        INNER JOIN logistica.tb_paramete2 ON logistica.alm_despacho1.nEstadoDoc = logistica.tb_paramete2.ccodprm2
+                                                        INNER JOIN logistica.al_regmovi1 ON logistica.alm_despacho1.idref_abas = logistica.al_regmovi1.id_regalm
+                                                        INNER JOIN logistica.cm_entidad ON logistica.alm_despacho1.id_centi = logistica.cm_entidad.id_centi 
+                                                    WHERE
+                                                        alm_despacho1.id_regalm = :cod 
+                                                        AND logistica.tb_paramete2.ncodprm1 = 4 
+                                                        LIMIT 1");
+                $sql->execute(["cod"=>$idx]);
+
+                $rs = $sql->fetchAll();
+
+                $salidajson = array("id_ingreso"=>$rs[0]['idref_abas'],
+                                    "id_salida"=>$rs[0]['id_regalm'],
+                                    "id_entidad"=>$rs[0]['id_centi'],
+                                    "cod_almacen"=>$rs[0]['ncodalm1'],
+                                    "cod_movimiento"=>$rs[0]['ctipmov'],
+                                    "cod_autoriza"=>$rs[0]['id_userAprob'],
+                                    "cod_proyecto"=>$rs[0]['ncodpry'],
+                                    "cod_area"=>$rs[0]['ncodarea'],
+                                    "cod_costos"=>$rs[0]['ncodcos'],
+                                    //"order_file"=>$rs[0][''],
+                                    //"cargo_almacen"=>$rs[0][''],
+                                    "idorden"=>$rs[0]['idref_ord'],
+                                    "idpedido"=>$rs[0]['idref_pedi'],
+                                    "entidad"=>$rs[0]['crazonsoc'],
+                                    "guia"=>$rs[0]['cnumguia'],
+                                    "nrosalida"=>str_pad($rs[0]['nnronota'],4,0,STR_PAD_LEFT),
+                                    "movalma"=>str_pad($rs[0]['nnromov'],4,0,STR_PAD_LEFT),
+                                    "fechadoc"=>$rs[0]['ffecdoc'],
+                                    "fechacont"=>$rs[0]['ffecconta'],
+                                    "proyecto"=>strtoupper($rs[0]['ccodpry']."-".$rs[0]['cdespry']),
+                                    "solicita"=>$rs[0]['solicita'],
+                                    "aprueba"=>$rs[0]['autoriza'],
+                                    "almacen"=>strtoupper($rs[0]['ccodalm']."-".$rs[0]['cdesalm']),
+                                    "tipomov"=>$rs[0]['cdesmov'],
+                                    "nroped"=>$rs[0]['pedido'],
+                                    "fecped"=>$rs[0]['fechapedido'],
+                                    "nrord"=>str_pad($rs[0]['orden'],6,0,STR_PAD_LEFT),
+                                    "fecord"=>$rs[0]['fechaorden'],
+                                    "espec"=>$rs[0]['cobserva'],
+                                    "estadoc"=>$rs[0]['cdesprm2'],
+                                    "nestado"=>$rs[0]['nEstadoDoc']);
+
+                return $salidajson;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function buscarDellatesId($idx){
+            $salida = "";
+
+            try {
+                $sql = $this->db->connect()->prepare("SELECT
+                                                            alm_despacho2.id_regalm,
+                                                            alm_despacho2.niddeta,
+                                                            alm_despacho2.ncodalm1,
+                                                            alm_despacho2.id_cprod,
+                                                            alm_despacho2.nsaldo,
+                                                            alm_despacho2.ncantidad,
+                                                            alm_despacho2.nfactor,
+                                                            alm_despacho2.niddetaOrd,
+                                                            alm_despacho2.niddetaPed,
+                                                            alm_despacho2.nestadoreg,
+                                                            alm_despacho2.ncoduni,
+                                                            cm_producto.ccodprod,
+                                                            cm_producto.cdesprod,
+                                                            tb_unimed.cabrevia,
+                                                            tb_paramete2.cdesprm2 
+                                                        FROM
+                                                            alm_despacho2
+                                                            INNER JOIN cm_producto ON alm_despacho2.id_cprod = cm_producto.id_cprod
+                                                            INNER JOIN tb_unimed ON alm_despacho2.ncoduni = tb_unimed.ncodmed
+                                                            INNER JOIN tb_paramete2 ON alm_despacho2.nestadoreg = tb_paramete2.ccodprm2 
+                                                        WHERE
+                                                            tb_paramete2.ncodprm1 = 21 
+                                                            AND tb_paramete2.nflgactivo = 1 
+                                                            AND alm_despacho2.id_regalm = :cod ");
+                $sql->execute(["cod"=>$idx]);
+                
+                $rowCount = $sql->rowcount();
+                $item = 1;
+                
+                if ($rowCount > 0){
+                    while ($rs = $sql->fetch()) {
+                        $salida .='<tr>
+                                        <td class="con_borde centro"><a href="'.$rs['niddeta'].'" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
+                                        <td class="centro con_borde" data-iddetpedido ="'.$rs['niddetaPed'].'"
+                                                                 data-iddetorden ="'.$rs['niddetaOrd'].'"    
+                                                                 data-factor="'.$rs['nfactor'].'"
+                                                                 data-coduni="'.$rs['ncoduni'].'"
+                                                                 data-idprod="'.$rs['id_cprod'].'"
+                                                                 data-nestado="'.$rs['nestadoreg'].'">
+                                                                '.str_pad($item,3,"0",STR_PAD_LEFT).'
+                                        <td class="con_borde centro">'.$rs['ccodprod'].'</td>
+                                        <td class="con_borde pl20">'.$rs['cdesprod'].'</td>
+                                        <td class="con_borde centro">'.$rs['cabrevia'].'</td>
+                                        <td class="con_borde drch pr10">'.number_format($rs['ncantidad'], 2, '.', ',').'</td>
+                                        <td class="con_borde drch pr10">'.number_format($rs['ncantidad'], 2, '.', ',').'</td>
+                                        <td class="con_borde centro">'.$rs['cdesprm2'].'</td>
+                                        <td class="con_borde centro"></td>
+                                        <td class="con_borde centro"></td>
+                                   </tr>';
+                        $item++;
+                    }
+                }
+
+                return $salida;
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
         }
     }
 ?>

@@ -414,6 +414,7 @@
             return $numf." y ".$cents."/100";
         }
 
+        //grabar las acciones de los modulos
         public function saveAction($accion,$codigo,$modulo,$user){
             try {
                 $query = $this->db->connect()->prepare("INSERT INTO lg_seguimiento SET cmodulo=:cmod,id_regmov=:cod,cproceso=:acc,id_cuser=:usr");
@@ -426,5 +427,7 @@
                 return false;
             }
         }
+
+        
     }
 ?>

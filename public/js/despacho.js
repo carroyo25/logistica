@@ -21,7 +21,7 @@ $(function(){
             .addClass('proceso');
 
         /*
-        $.post(RUTA+"pedidos/newRequest", {data:0},
+        $.post(RUTA+"despachos/newRequest", {data:0},
             function (data, textStatus, jqXHR) {
                 $("#numero").val(data.numero);
                 $("#cod_pedido").val(data.codigo);
@@ -34,9 +34,55 @@ $(function(){
         return false;
     });
 
-    $("#tabla_pedidos tbody").on("click","a", function (e) {
+    $("#tabla_guias tbody").on("click","a", function (e) {
         e.preventDefault();
 
+        $.post(RUTA+"despacho/salidaId", {idx:$(this).attr("href")},
+            function (data, textStatus, jqXHR) {
+                $("#id_ingreso").val(data.id_ingreso);
+                $("#id_salida").val( data.id_salida );
+                $("#id_entidad").val(data.id_entidad);
+                $("#cod_almacen").val(data.cod_almacen);
+                $("#cod_movimiento").val(data.cod_movimiento);
+                $("#cod_autoriza").val(data.cod_autoriza);
+                $("#cod_proyecto").val(data.cod_proyecto);
+                $("#cod_area").val(data.cod_area);
+                $("#cod_costos").val(data.cod_costos);
+                $("#order_file").val(data.order_file);
+                $("#cargo_almacen").val(data.cargo_almacen);
+                $("#idorden").val(data.idorden);
+                $("#idpedido").val(data.idpedido);
+                $("#entidad").val(data.entidad);
+                $("#guia").val(data.guia);
+                $("#nrosalida").val(data.nrosalida);
+                $("#movalma").val(data.movalma);
+                $("#fechadoc").val(data.fechadoc);
+                $("#fechacont").val(data.fechacont);
+                $("#proyecto").val(data.proyecto);
+                $("#solicita").val(data.solicita);
+                $("#aprueba").val(data.aprueba);
+                $("#almacen").val(data.almacen);
+                $("#tipomov").val(data.tipomov);
+                $("#nroped").val(data.nroped);
+                $("#fecped").val(data.fecped);
+                $("#nrord").val(data.nrord);
+                $("#fecord").val(data.fecord);
+                $("#espec").val(data.espec);
+                $("#estadoc").val(data.estadoc);
+
+                $("#estadoc").addClass(data.estadoc.toLowerCase());
+
+                $.post(RUTA+"despacho/detallesGuiaId",{id:$("#id_salida").val()},
+                    function (data, textStatus, jqXHR) {
+                        $("#detalle_despacho tbody")
+                            .empty()
+                            .append(data);
+                    },
+                    "text"
+                );
+            },
+            "json"
+        );
         $("#modalProcess").fadeIn();
 
         return false;
@@ -188,7 +234,6 @@ $(function(){
 
         return false;
     });
-
 
      //lista de modalidad de movimientos
      $("#modtras").focus(function (e) { 
@@ -623,7 +668,7 @@ $(function(){
             nrord:$("#nrord").val(),
             fecord:$("#fecord").val(),
             espec:$("#espec").val(),
-            documento:$("#documento").val(),
+            estado:$("#estado").val(),
             ingreso:$("id_ingreso").val(),
             details:JSON.stringify(DETALLES)
         },
