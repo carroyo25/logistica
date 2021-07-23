@@ -1791,6 +1791,26 @@ hr {
 .paall_5px {
   padding: 5px; }
 
+/*checkbox*/
+input[type=checkbox]:focus {
+  outline: 1px solid rgba(0, 0, 0, 0.2); }
+
+input[type=checkbox] {
+  background-color: #DDD;
+  border-radius: 2px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  position: relative;
+  top: 5px; }
+
+input[type=checkbox]:checked {
+  background-color: #409fd6;
+  background: #409fd6 url("data:image/gif;base64,R0lGODlhCwAKAIABAP////3cnSH5BAEKAAEALAAAAAALAAoAAAIUjH+AC73WHIsw0UCjglraO20PNhYAOw==") 3px 3px no-repeat; }
+
 .g2items1_5 {
   -webkit-column-gap: 10px;
   column-gap: 10px;
@@ -1880,7 +1900,7 @@ hr {
   background: chartreuse;
   font-weight: 800; }
 
-.revisado {
+.revisado, .consulta {
   background: #3BA28B;
   font-weight: 800;
   color: #fff; }

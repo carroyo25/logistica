@@ -14,6 +14,7 @@
     var nItemdel    = 0;
     var changeState = 0;
     var vistaItem   = 0;
+    var diff        = 0;
 
 
 $(function() { 
@@ -54,6 +55,7 @@ $(function() {
                         $("#solicitante").val(data.dni + ' ' + data.apellidos + ',' + data.nombres);
                         $("#registro").val(data.estado);
                         $("#documento").val(data.estado);
+                        $("#fechaven").val(data.ffechaven);
                         $("#tipo")
                             .val( data.ctipmov == "B" ? "01 BIENES" : "02 SERVICIOS")
                             .addClass("desactivado");
@@ -68,33 +70,14 @@ $(function() {
                             "text"
                         );
 
-                        if ( data.nEstadoDoc == 1 ) {
-                            $(".sides_process div").removeClass('no_modificar');
-                            $("#registro, #documento")
-                                .removeClass('emitido','aprobado')
-                                .addClass('proceso');
-                            return false                           
-                        }
-                        else if( data.nEstadoDoc == 2 ){
-                            $("#registro, #documento")
-                            .removeClass('proceso')
-                            .addClass('emitido');
+                        $("#registro")
+                            .removeClass("proceso","aprobado")
+                            .addClass(data.estado.toLowerCase());
 
+                        if ( data.nEstadoDoc  == 1 ) {
+                            $(".sides_process div").removeClass('no_modificar');
+                        }else {
                             $(".sides_process div").addClass('no_modificar');
-                            return false;
-                        }
-                        else if( data.nEstadoDoc == 5 ){
-                            $(".sides_process div").addClass('no_modificar');
-                            $("#registro, #documento")
-                                .removeClass('proceso','emitido')
-                                .addClass('aprobado');
-                            return false
-                        }else if( data.nEstadoDoc == 7 ){
-                            $(".sides_process div").addClass('no_modificar');
-                            $("#registro, #documento")
-                                .removeClass('proceso','emitido')
-                                .addClass('aprobado');
-                            return false
                         }
 
                         $(".seleccion").fadeOut();
@@ -123,7 +106,7 @@ $(function() {
         $("#tipo").removeClass("desactivado");
         $(".seleccion").fadeOut();
         $("#registro, #documento")
-            .removeClass('aprobado','emitido')
+            .removeClass('aprobado','consulta')
             .addClass('proceso');
 
         vistaItem = 0;
@@ -536,6 +519,7 @@ $(function() {
                     '<td class="con_borde" contenteditable="true"><input type="number" class="drch"></td>'+
                     '<td class="con_borde"></td>'+
                     '<td class="con_borde"></td>'+
+                    '<td class="con_borde centro" contenteditable="true"><input type="checkbox" class="drch"></td>'+
                     '<td class="con_borde centro">'+ tipo +'</td>'+
                     '<td class="con_borde oculto">'+ factor +'</td>'+
                 '</tr>'
@@ -573,228 +557,20 @@ $(function() {
         return false;
     });
 
-    //activar cuadro de grupos
-    $("#grupo").focus(function (e) { 
-        e.preventDefault();
-        
-        $(this)
-        .select()
-        .parent().children("img").css("display","block");
-
-        $(".seleccion").fadeOut();
-
-        $.post(RUTA+"pedidos/grupos", {data:0},
-            function (data, textStatus, jqXHR) {
-                $("#grupo").parent().children("img").css("display","none");
-
-                $("#listaGrupos")
-                .empty()
-                .append(data)
-                .end();
-
-                $("#listaGrupos").parent().slideDown();
-            },
-            "text"
-        );
-
-        return false;
-    });
-
-    //seleccion de la lista grupos
-    $("#listaGrupos").on("click","a", function (e) {
+    //verificar las fechas de vencimiento
+    $("#fechaven").change(function (e) { 
         e.preventDefault();
 
-        grupo = $(this).attr("href");
-        $("#grupo").val($(this).text());
+        var entrega = new Date($(this).val()).getTime();
+        var actual  = new Date($("#fecha").val()).getTime();
 
-        $(this).parent().parent().parent().slideUp();
+        diff = (entrega - actual)/(1000*60*60*24);
 
-        return false;
-    });
-
-    //activar cuadro de grupos
-    $("#clase").focus(function (e) { 
-        e.preventDefault();
-        
-        $(this)
-        .select()
-        .parent().children("img").css("display","block");
-        
-        $(".seleccion").fadeOut();
-
-        $.post(RUTA+"pedidos/clases", {data:grupo},
-            function (data, textStatus, jqXHR) {
-                $("#clase").parent().children("img").css("display","none");
-
-                $("#listaClases")
-                .empty()
-                .append(data);
-
-                $("#listaClases").parent().slideDown();
-            },
-            "text"
-        );
-
-        return false;
-    });
-
-    //seleccion de la lista grupos
-    $("#listaClases").on("click","a", function (e) {
-        e.preventDefault();
-
-        clase = $(this).attr("href");
-        $("#clase").val($(this).text());
-
-        $(this).parent().parent().parent().slideUp();
-
-        return false;
-    });
-
-    //activar cuadro de grupos
-    $("#familia").focus(function (e) { 
-        e.preventDefault();
-        
-        $(this)
-        .select()
-        .parent().children("img").css("display","block");
-        
-        $(".seleccion").fadeOut();
-
-        $.post(RUTA+"pedidos/familias", {datagrp:grupo,datacls:clase},
-            function (data, textStatus, jqXHR) {
-                $("#familia").parent().children("img").css("display","none");
-
-                $("#listaFamilias")
-                .empty()
-                .append(data);
-
-                $("#listaFamilias").parent().slideDown();
-                
-            },
-            "text"
-        );
-        
-        $(this).next(".seleccion").slideDown();
-
-        return false;
-    });
-
-    //seleccion de la lista grupos
-    $("#listaFamilias").on("click","a", function (e) {
-        e.preventDefault();
-
-        familia = $(this).attr("href");
-        $("#familia").val($(this).text());
-
-        codigo = grupo+clase+familia;
-
-        $("#codigo_item").val(codigo);
-
-        $(this).parent().parent().parent().slideUp();
-
-        return false;
-    });
-
-    //activar cuadro de grupos
-    $("#unidad").focus(function (e) { 
-        e.preventDefault();
-        
-        $(this)
-        .select()
-        .parent().children("img").css("display","block");
-
-        $(".seleccion").fadeOut();
-
-        $.post(RUTA+"pedidos/unidades", {datagrp:grupo,datacls:clase},
-            function (data, textStatus, jqXHR) {
-                $("#unidad").parent().children("img").css("display","none");
-
-                $("#listaUnidades")
-                .empty()
-                .append(data);
-            },
-            "text"
-        );
-        
-        $(this).next(".seleccion").slideDown();
-
-        return false;
-    });
-
-    //seleccion de la lista grupos
-    $("#listaUnidades").on("click","a", function (e) {
-        e.preventDefault();
-
-        unidad = $(this).attr("href");
-        $("#cod_unidad").val($(this).attr("href"));
-        $("#unidad").val($(this).text());
-
-        $(this).parent().parent().parent().slideUp();
-
-        return false;
-    });
-
-    //grabar  nuevo registro
-    $("#submitItem").on("click", function (e) {
-        e.preventDefault()
-
-        operacion = $("#tipo").val() == '01 BIENES' ? 1 : 2;
-        $("#itemTipo").val(operacion);
-
-        if (grupo == 0) {
-            mostrarMensaje("msj_error","Seleccione el grupo");
-            return false;
-        }else if (clase == 0) {
-            mostrarMensaje("msj_error","Seleccione la clase");
-            return false;
-        }else if (familia == 0) {
-            mostrarMensaje("msj_error","Seleccione la familia");
-            return false;
-        }else if ($("#descrip").val().length <= 0) {
-            mostrarMensaje("msj_error","Ingrese la descripción");
-            return false;
-        }else if ($("#nom_com").val().length <= 0) {
-            mostrarMensaje("msj_error","Ingrese el nombre comercial");
-            return false;
-        }else if ($("#detalles").val().length <= 0) {
-            mostrarMensaje("msj_error","Ingrese los detalles");
-            return false;
-        }else if (unidad == 0) {
-            mostrarMensaje("msj_error","Seleccione la unidad");
+        if (diff < 1 ) {
+            mostrarMensaje("msj_error","Verifique la fecha de limite del pedido");
             return false;
         }
-
-        var str = $("#addItemForm").serialize();
         
-        $.post(RUTA+"pedidos/newItem", str,
-            function (data, textStatus, jqXHR) {
-                if (data) {
-                    mostrarMensaje("msj_info","Registro Creado");
-                    grupo = 0;
-                    clase = 0;
-                    familia = 0;
-                    unidad = 0;
-                }else {
-                    mostrarMensaje("msj_error","No se creo el registro");
-                }
-                $(".addItemWindow").css('right',"-100%");
-            },
-            "text"
-        );
-
-        return false;
-    });
-
-    //cancelar registro
-    $("#resetItem").on("click", function (e) {
-        e.preventDefault()
-
-        $("#addItemForm")[0].reset();
-        $(".addItemWindow").css('right',"-100%");
-        grupo = 0;
-        clase = 0;
-        familia = 0;
-        unidad = 0;
         return false;
     });
 
@@ -875,7 +651,11 @@ $(function() {
         }else if($("#detalle_pedido tbody tr").length <= 0){
             mostrarMensaje("msj_error","Añada productos al pedido");
             return false;
+        }else if(diff < 2) {
+            mostrarMensaje("msj_error","Verifique la fecha de limite del pedido");
+            return false;
         }
+
 
         var str = $("#formProcess").serialize();
         
@@ -1251,6 +1031,7 @@ function registerItemsTable(codigo){
                 CANTIDAD= $(this).find('td').eq(6).children().val(),
                 ESTADO  = 10,
                 UNIDAD  = $(this).find('td').eq(3).data("unidad"),
+                VERIFICA= $(this).find('td').eq(9).children().prop("checked"),
                 CODPED  = codigo;
             
             item = {};
@@ -1263,6 +1044,7 @@ function registerItemsTable(codigo){
                 item["estado"]   = ESTADO;
                 item["unidad"]   = UNIDAD;
                 item["codped"]   = CODPED;
+                item["verifica"] = VERIFICA;
 
                 //una vez agregados los datos al array "item" declarado anteriormente hacemos un .push() para agregarlos a nuestro array principal "DATA".
                 DATA.push(item);

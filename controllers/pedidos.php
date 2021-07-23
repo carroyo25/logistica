@@ -207,6 +207,7 @@
             echo $json_string;
         }
 
+        //graba los registros en la tabla
         function registro(){
             $retorno = "";
             $codp = $_POST['cod_pedido'];
@@ -226,8 +227,9 @@
             $espe = $_POST['espec_items'];
             $est  = $_POST['estado'];
             $aten = $_POST['atencion'];
+            $fven = $_POST['fechaven'];
 
-            $datos = compact("codp","cpry","ccos","care","ctra","cest","creg","csol","ctip","num","fecr","usr","conc","tipo","espe","est","aten");
+            $datos = compact("codp","cpry","ccos","care","ctra","cest","creg","csol","ctip","num","fecr","usr","conc","tipo","espe","est","aten","fven");
 
             $retorno = $this->model->insertRequest($datos);
             
@@ -253,8 +255,10 @@
             $espe = $_POST['espec_items'];
             $est  = $_POST['estado'];
             $aten = $_POST['atencion'];
+            $fven = $_POST['fechaven'];
 
-            $datos = compact("codp","cpry","ccos","care","ctra","cest","creg","csol","ctip","num","fecr","usr","conc","tipo","espe","est","aten");
+            $datos = compact("codp","cpry","ccos","care","ctra","cest","creg","csol","ctip","num","fecr","usr","conc","tipo","espe","est","aten","fven");
+
 
             $retorno = $this->model->updateRequest($datos);
             
@@ -268,6 +272,7 @@
         
         public function saveAtachs(){
             $datos = $_POST['data'];
+
             $this->model->insertAtachs($datos);
         }
 
