@@ -1029,7 +1029,7 @@ function registerItemsTable(codigo){
                 INDICE  = $(this).find('td').eq(3).data("indice"), 
                 CODITEM = $(this).find('td').eq(3).text(),
                 CANTIDAD= $(this).find('td').eq(6).children().val(),
-                ESTADO  = 10,
+                ESTADO  = 1,
                 UNIDAD  = $(this).find('td').eq(3).data("unidad"),
                 VERIFICA= $(this).find('td').eq(9).children().prop("checked"),
                 CODPED  = codigo;

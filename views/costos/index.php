@@ -81,6 +81,10 @@
                                     <label for="descripcion_centro" class="w250px">* Descripción :</label>
                                     <input type="text" name="descripcion_centro" id="descripcion_centro" class="w40p mayusculas">
                                 </div>
+                                <div class="inputfield">
+                                    <label for="descripcion_centro" class="w250px">Requiere consulta almacen :</label>
+                                    <input type="checkbox" name="checkAlmacen" id="checkAlmacen" class="w40p mayusculas">
+                                </div>
                                 <hr>
                             </div>
                            <?php 

@@ -555,7 +555,7 @@
                                     <td class="centro con_borde"><a href="#"><i class="fas fa-eraser"></i></a> </td>
                                     <td class="con_borde centro">'.str_pad($cont,2,"0",STR_PAD_LEFT).'</td>
                                     <td class="con_borde pl20" data-idx="'.$row['ncodalm'].'">'.$row['ccodalm'].'</td>
-                                    <td class="con_borde pl20">'.$row['cdesalm'].'</td>
+                                    <td class="con_borde pl20">'.strtoupper($row['cdesalm']).'</td>
                                  </tr>';
                         
                         $cont++;

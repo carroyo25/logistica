@@ -9,6 +9,74 @@
 </head>
 <body>
     <?php require 'views/header.php'; ?>
+    <div class="modal zindex3" id="modalSerie">
+        <div class="dialogContainer w35p">
+            <div class="dialogTitle">
+                <h4>Registrar Series</h4>
+            </div>
+            <hr>
+            <div class="dialogBody">
+                <div class="titulos">
+                    <h4 id="descripProducto"></h4>
+                    <h4 id="codigoProducto"></h4>
+                    <h4 id="nroItemSerial" class="noculto"></h4>
+                    <a href="#" id="addSerials"><i class="far fa-calendar-plus"></i></a>
+                </div>
+                <form>
+                    <div>
+                        <table id="detalle_series" class="w100p con_border espacio_tabla_0 ">
+                            <thead>
+                                <tr>
+                                    <th class="con_borde">...</th>
+                                    <th class="con_borde">Item</th>
+                                    <th class="con_borde">Nro. Serie</th>
+                                    <th class="con_borde">Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="options">
+                        <button id="btnConfirmSerial" class="botones" type="button">Aceptar</button>
+                        <button id="btnCancelSerial" class="botones" type="button">Cancelar</button>
+                    </div>
+                </form>   
+            </div>
+        </div>
+    </div>
+    <div class="modal zindex3" id="modalAlmacen">
+        <div class="dialogContainer w35p">
+            <div class="dialogTitle">
+                <h4>Existencias</h4>
+            </div>
+            <hr>
+            <div class="dialogBody">
+                <div class="titulos">
+                    <h4 id="descripProducto"></h4>
+                    <h4 id="codigoProducto"></h4>
+                    <h4 id="nroItemSerial" class="noculto"></h4>
+                </div>
+                <form action="">
+                    <div>
+                        <table id="detalle_existencia" class="w100p con_border espacio_tabla_0 ">
+                            <thead>
+                                <tr>
+                                    <th class="con_borde">Almacen</th>
+                                    <th class="con_borde">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="options">
+                        <button id="cerrarAlmacen" class="botones" type="button">Aceptar</button>
+                    </div>
+                </form>   
+            </div>
+        </div>
+    </div>
     <div class="modal" id="modalProcess">
         <form action="#" autocomplete="off" id="formProcess">
             <input type="hidden" name="cod_pedido" id="cod_pedido">
@@ -33,18 +101,9 @@
                         <button type="button" id="cancelItem" title="Cancelar Pedido">
                             <i class="fas fa-ban"></i> Cancelar Pedido
                         </button>
-                        <button type="button" id="upAttach" title="Importar Adjuntos">
-                            <i class="fas fa-upload"></i> Adjuntar Archivos
-                        </button>
-                        <button type="button" id="preview" title="Vista Previa">
-                            <i class="fab fa-wpexplorer"></i> Vista Previa
-                        </button>
-                        <button type="button" id="sendItem" title="Enviar Pedido">
-                            <i class="far fa-paper-plane"></i> Enviar Almacen
-                        </button>
                     </div>
                 </div>
-                    <div class="process_header">
+                    <div class="process_header desactivado">
                         <div class="process_left">    
                             <div class="input_process g4items">
                                 <label for="numero" class="w100px">Número :</label>
@@ -129,14 +188,11 @@
                     </div>
                     <div class="descrip_title">
                         <span>Detalles</span>
-                        <div>
-                            <button type="button" id="addItem" title="Añadir Item">
-                                <i class="far fa-plus-square"></i> Agregar Item
+                        <!-- <div>
+                            <button type="button" id="buscarExistencias" title="Consultar Almacen">
+                                <i class="far fa-plus-square"></i> Consultar Almacen
                             </button>
-                            <button type="button" id="imporItems" title="Importar Registros">
-                                <i class="fas fa-file-import"></i> Importar Items
-                            </button>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="process_items">
                         <div>
@@ -144,16 +200,15 @@
                                 <thead>
                                     <tr>
                                         <th class="con_borde w5p">...</th>
-                                        <th class="con_borde w5p">...</th>
                                         <th class="con_borde w5p">Item</th>
                                         <th class="con_borde w8p">Codigo</th>
                                         <th class="con_borde w35p">Descripcion</th>
                                         <th class="con_borde w5p">UM</th>
                                         <th class="con_borde w5p">Cant. Pedida</th>
+                                        <th class="con_borde w5p">Cant. Atendida</th>
                                         <th class="con_borde w8p">Nro. Orden</th>
                                         <th class="con_borde w8p">Nro. Parte</th>
-                                        <th class="con_borde w5p">Verificar</br>Calidad</th>
-                                        <th class="con_borde w8p">Tipo</th>
+                                        <th class="con_borde w8p">Observaciones</th>
                                         <th class="con_borde oculto">Factor</th>
                                     </tr>
                                 </thead>
@@ -162,7 +217,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="descrip_title">
+                    <div class="descrip_title desactivado">
                         <span>Especificaciones Técnicas o Descripción del Item</span>
                     </div>
                     <div class="details_item">
@@ -175,6 +230,21 @@
     </div>
     <div class="modal zindex5" id="waitmodal">
         <div class="loader"></div>
+    </div>
+    <div class="modal" id="dialogConfirm">
+        <div class="dialogContainer w35p">
+            <div class="dialogTitle">
+                <h4>Pregunta</h4>
+            </div>
+            <hr>
+            <div class="dialogBody">
+                <h1>¿Los datos son correctos? </h1> <!--alt 168-->   
+                <div class="options">
+                    <button id="btnYes" class="botones">Si</button>
+                    <button id="btnNo" class="botones">No</button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>
