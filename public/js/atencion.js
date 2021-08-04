@@ -134,7 +134,8 @@ function grabarDetalles(){
         
         TABLA.each(function(){
             var ITEM = $(this).find('td').eq(0).children().data('iddet'),
-                CANT = $(this).find('td').eq(6).children().val(),
+                CANT = $(this).find('td').eq(5).text(),
+                ALM  = $(this).find('td').eq(6).children().val(),
                 OBS  = $(this).find('td').eq(9).children().val(),
 
             item={};
@@ -142,6 +143,7 @@ function grabarDetalles(){
             if (ITEM !== ''){
                 item['item'] = ITEM;
                 item['cant'] = CANT;
+                item['alm'] = ALM;
                 item['obs'] = OBS;
             }
 

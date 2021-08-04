@@ -96,10 +96,10 @@
                     <span>Datos Generales</span>
                     <div>
                         <button type="button" id="saveItem" title="Grabar Pedido">
-                            <span><i class="far fa-save"></i> Grabar Pedido</span> 
+                            <span><i class="far fa-save"></i> Actualizar Pedido</span> 
                         </button>
                         <button type="button" id="cancelItem" title="Cancelar Pedido">
-                            <i class="fas fa-ban"></i> Cancelar Pedido
+                            <i class="fas fa-ban"></i> Cancelar Atención
                         </button>
                     </div>
                 </div>

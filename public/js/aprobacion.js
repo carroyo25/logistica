@@ -238,8 +238,8 @@ function dataPreviewBienes(){
             DESCRIPCION = $(this).find('td').eq(2).text(),
             UNIDAD      = $(this).find('td').eq(3).text(),
             CANTPED     = $(this).find('td').eq(4).text(),
-            CANTAPR     = $(this).find('td').eq(5).children().val(),
-            ESTADO      = $(this).find('td').eq(6).text(),
+            CANTAPR     = $(this).find('td').eq(6).children().val(),
+            ESTADO      = $(this).find('td').eq(0).text(),
             OBSERV      = $(this).find('td').eq(7).children().val(),
             APROB       = $(this).find('td').eq(8).children().prop("checked"),
 
@@ -326,9 +326,9 @@ function dataUpdateItems(){
             DESCRIPCION = $(this).find('td').eq(2).text(),
             UNIDAD      = $(this).find('td').eq(3).text(),
             CANTPED     = $(this).find('td').eq(4).text(),
-            CANTAPR     = $(this).find('td').eq(5).children().val(),
-            OBSERV      = $(this).find('td').eq(6).children().val(),
-            APROB       = $(this).find('td').eq(7).children().prop("checked"),
+            CANTAPR     = $(this).find('td').eq(6).children().val(),
+            OBSERV      = $(this).find('td').eq(7).children().val(),
+            APROB       = $(this).find('td').eq(8).children().prop("checked"),
 
         item = {};
 

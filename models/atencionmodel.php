@@ -66,40 +66,42 @@
 
         }
 
-        public function getAllUserRecords($proyecto){
+        public function getAllUserRecords($user){
             try {
                 $salida = "";
+
                 $query = $this->db->connect()->prepare("SELECT
-                                                logistica.lg_pedidocab.id_regmov,
-                                                logistica.lg_pedidocab.ffechadoc,
-                                                logistica.lg_pedidocab.cconcepto,
-                                                logistica.lg_pedidocab.ffechaven,
-                                                logistica.lg_pedidocab.nEstadoDoc,
-                                                logistica.lg_pedidocab.id_cuser,
-                                                logistica.lg_pedidocab.ncodmov,
-                                                logistica.lg_pedidocab.cnumero,
-                                                logistica.lg_pedidocab.nNivAten,
-                                                logistica.tb_proyecto1.cdespry,
-                                                logistica.tb_proyecto1.ccodpry,
-                                                logistica.tb_area.ccodarea,
-                                                logistica.tb_area.cdesarea,
-                                                rrhh.tabla_aquarius.apellidos,
-                                                rrhh.tabla_aquarius.nombres,
-                                                atenciones.cdesprm2 AS atencion,
-                                                estados.cdesprm2 AS estado 
-                                            FROM
-                                                logistica.lg_pedidocab
-                                                INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry
-                                                INNER JOIN logistica.tb_area ON logistica.lg_pedidocab.ncodarea = logistica.tb_area.ncodarea
-                                                INNER JOIN rrhh.tabla_aquarius ON logistica.lg_pedidocab.ncodper = rrhh.tabla_aquarius.internal
-                                                INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
-                                                INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
-                                            WHERE
-                                                logistica.lg_pedidocab.ncodpry = :proyecto 
-                                                AND atenciones.ncodprm1 = 13 
-                                                AND estados.ncodprm1 = 4
-                                                AND lg_pedidocab.nEstadoDoc = 2");
-                $query->execute(["proyecto"=>$proyecto]);
+                                                        logistica.lg_pedidocab.id_regmov,
+                                                        logistica.lg_pedidocab.ffechadoc,
+                                                        logistica.lg_pedidocab.cconcepto,
+                                                        logistica.lg_pedidocab.ffechaven,
+                                                        logistica.lg_pedidocab.nEstadoDoc,
+                                                        logistica.lg_pedidocab.id_cuser,
+                                                        logistica.lg_pedidocab.ncodmov,
+                                                        logistica.lg_pedidocab.cnumero,
+                                                        logistica.lg_pedidocab.nNivAten,
+                                                        logistica.tb_proyecto1.cdespry,
+                                                        logistica.tb_proyecto1.ccodpry,
+                                                        logistica.tb_area.ccodarea,
+                                                        logistica.tb_area.cdesarea,
+                                                        rrhh.tabla_aquarius.apellidos,
+                                                        rrhh.tabla_aquarius.nombres,
+                                                        logistica.lg_pedidocab.ncodper,
+                                                        estados.cdesprm2 AS estado
+                                                    FROM
+                                                        logistica.tb_proyusu
+                                                        NATURAL RIGHT JOIN logistica.lg_pedidocab
+                                                        INNER JOIN logistica.tb_proyecto1 ON lg_pedidocab.ncodpry = tb_proyecto1.ncodpry
+                                                        INNER JOIN logistica.tb_area ON lg_pedidocab.ncodarea = tb_area.ncodarea
+                                                        INNER JOIN rrhh.tabla_aquarius ON logistica.lg_pedidocab.ncodper = rrhh.tabla_aquarius.internal
+                                                        INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
+                                                        INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
+                                                    WHERE
+                                                        logistica.lg_pedidocab.id_cuser = :user 
+                                                        AND atenciones.ncodprm1 = 13 
+                                                        AND estados.ncodprm1 = 4 
+                                                        AND lg_pedidocab.nEstadoDoc = 2");
+                $query->execute(["user"=>$user]);
                 $rowcount = $query->rowcount();
 
                 if ($rowcount > 0 ){
@@ -264,7 +266,7 @@
                             <td class="con_borde pl10">'. $row['cdesprod'] .'</td>
                             <td class="con_borde centro">'. $row['cabrevia'] .'</td>
                             <td class="con_borde drch pr10">'.$row['cantidad'] .'</td>
-                            <td class="con_borde"><input type="number" class="drch" placeholder="000.00"></td>
+                            <td class="con_borde"><input type="number" class="drch"></td>
                             <td class="con_borde"></td>
                             <td class="con_borde centro"></td>
                             <td class="con_borde centro"><input type="text" class="pl20"></td>
@@ -284,12 +286,19 @@
             $datos = json_decode($detalles);
             $nreg = count($datos);
             $rc = 0;
-            for ($i=0; $i < $nreg-1; $i++) { 
+            for ($i=0; $i < $nreg; $i++) { 
                 try {
-                    $sql = $this->db->connect()->prepare("UPDATE lg_pedidodet SET ncantaten=:cant,comentaAlm=:obs,nEstadoReg =3 WHERE nidpedi =:cod LIMIT 1");
-                    $sql->execute(["cod"=>$datos[$rc]->item,
-                                   "cant"=>$datos[$rc]->cant,
-                                   "obs"=>$datos[$rc]->obs]);
+                    if ( $datos[$i]->alm == $datos[$i]->cant ) {
+                        $est = 8;
+                    }else {
+                        $est = 3;
+                    }
+                    $sql = $this->db->connect()->prepare("UPDATE lg_pedidodet SET ncantaten=:cant,comentaAlm=:obs,nEstadoReg = :est WHERE nidpedi =:cod");
+                    $sql->execute([ "cod"=>$datos[$i]->item,
+                                    "cant"=>$datos[$i]->alm,
+                                    "obs"=>$datos[$i]->obs,
+                                    "est"=>$est]);
+                    
 
                 } catch (PDOException $th) {
                     echo $th->getMessage();

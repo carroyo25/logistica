@@ -7,7 +7,7 @@
 
         function render(){
             $this->view->menu         = $this->model->acordeon($_SESSION['id_user']);
-            $this->view->registros    = $this->model->getAllUserRecords(34);
+            $this->view->registros    = $this->model->getAllUserRecords($_SESSION['cnameuser']);
             $this->view->render('atencion/index');
         }
 
