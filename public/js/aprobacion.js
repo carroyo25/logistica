@@ -178,19 +178,24 @@ $(function(){
     $("#btnSendConfirm").on("click", function (e) {
         e.preventDefault();
 
-        if ( $("#listMailToSend tbody tr").length < 0 ) {
+
+        if ( $("#listMailToSend tbody tr").length == 0 ) {
             mostrarMensaje("msj_info","Se aprueba , sin envio de correos")
         }
 
-        $.post(RUTA+"aprobacion/updateReg", {cod:$("#cod_pedido").val(),iu:$(".userData h3").text()},
+        dataUpdateItems();
+
+        $.post(RUTA+"aprobacion/aprobar", {cod:$("#cod_pedido").val(),iu:$(".userData h3").text(),detalles:JSON.stringify(DATA)},
             function (data, textStatus, jqXHR) {
                 dataUpdateItems();
                 getMails($("#cod_pedido").val());
+                mostrarMensaje("msj_correcto",data);
                 $("#dialogSend").fadeOut();
                 getListRequest() //verificar esat part en el funcionamiento
             },
             "text"
         );
+
         return false;
     });
     ////#endregion
@@ -326,6 +331,7 @@ function dataUpdateItems(){
             DESCRIPCION = $(this).find('td').eq(2).text(),
             UNIDAD      = $(this).find('td').eq(3).text(),
             CANTPED     = $(this).find('td').eq(4).text(),
+            CANTATE     = $(this).find('td').eq(5).text(),
             CANTAPR     = $(this).find('td').eq(6).children().val(),
             OBSERV      = $(this).find('td').eq(7).children().val(),
             APROB       = $(this).find('td').eq(8).children().prop("checked"),
@@ -338,6 +344,7 @@ function dataUpdateItems(){
             item["coditem"]     = CODITEM;
             item["cantped"]     = CANTPED;
             item["cantapr"]     = CANTAPR;
+            item["cantate"]     = CANTATE;
             item["descripcion"] = DESCRIPCION;
             item["unidad"]      = UNIDAD;
             item["observ"]      = OBSERV;
@@ -348,27 +355,7 @@ function dataUpdateItems(){
         }
     });
 
-    INFO    = new FormData();
-    aInfo   = JSON.stringify(DATA);
-
-    INFO.append('data', aInfo);
-
-    $.ajax({
-        data: INFO,
-        type: 'POST',
-        url : RUTA + 'aprobacion/updateDetails',
-        processData: false, 
-        contentType: false,
-        dataType:"text",
-        success : function(response) {
-            $(".insidePreview object")
-            .attr("data","")
-            .attr("data",response)
-        },
-        error : function(xhr, status) {
-            alert('Disculpe, existió un problema');
-        },
-    });
+    return DATA;
 }
 
 function getMails(codigo){
@@ -416,7 +403,6 @@ function getMails(codigo){
         });
     }
 }
-
 
 function getListRequest(){
     $.post(RUTA+"pedidos/mainList", data=0,

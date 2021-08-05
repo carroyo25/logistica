@@ -101,7 +101,7 @@
             echo $filename;
         }
 
-        function updateReg(){
+        /*function updateReg(){
             $cod = $_POST['cod'];
             $usr = $_POST['iu'];
 
@@ -110,14 +110,20 @@
             echo $result;
         }
 
-        function refreshList(){
-
-        }
-
         function updateDetails(){
             $datos = $_POST['data'];
 
             $result = $this->model->changeDetailStatus($datos);
+
+            echo $result;
+        }*/
+
+        function aprobar(){
+            $cod = $_POST['cod'];
+            $usr = $_POST['iu'];
+            $datos = $_POST['detalles'];
+
+            $result = $this->model->aprobarItems($cod,$usr,$datos);
 
             echo $result;
         }

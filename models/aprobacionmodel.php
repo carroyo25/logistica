@@ -52,7 +52,6 @@
                                 <td class="con_borde centro '. strtolower($row['estado']) .'">'.$row['estado'].'</td>
                                 <td class="con_borde centro '. strtolower($row['atencion']) .'">'.$row['atencion'].'</td>
                                 <td class="con_borde centro"><a href="'.$row['id_regmov'].'" data-poption="editar"  title="editar"><i class="far fa-edit"></i></a></td>
-                                <td class="con_borde centro"><a href="'.$row['id_regmov'].'" data-poption="cambiar" title="cambiar atencion"><i class="fas fa-highlighter"></i></a></td>
                             </tr>';
                     }
                 }
@@ -249,15 +248,49 @@
             }
         }
 
-        public function changeStatus($cod,$nombre){
+        public function aprobarItems($cod,$nombre,$datos) {
+            $atendidos = 0;
             try {
-                $mensaje = "";
-                $query = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc = 4,ncodaproba=:apro WHERE id_regmov= :cod");
-                $query->execute(["cod"=>$cod,"apro"=>$_SESSION['iduser']]);
+                $data = json_decode($datos);
+                for ($i=0; $i < count($data); $i++) {
+
+                    $est = 8;
+
+                    if ( intval($data[$i]->cantapr) != 0 ){
+                        $atendidos++;
+                        $est = 4;
+                    }
+
+                    $idd = $data[$i]->iddetalle;
+                    $cap = $data[$i]->cantapr;
+                    $chk = $data[$i]->aprob == true ? 1 : 0;
+                    $obs = $data[$i]->observ;
+
+                    $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nflgactivo=:chk,ncantapro=:cap,cobserva=:obs,nEstadoReg=:est WHERE nidpedi=:idd");
+                    $query->execute(["idd"=>$idd,"cap"=>$cap,"chk"=>$chk,"obs"=>$obs,"est"=>$est]);
+                }
+
+                $mensaje = $this->actualizarPedido($cod,$nombre,$atendidos);
+                
+                return $mensaje;
+
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+        }
+
+        public function actualizarPedido($cod,$nombre,$atendidos){
+            $estado = $atendidos > 0 ? 4 : 8;
+
+            try {
+                $mensaje = "No se aprobo el pedido";
+                $query = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc =:est,ncodaproba=:apro WHERE id_regmov= :cod");
+                $query->execute(["cod"=>$cod,"apro"=>$_SESSION['iduser'],"est"=>$estado]);
                 $rowcount = $query->rowcount();
 
                 if ($rowcount > 0){
-                    $mensaje = "Registro Aprobado";
+                    $mensaje = "Pedido Aprobado";
 
                     $this->genOc($cod,strtoupper($nombre));
                 }
@@ -269,22 +302,6 @@
             }
         }
 
-        public function changeDetailStatus($datos){
-            try {
-                $data = json_decode($datos);
-                for ($i=0; $i < count($data); $i++) {
-                    $idd = $data[$i]->iddetalle;
-                    $cap = $data[$i]->cantapr;
-                    $est = $data[$i]->aprob == true ? 1 : 0;
-                    $obs = $data[$i]->observ;
-                    $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nflgactivo=:est,ncantapro=:cap,cobserva=:obs,nEstadoPed = 3 WHERE nidpedi=:idd");
-                    $query->execute(["idd"=>$idd,"cap"=>$cap,"est"=>$est,"obs"=>$obs]);
-                }
-            } catch (PDOException $e) {
-                echo $e->getMessage();
-                return false;
-            }
-        }
 
         public function sendmails($datos){
             require_once("public/PHPMailer/PHPMailerAutoload.php");

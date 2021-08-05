@@ -33,7 +33,7 @@
     <div class="modal zindex3" id="dialogSend">
         <div class="dialogContainer w35p">
             <div class="dialogTitle">
-                <h4>Responder Aprobacion</h4>
+                <h4>Responder Aprobación</h4>
             </div>
             <hr>
             <div class="dialogBody">
@@ -53,7 +53,7 @@
                     <textarea name="mail_mssg" id="mail_mssg" class="w100p" rows="7" placeholder="Escribir Mensaje"></textarea>
                 </div>
                 <div class="options">
-                    <button id="btnSendConfirm" class="botones">Despacho</button>
+                    <button id="btnSendConfirm" class="botones">Aceptar</button>
                     <button id="btnSendCancel" class="botones">Cancelar</button>
                 </div>
             </div>
@@ -184,7 +184,7 @@
                                         <th class="con_borde w3p">UM</th>
                                         <th class="con_borde w5p">Cantidad Pedida</th>
                                         <th class="con_borde w5p">Atendida por almacen</th>
-                                        <th class="con_borde w5p">Cantidad por Aprobar</th>
+                                        <th class="con_borde w5p">Cantidad a cotizar</th>
                                         <th class="con_borde w15p">Observaciones</th>
                                         <th class="con_borde w5p">Aprobado</th>
                                         <th class="con_borde oculto">Factor</th>
@@ -260,7 +260,6 @@
                                 <th class="con_borde">Responsable</th>
                                 <th class="con_borde w100px">Estado Doc.</th>
                                 <th class="con_borde w100px">Atención</th>
-                                <th class="con_borde">...</th>
                                 <th class="con_borde">...</th>
                             </tr>
                         </thead>

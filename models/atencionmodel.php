@@ -285,7 +285,7 @@
         public function actualizaDetalle($idx,$detalles){
             $datos = json_decode($detalles);
             $nreg = count($datos);
-            $rc = 0;
+            
             for ($i=0; $i < $nreg; $i++) { 
                 try {
                     if ( $datos[$i]->alm == $datos[$i]->cant ) {

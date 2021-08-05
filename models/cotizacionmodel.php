@@ -8,14 +8,14 @@
         public function getMainRecords(){
             try {
                 $salida = "";
-                $query = $this->db->connect()->query("SELECT logistica.lg_registro.id_regmov,
-                                                        logistica.lg_registro.ffechadoc,
-                                                        logistica.lg_registro.cconcepto,
-                                                        logistica.lg_registro.nEstadoDoc,
-                                                        logistica.lg_registro.id_cuser,
-                                                        logistica.lg_registro.ncodmov,
-                                                        logistica.lg_registro.cnumero,
-                                                        logistica.lg_registro.nNivAten,
+                $query = $this->db->connect()->query("SELECT logistica.lg_pedidocab.id_regmov,
+                                                        logistica.lg_pedidocab.ffechadoc,
+                                                        logistica.lg_pedidocab.cconcepto,
+                                                        logistica.lg_pedidocab.nEstadoDoc,
+                                                        logistica.lg_pedidocab.id_cuser,
+                                                        logistica.lg_pedidocab.ncodmov,
+                                                        logistica.lg_pedidocab.cnumero,
+                                                        logistica.lg_pedidocab.nNivAten,
                                                         logistica.tb_proyecto1.cdespry,
                                                         logistica.tb_proyecto1.ccodpry,
                                                         logistica.tb_area.ccodarea,
@@ -26,17 +26,17 @@
                                                         estados.cdesprm2 AS estado,
                                                         logistica.tb_sysusuario.cnombres 
                                                     FROM
-                                                        logistica.lg_registro
-                                                        INNER JOIN logistica.tb_proyecto1 ON logistica.lg_registro.ncodpry = logistica.tb_proyecto1.ncodpry
-                                                        INNER JOIN logistica.tb_area ON logistica.lg_registro.ncodarea = logistica.tb_area.ncodarea
-                                                        INNER JOIN rrhh.tabla_aquarius ON logistica.lg_registro.ncodper = rrhh.tabla_aquarius.internal
-                                                        INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_registro.nNivAten = atenciones.ccodprm2
-                                                        INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_registro.nEstadoDoc = estados.ccodprm2
-                                                        INNER JOIN logistica.tb_sysusuario ON logistica.lg_registro.ncodaproba = logistica.tb_sysusuario.id_cuser 
+                                                        logistica.lg_pedidocab
+                                                        INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry
+                                                        INNER JOIN logistica.tb_area ON logistica.lg_pedidocab.ncodarea = logistica.tb_area.ncodarea
+                                                        INNER JOIN rrhh.tabla_aquarius ON logistica.lg_pedidocab.ncodper = rrhh.tabla_aquarius.internal
+                                                        INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
+                                                        INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2
+                                                        INNER JOIN logistica.tb_sysusuario ON logistica.lg_pedidocab.ncodaproba = logistica.tb_sysusuario.id_cuser 
                                                     WHERE
                                                         atenciones.ncodprm1 = 13 
                                                         AND estados.ncodprm1 = 4 
-                                                        AND logistica.lg_registro.nEstadoDoc = 3");
+                                                        AND logistica.lg_pedidocab.nEstadoDoc = 4");
                 $query->execute();
                 $rowcount = $query->rowcount();
 
@@ -70,25 +70,25 @@
                 $item = array();
 
                 $query = $this->db->connect()->prepare("SELECT
-                                                            logistica.lg_registro.id_regmov,
-                                                            logistica.lg_registro.cnumero,
-                                                            logistica.lg_registro.ctipmov,
-                                                            logistica.lg_registro.ncodmov,
-                                                            logistica.lg_registro.ccoddoc,
-                                                            logistica.lg_registro.cserie,
-                                                            logistica.lg_registro.ffechadoc,
-                                                            logistica.lg_registro.ncodpry,
-                                                            logistica.lg_registro.ncodcos,
-                                                            logistica.lg_registro.ncodarea,
-                                                            logistica.lg_registro.ncodper,
-                                                            logistica.lg_registro.cconcepto,
-                                                            logistica.lg_registro.mdetalle,
-                                                            logistica.lg_registro.ctiptransp,
-                                                            logistica.lg_registro.nEstadoReg,
-                                                            logistica.lg_registro.nEstadoDoc,
-                                                            logistica.lg_registro.id_cuser,
-                                                            logistica.lg_registro.nflgactivo,
-                                                            logistica.lg_registro.nNivAten,
+                                                            logistica.lg_pedidocab.id_regmov,
+                                                            logistica.lg_pedidocab.cnumero,
+                                                            logistica.lg_pedidocab.ctipmov,
+                                                            logistica.lg_pedidocab.ncodmov,
+                                                            logistica.lg_pedidocab.ccoddoc,
+                                                            logistica.lg_pedidocab.cserie,
+                                                            logistica.lg_pedidocab.ffechadoc,
+                                                            logistica.lg_pedidocab.ncodpry,
+                                                            logistica.lg_pedidocab.ncodcos,
+                                                            logistica.lg_pedidocab.ncodarea,
+                                                            logistica.lg_pedidocab.ncodper,
+                                                            logistica.lg_pedidocab.cconcepto,
+                                                            logistica.lg_pedidocab.mdetalle,
+                                                            logistica.lg_pedidocab.ctiptransp,
+                                                            logistica.lg_pedidocab.nEstadoReg,
+                                                            logistica.lg_pedidocab.nEstadoDoc,
+                                                            logistica.lg_pedidocab.id_cuser,
+                                                            logistica.lg_pedidocab.nflgactivo,
+                                                            logistica.lg_pedidocab.nNivAten,
                                                             rrhh.tabla_aquarius.apellidos,
                                                             rrhh.tabla_aquarius.nombres,
                                                             rrhh.tabla_aquarius.dni,
@@ -103,16 +103,16 @@
                                                             atenciones.cdesprm2 AS atencion,
                                                             estados.cdesprm2 AS estado 
                                                         FROM
-                                                            logistica.lg_registro
-                                                            INNER JOIN rrhh.tabla_aquarius ON logistica.lg_registro.ncodper = rrhh.tabla_aquarius.internal
-                                                            INNER JOIN logistica.tb_proyecto1 ON logistica.lg_registro.ncodpry = logistica.tb_proyecto1.ncodpry
-                                                            INNER JOIN logistica.tb_area ON logistica.lg_registro.ncodarea = logistica.tb_area.ncodarea
-                                                            INNER JOIN logistica.tb_ccostos ON logistica.lg_registro.ncodcos = logistica.tb_ccostos.ncodcos
-                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_registro.ctiptransp = transportes.ncodprm2
-                                                            INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_registro.nNivAten = atenciones.ccodprm2
-                                                            INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_registro.nEstadoDoc = estados.ccodprm2 
+                                                            logistica.lg_pedidocab
+                                                            INNER JOIN rrhh.tabla_aquarius ON logistica.lg_pedidocab.ncodper = rrhh.tabla_aquarius.internal
+                                                            INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry
+                                                            INNER JOIN logistica.tb_area ON logistica.lg_pedidocab.ncodarea = logistica.tb_area.ncodarea
+                                                            INNER JOIN logistica.tb_ccostos ON logistica.lg_pedidocab.ncodcos = logistica.tb_ccostos.ncodcos
+                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ncodprm2
+                                                            INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
+                                                            INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
                                                         WHERE
-                                                            logistica.lg_registro.id_regmov = :cod 
+                                                            logistica.lg_pedidocab.id_regmov = :cod 
                                                             AND atenciones.ncodprm1 = 13 
                                                             AND estados.ncodprm1 = 4");
                 $query->execute(["cod"=>$cod]);
@@ -170,39 +170,40 @@
                 $salida = '';
 
                 $query = $this->db->connect()->prepare("SELECT
-                                                        lg_detapedido.nidpedi,
-                                                        lg_detapedido.id_cprod,
-                                                        ROUND( lg_detapedido.ncantapro, 2 ) AS cantidad,
-                                                        lg_detapedido.nEstadoPed,
+                                                        lg_pedidodet.nidpedi,
+                                                        lg_pedidodet.id_cprod,
+                                                        ROUND( lg_pedidodet.ncantapro, 2 ) AS cantidad,
+                                                        lg_pedidodet.nEstadoPed,
                                                         tb_unimed.nfactor,
                                                         tb_unimed.cabrevia,
                                                         cm_producto.ccodprod,
                                                         cm_producto.cdesprod 
                                                     FROM
-                                                        lg_detapedido
-                                                        INNER JOIN tb_unimed ON lg_detapedido.ncodmed = tb_unimed.ncodmed
-                                                        INNER JOIN cm_producto ON lg_detapedido.id_cprod = cm_producto.id_cprod 
+                                                        lg_pedidodet
+                                                        INNER JOIN tb_unimed ON lg_pedidodet.ncodmed = tb_unimed.ncodmed
+                                                        INNER JOIN cm_producto ON lg_pedidodet.id_cprod = cm_producto.id_cprod 
                                                     WHERE
-                                                        lg_detapedido.id_regmov =:cod
-                                                        AND lg_detapedido.nflgactivo = 1");
+                                                        lg_pedidodet.id_regmov =:cod
+                                                        AND lg_pedidodet.nflgactivo = 1");
                 $query->execute(["cod"=>$cod]);
                 $rowcount = $query->rowcount();
                 $line = 0;
 
                 if ($rowcount > 0) {
                     while ($row = $query->fetch()) {
-                        $line++;
-
-                        $salida.='<tr class="lh1_2rem">
-                            <td class="con_borde centro"><input type="checkbox"></td>
-                            <td class="con_borde drch pr20" data-iddetalle="'.$row['nidpedi'].'">'. str_pad($line,3,"0",STR_PAD_LEFT) .'</td>
-                            <td class="con_borde centro" data-indice="'.$row['id_cprod'].'">'. $row['ccodprod'] .'</td>
-                            <td class="con_borde pl10">'. $row['cdesprod'] .'</td>
-                            <td class="con_borde centro">'. $row['cabrevia'] .'</td>
-                            <td class="con_borde drch pr10">'.$row['cantidad'] .'</td>
-                            <td class="con_borde"></td>
-                            <td class="oculto">'. $row['nfactor'] .'</td>
-                        </tr>';
+                        if ($row['cantidad'] > 0) {
+                            $line++;
+                            $salida.='<tr class="lh1_2rem">
+                                <td class="con_borde centro"><input type="checkbox"></td>
+                                <td class="con_borde drch pr20" data-iddetalle="'.$row['nidpedi'].'">'. str_pad($line,3,"0",STR_PAD_LEFT) .'</td>
+                                <td class="con_borde centro" data-indice="'.$row['id_cprod'].'">'. $row['ccodprod'] .'</td>
+                                <td class="con_borde pl10">'. $row['cdesprod'] .'</td>
+                                <td class="con_borde centro">'. $row['cabrevia'] .'</td>
+                                <td class="con_borde drch pr10">'. $row['cantidad'] .'</td>
+                                <td class="con_borde"></td>
+                                <td class="oculto">'. $row['nfactor'] .'</td>
+                            </tr>';
+                        }
                     }
                 }
 
@@ -389,7 +390,7 @@
             $estatus = 4;
             $salida = "";
             try {
-                $query = $this->db->connect()->prepare("UPDATE lg_registro SET nEstadoReg=:reg, nEstadoDoc=:doc WHERE id_regmov=:cod");
+                $query = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoReg=:reg, nEstadoDoc=:doc WHERE id_regmov=:cod");
                 $query->execute(["cod"=>$cod,"reg"=>$estatus,"doc"=>$estatus]);
                 $rowcount = $query->rowcount();
 
@@ -408,7 +409,7 @@
 
         public function changeDetailStatus($cod,$est){
             try {
-                $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nEstadoPed=:est WHERE id_regmov=:cod");
+                $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoPed=:est WHERE id_regmov=:cod");
                 $query->execute(["cod"=>$cod,"est"=>$est]);
             } catch (PDOException $e) {
                 echo $e->getMessage();
@@ -420,14 +421,14 @@
         {
             $priority = 2;
 
-            try {
-                $query = $this->db->connect()->prepare("UPDATE lg_registro SET nNivAten=:aten WHERE id_regmov=:cod");
+            /*try {
+                $query = $this->db->connect()->prepare("UPDATE lg_pedidocat SET nNivAten=:aten WHERE id_regmov=:cod");
                 $query->execute(["aten"=>$priority,"cod"=>$cod]);
             } catch (PDOException $e) {
                 echo $e->getMessage();
 
                 return false;
-            }
+            }*/
         }
     }
 ?>
