@@ -34,7 +34,7 @@ $(function(){
                     $("#concepto").val(data.cconcepto);
                     $("#solicitante").val(data.dni + ' ' + data.apellidos + ',' + data.nombres);
                     $("#registro").val(data.estado);
-                    $("#documento").val(data.estado);
+                    $("#vence").val(data.ffechaven);
                     $(".bubleInfo").text(data.atachs);
                     $("#tipo")
                         .val( data.ctipmov == "B" ? "01 BIENES" : "02 SERVICIOS")
@@ -293,10 +293,10 @@ function getMails(codigo){
 
         $.ajax({
             type: "POST",
-            url: RUTA + 'cotizacion/mails',
+            url: RUTA + 'cotizacion/enviaEnlace',
             data: {
-                mails:JSON.stringify(MAILS),
-                items:JSON.stringify(ITEMS)
+                    mails:JSON.stringify(MAILS),
+                    items:JSON.stringify(ITEMS)
                 },
             dataType: "json",
             success: function (response) {
@@ -304,7 +304,7 @@ function getMails(codigo){
                     $("#btnSendCancel").trigger("click");
                     mostrarMensaje("msj_correcto","Correo enviado");
                 }else{
-                    mostrarMensaje("msj_erroe","No se pudo enviar el mensaje");
+                    mostrarMensaje("msj_error","No se pudo enviar el mensaje");
                 }
             }
         });

@@ -42,6 +42,15 @@
             $mails = $_POST['mails'];
             $items = $_POST['items'];
 
+            //$result = $this->model->sendMails($mails,$items);
+
+            //echo $result;
+        }
+
+        function enviaEnlace(){
+            $mails = $_POST['mails'];
+            $items = $_POST['items'];
+
             $result = $this->model->sendMails($mails,$items);
 
             echo $result;

@@ -10,12 +10,14 @@
                 $salida = "";
                 $query = $this->db->connect()->query("SELECT logistica.lg_pedidocab.id_regmov,
                                                         logistica.lg_pedidocab.ffechadoc,
+                                                        logistica.lg_pedidocab.ffechaven,
                                                         logistica.lg_pedidocab.cconcepto,
                                                         logistica.lg_pedidocab.nEstadoDoc,
                                                         logistica.lg_pedidocab.id_cuser,
                                                         logistica.lg_pedidocab.ncodmov,
                                                         logistica.lg_pedidocab.cnumero,
                                                         logistica.lg_pedidocab.nNivAten,
+                                                        DATEDIFF(lg_pedidocab.ffechaven,lg_pedidocab.ffechadoc) AS prioridad,
                                                         logistica.tb_proyecto1.cdespry,
                                                         logistica.tb_proyecto1.ccodpry,
                                                         logistica.tb_area.ccodarea,
@@ -42,6 +44,11 @@
 
                 if ($rowcount > 0) {
                     while ($row = $query->fetch()) {
+                        if ($row['prioridad'] <= 7){
+                            $prioridad = "urgente";
+                        } else {
+                            $prioridad = "normal";
+                        }
                         $salida .='<tr class="h35px" data-idx="'.$row['id_regmov'].'">
                                         <td class="con_borde centro">'.$row['cnumero'].'</td>
                                         <td class="con_borde centro">'.date("d/m/Y", strtotime($row['ffechadoc'])).'</td>
@@ -51,9 +58,8 @@
                                         <td class="con_borde pl10">'.$row['apellidos'].' '.$row['nombres'].'</td>
                                         <td class="con_borde pl10">'.strtoupper($row['cnombres']).'</td>
                                         <td class="con_borde centro '. strtolower($row['estado']) .'">'.$row['estado'].'</td>
-                                        <td class="con_borde centro '. strtolower($row['atencion']) .'">'.$row['atencion'].'</td>
+                                        <td class="con_borde centro '. $prioridad .'">'.strtoupper($prioridad).'</td>
                                         <td class="con_borde centro"><a href="'.$row['id_regmov'].'" data-poption="editar"  title="editar"><i class="far fa-edit"></i></a></td>
-                                        <td class="con_borde centro"><a href="'.$row['id_regmov'].'" data-poption="cambiar" title="cambiar atencion"><i class="fas fa-highlighter"></i></a></td>
                                     </tr>';
                     }
                 }
@@ -77,6 +83,7 @@
                                                             logistica.lg_pedidocab.ccoddoc,
                                                             logistica.lg_pedidocab.cserie,
                                                             logistica.lg_pedidocab.ffechadoc,
+                                                            logistica.lg_pedidocab.ffechaven,
                                                             logistica.lg_pedidocab.ncodpry,
                                                             logistica.lg_pedidocab.ncodcos,
                                                             logistica.lg_pedidocab.ncodarea,
@@ -129,6 +136,7 @@
                                         $item['cserie']         = $row['cserie'];
                                         $item['cnumero']        = $row['cnumero'];
                                         $item['ffechadoc']      = $row['ffechadoc'];
+                                        $item['ffechaven']      = $row['ffechaven'];
                                         $item['ncodpry']        = $row['ncodpry'];
                                         $item['ncodcos']        = $row['ncodcos'];
                                         $item['ncodarea']       = $row['ncodarea'];
@@ -165,7 +173,7 @@
             }
         }
 
-        public function getDetailsById($cod,$tip){
+        public function getDetailsById($cod){
             try {
                 $salida = '';
 
@@ -239,7 +247,7 @@
                     while ($row = $query->fetch()) {
                         $salida .= '<tr class="pointer" data-correo="'.$row['cemail'].'" data-id="'.$row['id_centi'].'">
                                         <td class="cursor_pointer con_borde pl20">'.strtoupper($row['crazonsoc']).'</td>
-                                        <td  class="cursor_pointer con_borde pl20">'.strtolower($row['cemail']).'</td>
+                                        <td class="cursor_pointer con_borde pl20">'.strtolower($row['cemail']).'</td>
                                         <td class="oculto">'.$row['id_centi'].'</td>
                                     </tr>';
                     }
@@ -256,9 +264,6 @@
             require_once("public/PHPMailer/PHPMailerAutoload.php");
 
             $correos = json_decode($mails);
-            $detalles = json_decode($items);
-
-            $mensaje = $correos[0]->msg;
 
             $data = count($correos);
             $title = utf8_decode("Solicitud de Cotización");
@@ -273,7 +278,6 @@
             $mail->Host = 'mail.sepcon.net';
             $mail->SMTPAuth = true;
             $mail->Username = 'sistema_ibis@sepcon.net';
-            //$mail->Password = 'aK8izG1WEQwwB1O';
             $mail->Password = $_SESSION['password'];
             $mail->Port = 465;
             $mail->SMTPSecure = "ssl";
@@ -294,33 +298,17 @@
 			    $mail->addAddress($correos[$i]->mail,$correos[$i]->mail);
 			}
 
-            $row = 1;
-            $bodycotiz =  "<html><body>";
-            $bodycotiz .= "<h4>".$mensaje."</h4>";
-            $bodycotiz .= "<table width='100%' cellpadding='0' cellspacing='0' border='1' font-family: arial;>";
-            $bodycotiz .= "<thead>
-                    <tr style='height: 30px; background: black; color: #fff; font-size: .9rem;'>
-                            <th>Item</th>
-                            <th>Codigo</th>
-                            <th>Cantidad</th>
-                            <th>Descripcion</th>
-                            <th>Unidad</th>
-                            <th>Nro. Parte</th>
-                        </tr>
-                    </thead><tbody>";
-            for ($x =0;$x < count($detalles); $x++) {
-                $bodycotiz .= "<tr style='font-size: .9rem;'>";
-                $bodycotiz .= "<td border='1'>".$row."</td>";
-                $bodycotiz .= "<td border='1'>".$detalles[$x]->coditem."</td>";
-                $bodycotiz .= "<td border='1'>".$detalles[$x]->cantidad."</td>";
-                $bodycotiz .= "<td border='1'>".$detalles[$x]->desitem."</td>";
-                $bodycotiz .= "<td border='1'>".$detalles[$x]->unidad."</td>";
-                $bodycotiz .= "<td border='1'></td>"; // hay que activar el numero de parte
-                $bodycotiz .= "</tr>";
+            $url = 'http://localhost/logistica/public/cotizacion?codped='.$correos[0]->codped.'&codenti='.$correos[0]->codprov;
 
-                $row++;
-            }
-            $bodycotiz .=  "</tbody></table><html><body>";
+
+            $bodycotiz =  "<html><body>";
+            $bodycotiz .=  '<div>
+                                <p>Estimado(a)</p>
+                                <p>Sirvase hacer hacer llegar la siguiente cotizacion, de acuerdo a lo solicitado</p>
+                                <a href="'.$url.'">Ver cotizacion</a>
+                            </div>';
+            $bodycotiz .=  "<html><body>";
+            
 
             $mail->Subject = $title;
 

@@ -85,8 +85,8 @@
                                 <input type="text" name="registro" id="registro" class="pl20 mayusculas proceso" readonly>
                             </div>
                             <div class="input_process g2items">
-                                <label for="documento" class="w100px">Est.Registro:</label>
-                                <input type="text" name="documento" id="documento" class="pl20 mayusculas proceso" readonly>
+                                <label for="documento" class="w100px">Vencimiento:</label>
+                                <input type="date" name="vence" id="vence" class="pl20" readonly>
                             </div>
                             <div class="input_process g2items">
                                 <label for="tipo" class="w100px">Tipo</label>
@@ -159,7 +159,11 @@
                         </tbody>
                     </table>
                     <br>
-                    <textarea name="mail_mssg" id="mail_mssg" class="w100p" rows="7" placeholder="Escribir Mensaje"></textarea>
+                    <textarea name="mail_mssg" id="mail_mssg" class="w100p" rows="7" placeholder="Escribir Mensaje">
+Estimado:
+Por favor sirvase cotizar en el siguiente, según el dellate en el siguiente enlace.
+Atte.
+                    </textarea>
                 </div>
                 <div class="options">
                     <button id="btnSendConfirm" class="botones">Aceptar</button>
@@ -261,7 +265,6 @@
                                 <th class="con_borde">Aprobado</th>
                                 <th class="con_borde w100px">Estado Doc.</th>
                                 <th class="con_borde w100px">Atención</th>
-                                <th class="con_borde">...</th>
                                 <th class="con_borde">...</th>
                             </tr>
                         </thead>
