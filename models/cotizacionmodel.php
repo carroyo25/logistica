@@ -299,7 +299,8 @@
 			}
 
             $url = 'http://localhost/logistica/public/cotizacion?codped='.$correos[0]->codped.'&codenti='.$correos[0]->codprov;
-
+            //$url = 'http://200.41.86.61:3000/logistica/public/cotizacion?codped='.$correos[0]->codped.'&codenti='.$correos[0]->codprov;
+        
 
             $bodycotiz =  "<html><body>";
             $bodycotiz .=  '<div>

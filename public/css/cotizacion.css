@@ -37,8 +37,58 @@ input, select {
   border: 1px solid #c2c2c2;
   outline: none; }
 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0; }
+
+.mensaje {
+  position: fixed;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  bottom: 34px;
+  right: -100%;
+  color: white;
+  height: 80px;
+  padding: 20px;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-transition: all .9s;
+  -o-transition: all .9s;
+  transition: all .9s;
+  z-index: 10;
+  -webkit-box-shadow: 8px 12px 10px black;
+  box-shadow: 8px 12px 10px black; }
+
+.msj_error span, .msj_correcto span, .msj_info span {
+  font-size: 20px; }
+  .msj_error span:before, .msj_correcto span:before, .msj_info span:before {
+    margin-right: 30px;
+    font-size: 2rem;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    display: inline-block;
+    vertical-align: middle; }
+
+.msj_error {
+  background: rgba(255, 99, 71, 0.8); }
+  .msj_error span:before {
+    content: "\f057"; }
+
+.msj_correcto {
+  background: rgba(154, 205, 50, 0.8); }
+  .msj_correcto span:before {
+    content: "\f164"; }
+
+.msj_info {
+  background: rgba(95, 158, 160, 0.8); }
+  .msj_info span:before {
+    content: "\f05a"; }
+
 .main {
-  width: 60%;
+  width: 65%;
   border: 1px solid #000;
   margin: 10px auto; }
   .main h3 {
@@ -91,13 +141,14 @@ input, select {
     min-height: 50px;
     margin-bottom: 10px; }
     .main .tabla table {
-      width: 100%;
       font-family: Verdana, Geneva, Tahoma, sans-serif;
       font-size: .8rem;
       border-collapse: collapse; }
       .main .tabla table thead {
         background: #6087BB;
         color: #fff; }
+      .main .tabla table input {
+        border: none !important; }
   .main .totales {
     display: -ms-grid;
     display: grid;
@@ -216,6 +267,30 @@ input, select {
       background: #00B0CB; }
   .cajaDialogoAdjuntos ul, .cajaDialogoAdjuntos li {
     list-style: none; }
+
+.padizq {
+  padding-left: 20px; }
+
+.padder {
+  padding-right: 20px; }
+
+.centro {
+  text-align: center; }
+
+.ancho100p {
+  width: 100%; }
+
+.ancho60p {
+  width: 60%; }
+
+.ancho30p {
+  width: 30%; }
+
+.ancho10p {
+  width: 10%; }
+
+.ancho5p {
+  width: 5%; }
 
 /* loader*/
 .sk-fading-circle {

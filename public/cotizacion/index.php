@@ -10,6 +10,7 @@
     $condicion = general($pdo,11);
     $moneda = monedas($pdo);
     $entidad = obtenerProveedor($pdo,$proveedor);
+    $items = obtenerItems($pdo,$pedido);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -23,6 +24,9 @@
     <title>Document</title>
 </head>
 <body>
+    <div class="mensaje msj_error">
+        <span></span>
+    </div>
     <div class="modal" id="modalwait">
         <div class="sk-fading-circle">
             <div class="sk-circle1 sk-circle"></div>
@@ -48,12 +52,12 @@
             </div>
             <div class="listaArchivos">
                 <ul>
-                    <li>
+                    <!-- <li>
                         <div class="cajaAdjunto">
                             <i class="far fa-file-pdf"></i>
                             <span>Nombre Archivo</span>
                         </div>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
             <div class="opciones">
@@ -73,11 +77,15 @@
             </div>
         </div>
     </div>
+    <form id="adjuntos">
+        <input type="hidden" id="tipo" name="tipo" value="cotizacion">
+        <input type="hidden" id="item" name="item" value="">
+        <input type="file" name="uploadfile" id="uploadfile" multiple class="oculto" accept="application/pdf">
+    </form>
+
     <form id="formCotizacion">
-        
         <input type="hidden" name="codmoneda" id="codmoneda">
         <input type="hidden" name="codplazo" id="codplazo">
-        <input type="file" name="adjuntos" id="adjuntos" class="oculto">
         <div class="main">
             <h3>Solicitud de Cotización</h3>
             <div class="cabecera">
@@ -122,41 +130,31 @@
                 <div class="datos grid4">
                     <label for="inclIgv"  class="derecha">Incluye IGV :</label>
                     <div class="dflex">
-                        <input type="radio" name="igv" id="si">
+                        <input type="radio" name="igv" id="si" value="0.18">
                         <label for="si">Si</label>
-                        <input type="radio" name="igv" id="no">
+                        <input type="radio" name="igv" id="no" value="0" checked>
                         <label for="no">No</label>
                     </div>
                 </div>
             </div>
             <hr>
             <div class="tabla">
-                <table>
+                <table id="detalle_pedido">
                     <thead>
                         <tr>
-                            <th>Item</th>
-                            <th>Descripción</th>
-                            <th>Und.</th>
-                            <th>Cantidad</th>
-                            <th>Precio</th>
-                            <th>Total</th>
-                            <th>Fecha</br>Entrega</th>
-                            <th>Observación</th>
-                            <th>...</th>
+                            <th class="ancho5p">Item</th>
+                            <th class="ancho30p">Descripción</th>
+                            <th class="ancho5p">Und.</th>
+                            <th class="ancho10p">Cant.</th>
+                            <th class="ancho10p">Precio</th>
+                            <th class="ancho10p">Total</th>
+                            <th class="ancho10p">Fecha</br>Entrega</th>
+                            <th class="">Observación</th>
+                            <th class="ancho5p">...</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="con_borde alto35px"></td>
-                            <td class="con_borde alto35px"></td>
-                            <td class="con_borde alto35px"></td>
-                            <td class="con_borde alto35px"></td>
-                            <td class="con_borde alto35px"></td>
-                            <td class="con_borde alto35px"></td>
-                            <td class="con_borde alto35px"></td>
-                            <td class="con_borde alto35px"></td>
-                            <td class="con_borde alto35px"></td>
-                        </tr>
+                        <?php echo $items?>
                     </tbody>
                 </table>
             </div>
@@ -168,22 +166,22 @@
                 </div>
                 <div class="cajaTotales">
                     <label for="subtotal" class="derecha">Sub Total :</label>
-                    <input type="number" name="subtotal" id="subtotal" readonly>
+                    <input type="text" name="subtotal" id="subtotal" class ="derecha padder" readonly>
                     <label for="igv" class="derecha">IGV :</label>
-                    <input type="number" name="igv" id="subtotal" readonly>
+                    <input type="text" name="igv" id="igv" class ="derecha padder" readonly>
                     <label for="total" class="derecha">Total :</label>
-                    <input type="number" name="total" id="total" readonly>
+                    <input type="text" name="total" id="total" class ="derecha padder" readonly>
                 </div>
             </div>
             <hr>
             <div class="opciones">
-                <button type="button" id="btnAdjuntar">Aceptar</button>
+                <button type="button" id="btnAdjuntar" form="adjuntos">Adjuntar Cotización</button>
                 <button type="button" id="btnEnviar">Enviar</button>
-                <button type="button" id="btnCancelar">Cancelar</button>
             </div>
         </div> 
     </form>
 </body>
 <script src="../js/jquery.js"></script>
+<script src="../js/funciones.js"></script>
 <script src="../js/solcot.js?v<?php echo $version?>"></script>
 </html>

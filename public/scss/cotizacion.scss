@@ -44,8 +44,77 @@ input,select{
     outline: none;
 }
 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+
+.mensaje{
+	position: fixed;
+	display: flex;
+	bottom: 34px;
+	right: -100%;
+	color: white;
+	height: 80px;
+	padding: 20px;
+	align-items: center;
+	transition: all .9s;
+	z-index: 10;
+	box-shadow: 8px 12px 10px black;
+}
+
+.msj_error, .msj_correcto, .msj_info {
+	span {
+		font-size: 20px;
+
+		&:before{
+			margin-right: 30px;
+			font-size: 2rem;
+			font-family: "Font Awesome 5 Free";
+  			font-weight: 900;
+  			display: inline-block;
+  			vertical-align: middle;
+		}
+	}
+}
+
+.msj_error {
+	background: rgba(tomato, .8);
+
+	span {
+
+		&:before{
+  			content: "\f057";
+		}
+	}
+}
+
+.msj_correcto {
+	background: rgba(yellowgreen,.8);
+
+	span {
+
+		&:before{
+  			content: "\f164";
+		}
+	}
+}
+
+.msj_info{
+	background: rgba(cadetblue,.8);
+
+	span {
+
+		&:before{
+  			content: "\f05a";
+		}
+	}
+}
+
 .main{
-    width: 60%;
+    width: 65%;
     border: 1px solid #000;
     margin: 10px auto;
     
@@ -107,7 +176,7 @@ input,select{
         margin-bottom: 10px;
 
         table {
-            width: 100%;
+            //width: 100%;
             font-family:Verdana, Geneva, Tahoma, sans-serif;
             font-size: .8rem;
             border-collapse: collapse;
@@ -116,6 +185,10 @@ input,select{
             thead{
                 background: #6087BB;
                 color: #fff;
+            }
+
+            input{
+                border: none !important;
             }
         }
     }
@@ -268,6 +341,39 @@ input,select{
     ul,li {
         list-style: none;
     }
+}
+
+.padizq{
+    padding-left: 20px;
+}
+
+.padder{
+    padding-right: 20px;
+}
+
+.centro {
+    text-align: center;
+}
+
+.ancho100p{
+    width: 100%;
+}
+
+
+.ancho60p{
+    width: 60%;
+}
+
+.ancho30p{
+    width: 30%;
+}
+
+.ancho10p{
+    width: 10%;
+}
+
+.ancho5p{
+    width: 5%;
 }
 
 /* loader*/
