@@ -42,7 +42,10 @@
             if ($rowaffect > 0) {
                 foreach ($result as $rs) {
                     $salida .= '<tr>
-                        <td class="con_borde alto35px padizq">'.str_pad($item,3,0,STR_PAD_LEFT).'</td>
+                        <td class="con_borde alto35px padizq" 
+                                data-detped="'.$rs['niddet'].'"
+                                data-codprod="'.$rs['id_cprod'].'"
+                                data-pedido="'.$rs['id_regmov'].'">'.str_pad($item,3,0,STR_PAD_LEFT).'</td>
                         <td class="con_borde alto35px padizq">'.$rs['cdesprod'].'</td>
                         <td class="con_borde alto35px centro">'.$rs['cabrevia'].'</td>
                         <td class="con_borde alto35px derecha padder cancot">'.number_format($rs['cantcoti'], 2, '.', ',').'</td>
@@ -60,6 +63,27 @@
         } catch (PDOException $th) {
             echo $th->getMessage();
 
+            return false;
+        }
+    }
+
+    function verificaParticipa($pdo,$pedido,$proveedor){
+        try {
+            $ret = false;
+            $sql = "SELECT id_regmov FROM lg_proformacab WHERE id_regmov=? AND id_centi=?";
+            $statement = $pdo->prepare($sql);
+		    $statement -> execute(array($pedido,$proveedor));
+		    $result = $statement ->fetchAll();
+		    $rowaffect = $statement->rowCount($sql);
+
+            if ($rowaffect > 0) {
+                $ret = true;
+            }
+
+            return $ret;
+
+        } catch (PDOException $th) {
+            echo $th->getMessage();
             return false;
         }
     }

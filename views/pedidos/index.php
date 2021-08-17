@@ -1,3 +1,6 @@
+<?php 
+    date_default_timezone_set('America/Lima'); 
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>

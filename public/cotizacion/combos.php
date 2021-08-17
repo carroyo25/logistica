@@ -14,7 +14,7 @@
             $statement -> execute(array($class));
             $result = $statement ->fetchAll();
             $rowaffect = $statement->rowCount($sql);
-            $salida = "";
+            $salida = '<option value="-1">Elija opcion</option>';
 
             if ($rowaffect > 0) {
                 foreach ($result as $rs) {
@@ -42,7 +42,8 @@
             $statement -> execute();
             $result = $statement ->fetchAll();
             $rowaffect = $statement->rowCount($sql);
-            $salida = "";
+            $salida = '<option value="-1">Elija opcion</option>';
+
 
             if ($rowaffect > 0) {
                 foreach ($result as $rs) {

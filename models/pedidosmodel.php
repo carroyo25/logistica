@@ -313,7 +313,7 @@
                                                             cm_producto.ccodprod,
                                                             cm_producto.cdesprod,
                                                             cm_producto.cdescomer,
-                                                            cm_producto.cdesabrev,
+                                                            cm_producto.cdestecni,
                                                             cm_producto.cmarca,
                                                             cm_producto.cmodelo,
                                                             cm_producto.fregsys,
@@ -361,7 +361,7 @@
                                                             cm_producto.ccodprod,
                                                             cm_producto.cdesprod,
                                                             cm_producto.cdescomer,
-                                                            cm_producto.cdesabrev,
+                                                            cm_producto.cdestecni,
                                                             cm_producto.cmarca,
                                                             cm_producto.cmodelo,
                                                             cm_producto.fregsys,
@@ -415,7 +415,7 @@
                                                             cm_producto.ccodprod,
                                                             cm_producto.cdesprod,
                                                             cm_producto.cdescomer,
-                                                            cm_producto.cdesabrev,
+                                                            cm_producto.cdestecni,
                                                             cm_producto.cmarca,
                                                             cm_producto.cmodelo,
                                                             cm_producto.fregsys,
@@ -653,7 +653,7 @@
                 
                 $idx = uniqid();
 
-                $query = $this->db->connect()->prepare("INSERT INTO cm_producto (id_cprod,ccodprod,cdesprod,cdescomer,cdesabrev,nunidsec,mdetalle,cmarca,cmodelo,
+                $query = $this->db->connect()->prepare("INSERT INTO cm_producto (id_cprod,ccodprod,cdesprod,cdescomer,cdestecni,nunidsec,mdetalle,cmarca,cmodelo,
                                                                                 cnroparte,nflgactivo,ntipoprod)
                                                          VALUES (:idx,:cod,:dsc,:nco,:ncr,:und,:det,:mar,:mod,:npa,:est,:tip)");
                 $query->execute(["idx"=>$idx,

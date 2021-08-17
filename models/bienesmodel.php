@@ -117,7 +117,7 @@
                 $codi = $cod.str_pad($newcode+1,4,"0",STR_PAD_LEFT);
                 $id = uniqid();
                 
-                $query = $this->db->connect()->prepare("INSERT INTO cm_producto (ccodprod,cdesprod,cdescomer,cdesabrev,ncodmed,ncodcata,ncodsunat,ntipoprod,ntipoorig,ntipodest,
+                $query = $this->db->connect()->prepare("INSERT INTO cm_producto (ccodprod,cdesprod,cdescomer,cdestecni,ncodmed,ncodcata,ncodsunat,ntipoprod,ntipoorig,ntipodest,
                                                                                 nloteprod,nserieprod,ccodbarra,nregesp,nunidsec,ndigemid,ngasrela,nicbper,mdetalle,cmarca,
                                                                                 cmodelo,cmedida,ccolor,cnroparte,ccodanexo,npeso,nvolumen,cfoto,nflgactivo,id_cprod)
                                                                         VALUES(:codi,:derc,:ncom,:ncor,:coun,:ccat,:prsu,:tipr,:orig,:dest,
@@ -175,7 +175,7 @@
 
                 $query = $this->db->connect()->prepare("UPDATE cm_producto SET cdesprod=:derc,
                                                                             cdescomer=:ncom,
-                                                                            cdesabrev=:ncor,
+                                                                            cdestecni=:ncor,
                                                                             ncodmed=:unme,
                                                                             mdetalle=:deta,
                                                                             cmarca=:marc,
@@ -260,7 +260,7 @@
                                     cm_producto.ccodprod,
                                     cm_producto.cdesprod,
                                     cm_producto.cdescomer,
-                                    cm_producto.cdesabrev,
+                                    cm_producto.cdestecni,
                                     cm_producto.cmarca,
                                     cm_producto.cmodelo,
                                     cm_producto.fregsys,
@@ -279,7 +279,7 @@
                                 <td>'.$row['ccodprod'].'</td>
                                 <td>'.strtoupper($row['cdesprod']).'</td>
                                 <td>'.strtoupper($row['cdescomer']).'</td>
-                                <td>'.strtoupper($row['cdesabrev']).'</td>
+                                <td>'.strtoupper($row['cdestecni']).'</td>
                                 <td>'.strtoupper($row['cmarca']).'</td>
                                 <td>'.strtoupper($row['cmodelo']).'</td>
                                 <td>'.strtoupper($row['cnroparte']).'</td>
@@ -305,7 +305,7 @@
                                     cm_producto.ccodprod,
                                     cm_producto.cdesprod,
                                     cm_producto.cdescomer,
-                                    cm_producto.cdesabrev,
+                                    cm_producto.cdestecni,
                                     cm_producto.ncodsunat,
                                     cm_producto.ntipoprod,
                                     cm_producto.ntipocosto,
@@ -348,7 +348,7 @@
                     $item["ccodprod"]   = $row['ccodprod'];
                     $item['cdesprod']   = $row['cdesprod'];
                     $item['cdescomer']  = $row['cdescomer'];
-                    $item['cdesabrev']  = $row['cdesabrev'];
+                    $item['cdestecni']  = $row['cdestecni'];
                     $item['ncodsunat']  = $row['ncodsunat'];
                     $item['ntipoprod']  = $row['ntipoprod'];
                     $item['ntipocosto'] = $row['ntipocosto'];

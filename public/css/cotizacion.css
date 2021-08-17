@@ -24,6 +24,9 @@ body {
 .derecha {
   text-align: right; }
 
+.mayusculas {
+  text-transform: uppercase; }
+
 .con_borde {
   border: 1px solid #000; }
 
@@ -204,7 +207,7 @@ input[type=number]::-webkit-outer-spin-button {
 .cajaDialogoConfirm {
   width: 25%;
   padding: 25px; }
-  .cajaDialogoConfirm .mensaje {
+  .cajaDialogoConfirm .mensajeConfirm {
     text-align: center;
     padding: 10px;
     font-size: 1.5rem;

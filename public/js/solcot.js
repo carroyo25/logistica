@@ -1,5 +1,8 @@
 $(function(){
     var origen = 0;
+    if ($("#verifica").val() == 1){
+        $("#btnEnviar").css("display","none");
+    }
 
     $("#btnEnviar").on("click", function (e) {
         e.preventDefault();
@@ -48,7 +51,10 @@ $(function(){
     $("#detalle_pedido tbody").on("click","a", function (e) {
         e.preventDefault();
 
-        $("#cotizacion").trigger("click");
+        $("#tipo").val("item");
+        $("#item").val($(this).attr("href"));
+        
+        $("#uploadfile").trigger("click");
 
         return false;
     });
@@ -56,14 +62,14 @@ $(function(){
     $("#uploadfile").change(function (e) { 
         e.preventDefault();
         
-        $("#adjuntos").trigger("submit");
+        $("#formCotizacion").trigger("submit");
 
         return false;
     });
 
-    $("#adjuntos").on("submit", function (e) {
+    $("#formCotizacion").on("submit", function (e) {
         e.preventDefault();
-
+        
         $.ajax({
             // URL to move the uploaded image file to server
             url:'uploadToServer.php',
@@ -72,11 +78,25 @@ $(function(){
             // To send the full form data
             data: new FormData( this ),
             contentType:false,      
-            processData:false,     
-            // UI response after the file upload  
+            processData:false,
+            dataType: "json",     
+            // UI response after the file upload 
+            beforeSend: function() {
+                // setting a timeout
+                $("#modalWait").fadeIn();
+            }, 
             success: function(data)
             {
-                console.log(data);
+                if (data.estado)
+                    mostrarMensaje("msj_info",data.mensaje);
+                else 
+                    mostrarMensaje("msj_error",data.mensaje);
+
+                if (data.tipo == "cotizacion") {
+                    $("#archivo_cotizacion").val(data.archivo);
+                }
+
+                $("#modalWait").fadeOut();
             }
         });
         return false;
@@ -85,8 +105,119 @@ $(function(){
     $("#btnAdjuntar").on("click", function (e) {
         e.preventDefault();
 
+        if($("#cotizacion").val().length == 0){
+            mostrarMensaje("msj_error","Rellene el numero de cotización");
+            return false;
+        }
+
+        $("#tipo").val("cotizacion");
         $("#uploadfile").trigger("click");
 
         return false;
     });
+
+    $("#btnEnviar").on("click", function (e) {
+        e.preventDefault();
+
+        $("#dialogConfirm").fadeIn();
+
+        return false;
+    });
+
+    $("#btnAceptarEnvio").on("click", function (e) {
+        e.preventDefault();
+
+        
+        if($("#fechaDoc").val().length == 0) {
+            mostrarMensaje("msj_error","Rellene la fecha de emisión");
+            return false;
+        }else if($("#fechaVig").val().length == 0){
+            mostrarMensaje("msj_error","Rellene la fecha de vigencia");
+            return false;
+        }else if($("#cotizacion").val().length == 0){
+            mostrarMensaje("msj_error","Rellene el numero de cotización");
+            return false;
+        }else if($("#cuenta").val().length == 0){
+            mostrarMensaje("msj_error","Indique un numero de cuenta");
+            return false;
+        }else if($("#moneda").val() == -1){
+            mostrarMensaje("msj_error","Seleccione el tipo de moneda");
+            return false;
+        }else if($("#condicion").val() == -1){
+            mostrarMensaje("msj_error","Indique la condicion de pago");
+            return false;
+        }else if($("#plazo").val().length == 0){
+            mostrarMensaje("msj_error","Indique el plazo de entrega");
+            return false;
+        }else if($("#total").val() == 0){
+            mostrarMensaje("msj_error","No registro el precio de productos");
+            return false;
+        };
+
+        getDetails();
+        let detalles = JSON.stringify(DETALLES);
+        
+        //serializar los resultados para enviarlos a la php
+        var result = { };
+        $.each($('form').serializeArray(), function() {
+            result[this.name] = this.value;
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "sendDataToServer.php",
+            data: {
+                    datos:result,
+                    detalles,
+                },
+            dataType: "text",
+            success: function (response) {
+                if (response) {
+                    $("#btnEnviar").css("display","none");
+                    mostrarMensaje("msj_correcto","Proforma enviada");
+                }  
+            }
+        });
+        return false;
+    });
+
+    $("#btnCancelarEnvio").on("click", function (e) {
+        e.preventDefault();
+
+        $("#dialogConfirm").fadeOut();
+
+        return false;
+    });
 })
+
+function getDetails(){
+    DETALLES = [];
+
+    var TABLA = $("#detalle_pedido tbody > tr");
+
+    TABLA.each(function(){
+        var CODPROD      = $(this).find('td').eq(0).data('codprod'),
+            DETPED       = $(this).find('td').eq(0).data('detped'),
+            PEDIDO       = $(this).find('td').eq(0).data('pedido'),
+            CANTCOT      = $(this).find('td').eq(3).text(),
+            PRECIO       = $(this).find('td').eq(4).children().val(),
+            ENTREGA      = $(this).find('td').eq(6).children().val(),
+            OBSERVACION  = $(this).find('td').eq(7).children().val(),
+
+            item = {};
+
+            if (CODPROD !== ''){
+                item["codprod"]      = CODPROD;
+                item["detped"]       = DETPED;
+                item["pedido"]       = PEDIDO;
+                item["cantcot"]      = CANTCOT;
+                item["precio"]       = PRECIO
+                item["entrega"]      = ENTREGA;
+                item["observacion"]  = OBSERVACION;
+            }
+
+        DETALLES.push(item);
+    })
+
+    return DETALLES;
+}

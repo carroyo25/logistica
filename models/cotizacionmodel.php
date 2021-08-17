@@ -333,7 +333,7 @@
                 $correos = json_decode($mails);
 
                 for ($i=0; $i < count($correos); $i++) {
-                    $query = $this->db->connect()->prepare("INSERT INTO lg_regcotiza1 SET id_regmov=:idped, id_centi=:idprov");
+                    $query = $this->db->connect()->prepare("INSERT INTO lg_regcotiza1 SET id_regmov=:idped, id_centi=:idprov, nflgactivo = 1");
                     $query->execute(["idped"=>$correos[$i]->codped,"idprov"=>$correos[$i]->codprov]);
                 }
 
@@ -385,7 +385,7 @@
 
                 if ($rowcount > 0) {
                     $this->changeDetailStatus($cod,3);
-                    $this->saveAction("ESTIO DE MERCADO",$cod,"COTIZACIONES",$_SESSION['user']);
+                    $this->saveAction("ESTUDIO DE MERCADO",$cod,"COTIZACIONES",$_SESSION['user']);
                     $salida = $this->getMainRecords();
                 }
 

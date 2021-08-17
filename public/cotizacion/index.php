@@ -6,11 +6,14 @@
 
     $pedido = $_GET['codped'];
     $proveedor = $_GET['codenti'];
-    
+
+    //aca tiene que ver otras condiciones
+
     $condicion = general($pdo,11);
     $moneda = monedas($pdo);
     $entidad = obtenerProveedor($pdo,$proveedor);
     $items = obtenerItems($pdo,$pedido);
+    $verificar = verificaParticipa($pdo,$pedido,$proveedor);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -27,7 +30,7 @@
     <div class="mensaje msj_error">
         <span></span>
     </div>
-    <div class="modal" id="modalwait">
+    <div class="modal" id="modalWait">
         <div class="sk-fading-circle">
             <div class="sk-circle1 sk-circle"></div>
             <div class="sk-circle2 sk-circle"></div>
@@ -43,33 +46,10 @@
             <div class="sk-circle12 sk-circle"></div>
         </div>
     </div>
-    <div class="modal" id="uploadAtach">
-        <a href="" id="closeDialog"></a>
-        <div class="cajaDialogoAdjuntos">
-            <div class="titulo">
-                <span>Adjuntar Archivos</span>
-                <a href=""><i class="far fa-window-close"></i></a>
-            </div>
-            <div class="listaArchivos">
-                <ul>
-                    <!-- <li>
-                        <div class="cajaAdjunto">
-                            <i class="far fa-file-pdf"></i>
-                            <span>Nombre Archivo</span>
-                        </div>
-                    </li> -->
-                </ul>
-            </div>
-            <div class="opciones">
-                <button type="button" id="btnAgregar">Agregar</button>
-                <button type="button" id="btnAceptar">Aceptar</button>
-            </div>
-        </div>
-    </div>
     <div class="modal" id="dialogConfirm">
         <div class="cajaDialogoConfirm">
-            <div class="mensaje">
-                <span>Enviar los Datos?</span>
+            <div class="mensajeConfirm">
+                <span>¿Los datos a enviar son correctos?</span>
             </div>
             <div class="opciones">
                 <button type="button" id="btnAceptarEnvio">Aceptar</button>
@@ -77,15 +57,23 @@
             </div>
         </div>
     </div>
-    <form id="adjuntos">
-        <input type="hidden" id="tipo" name="tipo" value="cotizacion">
-        <input type="hidden" id="item" name="item" value="">
-        <input type="file" name="uploadfile" id="uploadfile" multiple class="oculto" accept="application/pdf">
-    </form>
-
+    <div class="modal" id="dialogVerifica">
+        <div class="cajaDialogoConfirm">
+            <div class="mensajeConfirm">
+                <span>Los datos ya fueron registrados<span>
+            </div>
+        </div>
+    </div>
     <form id="formCotizacion">
+        <input type="hidden" id="tipo" name="tipo" value="cotizacion">
+        <input type="hidden" id="identi" name="identi" value="<?php echo $proveedor;?>">
+        <input type="hidden" id="item" name="item" value="">
+        <input type="hidden" id="codped" name="codped" value="<?php echo $pedido;?>">
+        <input type="file" name="uploadfile" id="uploadfile" multiple class="oculto" accept="application/pdf">
         <input type="hidden" name="codmoneda" id="codmoneda">
         <input type="hidden" name="codplazo" id="codplazo">
+        <input type="hidden" name="archivo_cotizacion" id="archivo_cotizacion">
+        <input type="hidden" name="verifica" id="verifica" value="<?php echo $verificar;?>">
         <div class="main">
             <h3>Solicitud de Cotización</h3>
             <div class="cabecera">
@@ -98,14 +86,14 @@
                     <label for="ruc" class="derecha">RUC:</label>
                     <input type="text" name="ruc" id="ruc" readonly value="<?php echo $entidad["ruc"]?>">
                     <label for="atencion" class="derecha">Atencion:</label>
-                    <input type="text" name="atencion" id="atencion">
+                    <input type="text" name="atencion" id="atencion" class="mayusculas">
                 </div>
             </div>
             <hr>
             <div class="datosCotizacion">
                 <div class="datos grid6">
                     <label for="fechaDoc" class="derecha">Fecha Emisión :</label>
-                    <input type="date" name="fechaDoc" id="fechaDoc">
+                    <input type="date" name="fechaDoc" id="fechaDoc"">
                     <label for="fechaVig" class="derecha">Fecha Vigencia :</label>
                     <input type="date" name="fechaVig" id="fechaVig">
                     <label for="cotizacion" class="derecha">Nro.Cotizacion:</label>
@@ -168,7 +156,7 @@
                     <label for="subtotal" class="derecha">Sub Total :</label>
                     <input type="text" name="subtotal" id="subtotal" class ="derecha padder" readonly>
                     <label for="igv" class="derecha">IGV :</label>
-                    <input type="text" name="igv" id="igv" class ="derecha padder" readonly>
+                    <input type="text" name="tigv" id="igv" class ="derecha padder" readonly>
                     <label for="total" class="derecha">Total :</label>
                     <input type="text" name="total" id="total" class ="derecha padder" readonly>
                 </div>
