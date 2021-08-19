@@ -264,6 +264,7 @@
             require_once("public/PHPMailer/PHPMailerAutoload.php");
 
             $correos = json_decode($mails);
+            $respuesta = true;
 
             $data = count($correos);
             $title = utf8_decode("Solicitud de Cotización");
@@ -293,39 +294,44 @@
 
             //confirma la lectura del correo
             $mail->ConfirmReadingTo = $origen;
+            $mail->Subject = $title;
 
             for ($i=0; $i < $data; $i++) {
 			    $mail->addAddress($correos[$i]->mail,$correos[$i]->mail);
+                $url = constant('URL').'public/cotizacion/?codped='.$correos[0]->codped.'&codenti='.$correos[$i]->codprov;
+
+                $bodycotiz =  "<html><body>";
+
+                $bodycotiz .=  '<div>
+                                    <p>Estimado(a)</p>
+                                    <p>Sirvase hacer hacer llegar la siguiente cotizacion, de acuerdo a lo solicitado</p>
+                                    <a href="'.$url.'">Ver cotizacion</a>
+                                </div>';
+                $bodycotiz .=  "<html><body>";
+
+                $mail->msgHTML(utf8_decode($bodycotiz));
+
+                if($mail->send()){
+                    $respuesta = true;
+                }else {
+                    $respuesta = false;
+                };
+
+                $mail->ClearAddresses();
 			}
 
-            $url = 'http://localhost/logistica/public/cotizacion?codped='.$correos[0]->codped.'&codenti='.$correos[0]->codprov;
-            //$url = 'http://200.41.86.61:3000/logistica/public/cotizacion?codped='.$correos[0]->codped.'&codenti='.$correos[0]->codprov;
-        
-
-            $bodycotiz =  "<html><body>";
-            $bodycotiz .=  '<div>
-                                <p>Estimado(a)</p>
-                                <p>Sirvase hacer hacer llegar la siguiente cotizacion, de acuerdo a lo solicitado</p>
-                                <a href="'.$url.'">Ver cotizacion</a>
-                            </div>';
-            $bodycotiz .=  "<html><body>";
-            
-
-            $mail->Subject = $title;
-
-            $mail->msgHTML(utf8_decode($bodycotiz));
-
-           if($mail->send()){
-                $salidajson = array("respuesta"=>true);
+            if($respuesta){
+                $salidajson = array("respuesta"=>$respuesta);
                 $this->saveDetails($mails,$items);
                 $this->saveHeader($mails);
             }else{
                 $salidajson = array("respuesta"=>false);
             }
+
+            /*$this->saveHeader($mails);
+            $this->saveDetails($mails,$items);*/
             
             return json_encode($salidajson);
-            
-            $mail->ClearAddresses();
         }
 
         public function saveHeader($mails){
@@ -349,7 +355,6 @@
                 $detalles = json_decode($items);
 
                 for ($i=0;$i<count($detalles);$i++){
-                    for ($j=0; $j <count($correos) ; $j++) { 
                         $query = $this->db->connect()->prepare("INSERT INTO lg_regcotiza2 SET id_regmov=:idped,
                                                                                                 niddet=:iddet,
                                                                                                 id_cprod=:cprod,
@@ -358,15 +363,14 @@
                                                                                                 id_centi=:prove,
                                                                                                 nflgactivo=:flag,
                                                                                                 cestadodoc=:esta");
-                        $query->execute(["idped"=>$correos[$j]->codped,
+                        $query->execute(["idped"=>$correos[$i]->codped,
                                          "iddet"=>$detalles[$i]->iddetalle,
                                          "cprod"=>$detalles[$i]->indice,
                                          "canti"=>$detalles[$i]->cantidad,
                                          "facto"=>$detalles[$i]->factor,
-                                         "prove"=>$correos[$j]->codprov,
+                                         "prove"=>$correos[$i]->codprov,
                                          "flag"=>1,
                                          "esta"=>0]);
-                    }
                 }
 
             } catch (PDOException $e) {

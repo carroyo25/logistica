@@ -24,7 +24,7 @@
     <link rel="shortcut icon" type="image/png" href="../img/logo.png" />
     <link rel="stylesheet" href="../css/all.css">
     <link rel="stylesheet" href="../css/cotizacion.css?ver<?php echo $version?>">
-    <title>Document</title>
+    <title>SEPCON - Solicitud de Cotización</title>
 </head>
 <body>
     <div class="mensaje msj_error">

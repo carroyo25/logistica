@@ -32,7 +32,7 @@
 
         for ($i=0; $i < $nreg; $i++) { 
             try {
-                $sql = "INSERT INTO lg_proformadet SET id_regmov=?,id_cprod=?,niddet=?,cantcoti=?,precunit=?,ffechaent=?,cdetalle=?,nflgactivo = 1";
+                $sql = "INSERT INTO lg_proformadet SET id_regmov=?,id_cprod=?,niddet=?,cantcoti=?,precunit=?,ffechaent=?,cdetalle=?,id_centi=?,nflgactivo = 1";
                 $statement = $pdo->prepare($sql);
                 $statement->execute(array($detalles[$i]->pedido,
                                           $detalles[$i]->codprod,
@@ -40,7 +40,8 @@
                                           $detalles[$i]->cantcot,
                                           $detalles[$i]->precio,
                                           $detalles[$i]->entrega,
-                                          $detalles[$i]->observacion));
+                                          $detalles[$i]->observacion,
+                                          $detalles[$i]->entidad));
 
             } catch (PDOException $th) {
                 echo  $th->getMessage();
