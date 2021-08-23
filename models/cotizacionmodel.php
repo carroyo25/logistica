@@ -380,7 +380,7 @@
         }
 
         public function changeStatus($cod){
-            $estatus = 4;
+            $estatus = 5;
             $salida = "";
             try {
                 $query = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoReg=:reg, nEstadoDoc=:doc WHERE id_regmov=:cod");
@@ -388,7 +388,7 @@
                 $rowcount = $query->rowcount();
 
                 if ($rowcount > 0) {
-                    $this->changeDetailStatus($cod,3);
+                    $this->changeDetailStatus($cod,5);
                     $this->saveAction("ESTUDIO DE MERCADO",$cod,"COTIZACIONES",$_SESSION['user']);
                     $salida = $this->getMainRecords();
                 }
