@@ -243,8 +243,6 @@
     </div>
     <div class="modal zindex3" id="modalPreview">
         <div class="insidePreview">
-           <!--  <object data="" type="application/pdf"></object> -->
-
             <iframe src=""></iframe>
         </div>
         <a href="#" id="closeModalPreview" class="buttonClose"><i class="fas fa-reply-all"></i></a>

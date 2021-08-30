@@ -8,6 +8,9 @@
 </head>
 <body>
     <?php require 'views/header.php'; ?>
+    <div class="modal zindex5" id="waitmodal">
+        <div class="loader"></div>
+    </div>
     <div class="mensaje msj_error">
         <span></span>
     </div>
@@ -29,14 +32,14 @@
                 <div class="descrip_title">
                     <span>Datos Generales</span>
                     <div>
-                        <button type="button" id="saveItem" title="Grabar Pedido" class="oculto">
+                        <button type="button" id="saveItem" title="Grabar Adjudicacion">
                             <span><i class="far fa-save"></i> Grabar Adjudicación</span> 
                         </button>
                         <button type="button" id="cancelItem" title="Cancelar Pedido">
                             <i class="fas fa-ban"></i> Cancelar Adjudicación
                         </button>
                         <button type="button" id="closeItem" title="Enviar Pedido">
-                            <i class="fas fa-door-closed"></i> Cerrar Adjudicación
+                            <i class="fas fa-door-closed"></i> Enviar a verificación
                         </button>
                     </div>
                 </div>
@@ -209,9 +212,22 @@
         </div>
         <a href="#" class="buttonClose" id="closeModalItems"><i class="fas fa-reply-all"></i></a>    
     </div>
-    <div class="modal zindex3" id="modalPreview">
+    <div class="modal zindex3" id="modalPreviewCot">
         <div class="insidePreview">
-            <object data="" type="application/pdf"></object>
+            <div class="atachListDiv">
+                <ul id="atachList">   
+                    
+                </ul>
+            </div>
+            <div class="preview" id="previewAttach">
+                <object data="" type="application/pdf"></object>
+            </div>
+        </div>
+        <a href="#" id="closeViewAtach" class="buttonClose"><i class="fas fa-reply-all"></i></a>
+    </div>
+    <div class="modal zindex3" id="modalPreviewMan">
+        <div class="insidePreview">
+            <iframe src=""></iframe>
         </div>
         <a href="#" id="closeModalPreview" class="buttonClose"><i class="fas fa-reply-all"></i></a>
     </div>

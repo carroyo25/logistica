@@ -27,5 +27,21 @@
             echo $return; 
         }
 
+        function proformasPdf(){
+            $cod = $_POST['cod'];
+
+            $return = $this->model->verProformasPdf($cod);
+
+            echo $return;
+        }
+
+        function pasaVerificar(){
+            $detalles = $_POST['detalles'];
+
+            $result = $this->model->grabarDetallesCotizacion($detalles);
+
+            echo $result;
+        }
+
     }
 ?>

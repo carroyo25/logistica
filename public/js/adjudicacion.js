@@ -1,5 +1,11 @@
 $(function(){
     activar_opcion();
+    var  fila = [{
+        lugar:"",
+        pedido:"",
+        entidad: "",
+        detalle:""
+    }];
 
     $("#tabla_pedidos tbody").on("click","a", function (e) {
         e.preventDefault();
@@ -43,7 +49,6 @@ $(function(){
 
                 $.post(RUTA +"adjudicacion/proformas", {cod:$("#cod_pedido").val()},
                     function (data, textStatus, jqXHR) {
-                        console.log(data);
                         $("#detalle_pedido")
                         .empty()
                         .append(data);
@@ -54,6 +59,28 @@ $(function(){
             "json"
         );
 
+    $("#detalle_pedido").on("click",".chkVerificado", function (e) {
+        item={};
+
+        let posicion = $(this).parent().parent().data("fila");
+        let iddet = $(this).parent().data("detalle");
+        let indice = fila.findIndex(criterio => criterio.detalle === iddet);
+        let entidad = $(this).parent().data("entidad");
+
+        if( $(this).prop('checked') ) {
+            if (indice == "-1"){
+                item["lugar"] = posicion;
+                item["pedido"] = $(this).parent().data("pedido");
+                item['entidad'] = entidad;
+                item["detalle"] = $(this).parent().data("detalle");
+            
+                fila.push(item);
+            }else{
+                fila[posicion]["entidad"] = entidad; 
+            }       
+        }
+    });
+
     return false;
     });
 
@@ -62,6 +89,71 @@ $(function(){
        
         $("#modalProcess").fadeOut()
 
+        return false;
+    });
+
+    $("#verProforma").on("click", function (e) {
+        e.preventDefault();
+
+        $.post(RUTA+"adjudicacion/proformasPdf", {cod:$("#cod_pedido").val()},
+            function (data, textStatus, jqXHR) {
+                $("#atachList")
+                    .empty()
+                    .append(data);
+                $("#modalPreviewCot").fadeIn();
+            },
+            "text"
+        );
+        
+        return false;
+    });
+
+    //mostrar el archivo adjunto
+    $("#atachList").on("click","a", function (e) {
+        e.preventDefault();
+
+        $("#previewAttach object").attr("data",$(this).attr("href"));
+
+        return false;
+    });
+
+
+    $(".buttonClose").click(function (e) { 
+        e.preventDefault();
+
+        $(".preview object").attr("data","");
+        $(this).parent().fadeOut();
+
+        return false;
+    });
+
+    $("#detalle_pedido").on("click","a", function (e) {
+        e.preventDefault();
+        $(".insidePreview iframe").attr("src",$(this).attr("href"));
+        $("#modalPreviewMan").fadeIn();
+
+        return false;
+    });
+
+    $("#closeItem").click(function (e) { 
+        e.preventDefault();
+
+        let items = JSON.stringify(fila);
+        
+        $("*").css("cursor", "wait");
+
+
+        $.post(RUTA+"adjudicacion/pasaverificar", {detalles:items},
+            function (data, textStatus, jqXHR) {
+                if (data){
+                    //$("#waitmodal").fadeOut();
+                    //mostrarMensaje("msj_correcto","Cotizacion enviada para su verificación");
+
+                    $("*").css("cursor", "pointer");
+                }
+            },
+            "text"
+        );
         return false;
     });
 })

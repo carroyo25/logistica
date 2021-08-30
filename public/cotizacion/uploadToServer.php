@@ -1,16 +1,16 @@
 <?php 
     $tipo = $_POST['tipo'];
     $identi = $_POST['identi'];
+    $pedido = $_POST['codped']."_";
 
     if ($tipo == "cotizacion") {
         $target_dir = "../proformas/";
-        $pedido = $_POST['codped']."_";
         $cotizacion = $_POST['ruc']."_";
         $entidad = $_POST['cotizacion'].'.pdf'; 
         $target_file = $target_dir.$pedido.$cotizacion.$entidad;
     }else {
         $target_dir = "../manuales/";
-        $item = $identi.'_'.$_POST['item'].'.pdf';
+        $item = $pedido.$identi.'_'.$_POST['item'].'.pdf';
         $target_file = $target_dir . $item;
     }
     

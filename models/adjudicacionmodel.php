@@ -194,7 +194,7 @@
 
                 if ($rowcount > 0){
                     while ($rs = $query->fetch()) {
-                        $salida .= '<th colspan="4">'.$rs['crazonsoc'].'</th>';
+                        $salida .= '<th colspan="5">'.$rs['crazonsoc'].'</th>';
                         $codpr[$proveedores] = $rs['id_centi'];
                         $proveedores++;
                     }
@@ -206,7 +206,8 @@
                     $salida .= '<th>Precio</th>
 					            <th>F.Entrega</th>
 					            <th>Dias</th>
-					            <th>Adjunto</th>';
+					            <th>Adj.</th>
+                                <th>...</th>';
                 }
 
                 $salida .= '</tr></thead>';
@@ -226,7 +227,7 @@
         public function detalleProducto($cod,$codpr){
             try {
                 $detalle = "<tbody>";
-                $item=0;
+                $item=1;
                 $linea = 1;
                 $query = $this->db->connect()->prepare("SELECT
                                                         lg_pedidodet.nidpedi,
@@ -242,9 +243,10 @@
  
                 if ($rowcount > 0){
                     while ($rs = $query->fetch()) {
-                         $detalle .= '<tr>
+                        $detalle .= '<tr data-fila="'.$item.'">
                                         <td class="con_borde centro">'.str_pad($linea++,3,"0",STR_PAD_LEFT).'</td>
                                         <td class="con_borde pl10">'.$rs['cdesprod'].'</td>'.$this->detalleCotizacion($cod,$codpr,$rs['nidpedi']);
+                        $item++;
                     }
                 }
 
@@ -270,24 +272,136 @@
                                                         lg_proformadet.cantcoti,
                                                         lg_proformadet.ffechaent,
                                                         lg_proformadet.precunit,
-                                                        lg_proformadet.cantcoti * lg_proformadet.precunit AS total 
+                                                        lg_proformadet.cantcoti * lg_proformadet.precunit AS total,
+                                                        CONCAT(lg_proformadet.id_regmov,'_',lg_proformadet.id_centi,'_',lg_proformadet.niddet,'.pdf') AS archivo,
+                                                        DATE_FORMAT(lg_proformadet.fregsys,'%Y-%m-%d') AS emitido1,
+                                                        DATEDIFF(lg_proformadet.ffechaent,DATE_FORMAT(lg_proformadet.fregsys,'%Y-%m-%d')) AS dias
                                                     FROM
                                                         lg_proformadet 
                                                     WHERE
-                                                        lg_proformadet.id_regmov =:cod 
+                                                        lg_proformadet.id_regmov =:cod
                                                         AND lg_proformadet.id_centi =:ent 
                                                         AND lg_proformadet.niddet =:nid");
 
                 $query->execute(["cod"=>$cod,"ent"=>$enti[$i],"nid"=>$nid]);
                 $rs = $query->fetchAll();
+                $adjunto =  constant("URL")."/public/manuales/".$rs[0]['archivo'];
 
-                $proformas.= '<td>'.number_format($rs[0]['total'], 2, '.', ',').'</td>
-                            <td>'.$rs[0]['ffechaent'].'</td>
-                            <td></td>
-                            <td>'.$nid.'</td>';
+                $proformas.= '<td class="con_borde drch pr10">'.number_format($rs[0]['total'], 2, '.', ',').'</td>
+                            <td class="con_borde centro">'.date("d/m/Y", strtotime($rs[0]['ffechaent'])).'</td>
+                            <td class="con_borde drch pr10">'.$rs[0]['dias'].'</td>
+                            <td class="con_borde centro"><a href="'.$adjunto.'"><i class="far fa-sticky-note"></i></a></td>
+                            <td class="con_borde centro" data-position="'.$i.'" 
+                                                         data-pedido="'.$rs[0]["id_regmov"].'" 
+                                                         data-entidad="'.$rs[0]["id_centi"].'"
+                                                         data-detalle="'.$rs[0]["niddet"].'">
+                                <input type="checkbox" class="chkVerificado">
+                            </td>';
             }
 
             return $proformas;
         }
+
+        public function verProformasPdf($cod){
+            $salida = "";
+
+            try {
+                $query = $this->db->connect()->prepare("SELECT
+                                                        lg_proformacab.id_regmov,
+                                                        lg_proformacab.id_centi,
+                                                        lg_proformacab.cnumero,
+                                                        cm_entidad.crazonsoc,
+                                                        cm_entidad.cnumdoc,
+                                                        concat( lg_proformacab.id_regmov, '_', cm_entidad.cnumdoc,'_', lg_proformacab.cnumero,'.pdf' ) AS archivo 
+                                                    FROM
+                                                        lg_proformacab
+                                                        INNER JOIN cm_entidad ON lg_proformacab.id_centi = cm_entidad.id_centi 
+                                                    WHERE
+                                                        lg_proformacab.id_regmov =:cod");
+                $query->execute(["cod"=>$cod]);
+                $rowcount = $query->rowcount();
+
+                if ($rowcount > 0){
+                    $salida = "";
+                    while($row = $query->fetch()){
+                        $adjunto =  constant("URL")."/public/proformas/".$row['archivo'];
+                        $salida .='<li><a href="'.$adjunto.'" class="atachDoc"><i class="fas fa-mail-bulk"></i><span>'.$row['crazonsoc'].'</span></a></li>';
+                    }
+                }else{
+                    $salida = 0;
+                }
+
+                return $salida;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function grabarDetallesCotizacion($detalles){
+                $datos = json_decode($detalles);
+                $nreg = count($datos);
+                $actualizados = 0;
+                $idpedido = $datos[1]->pedido;
+
+                for ($i=0; $i <$nreg; $i++) { 
+                    
+                    if ($datos[$i]->lugar !== "" ) {
+                        $query = $this->db->connect()->prepare("UPDATE lg_proformadet SET nflgAbastec = 1 
+                                                                    WHERE id_centi=:entidad 
+                                                                    AND niddet=:detalle 
+                                                                    AND id_regmov=:pedido");
+
+                        $query->execute(["entidad"=>$datos[$i]->entidad,"detalle"=>$datos[$i]->detalle,"pedido"=>$datos[$i]->pedido]);
+                        
+                        $actualizados++;
+                    };
+                }
+
+                if ($actualizados > 0 ){
+                    $this->grabarActualizarDetallesPedido($detalles);
+                    $this->actualizarCabeceraPedido($idpedido);
+                    $this->actualizarCabeceraAdjudicacion($idpedido);
+                }
+
+                return $actualizados;
+        }
+
+        public function grabarActualizarDetallesPedido($detalles){
+            $datos = json_decode($detalles);
+            $nreg = count($datos);
+            
+            for ($i=0; $i < $nreg ; $i++) {
+                if ($datos[$i]->lugar){
+                    $query = $this->db->connect()->prepare("UPDATE lg_pedidodet 
+                                                             SET id_centi=:entidad,nEstadoReg=6,nEstadoPed=6
+                                                             WHERE nidpedi=:detalle");
+                    $query->execute(["entidad"=>$datos[$i]->entidad,"detalle"=>$datos[$i]->detalle]);
+                } 
+                
+            }
+        }
+
+        //cambia el estado de la cabecera
+        public function actualizarCabeceraPedido($id){
+            try {
+                $query = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc=6 WHERE id_regmov=:id");
+                $query->execute(["id"=>$id]);
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function actualizarCabeceraAdjudicacion($id){
+            try {
+                $query = $this->db->connect()->prepare("UPDATE lg_proformacab SET nflgactivo=3 WHERE id_regmov=:id");
+                $query->execute(["id"=>$id]);
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
     }
 ?>
+
