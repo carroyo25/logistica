@@ -55,9 +55,6 @@
                             </tr>';
                     }
                 }
-                else {
-                    $salida = '<tr><td colspan="12>No hay registros que mostrar</td></tr>';
-                }
 
                 return $salida;
 

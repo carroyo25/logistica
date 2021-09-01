@@ -374,7 +374,7 @@
             for ($i=0; $i < $nreg ; $i++) {
                 if ($datos[$i]->lugar){
                     $query = $this->db->connect()->prepare("UPDATE lg_pedidodet 
-                                                             SET id_centi=:entidad,nEstadoReg=6,nEstadoPed=6
+                                                             SET id_centi=:entidad,nEstadoReg=6,nEstadoPed=6,nflgadjudicado=1
                                                              WHERE nidpedi=:detalle");
                     $query->execute(["entidad"=>$datos[$i]->entidad,"detalle"=>$datos[$i]->detalle]);
                 } 

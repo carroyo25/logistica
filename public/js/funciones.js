@@ -154,3 +154,14 @@ function fechaActual() {
 
     return output;
 }
+
+
+function abrirVentanaEspera(){
+    $("#waitmodalCursorOffline").fadeIn();
+    $("*").css("cursor", "wait");
+}
+
+function cerrarVentanaEspera(){
+    $("#waitmodalCursorOffline").fadeOut();
+    $("*").css("cursor", "pointer");
+}
