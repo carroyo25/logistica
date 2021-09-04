@@ -1460,7 +1460,6 @@
   font-weight: bold; }
 
 .searchInput {
-  width: 65%;
   height: 42px;
   outline: none;
   padding-left: 20px;
@@ -1470,14 +1469,19 @@
   background: #FFE4C4;
   border: 4px solid red; }
 
-.zebra tbody tr:nth-child(even) {
-  background-color: #fff; }
+.titulo_tabla_zebra {
+  background: #000;
+  color: #fff;
+  font-size: .8rem; }
 
-.zebra tbody tr:nth-child(odd) {
-  background-color: #eee; }
-
-.zebra tbody input {
-  background: transparent; }
+.zebra {
+  border-collapse: collapse; }
+  .zebra tbody tr:nth-child(even) {
+    background-color: #fff; }
+  .zebra tbody tr:nth-child(odd) {
+    background-color: #eee; }
+  .zebra tbody input {
+    background: transparent; }
 
 .borde_item_final {
   border-bottom: 4px solid; }
@@ -1514,38 +1518,6 @@ hr {
         color: #000;
         background: #c2c2c2; }
 
-/*.tab{
-    position: relative;
-
-    .button_floating{
-        padding: 20px;
-        position: absolute;
-        right: 10px;
-        color: #000;
-        background: darkturquoise;
-        font-weight: bold;
-        transition: .3s;
-        border-radius: 8px;
-        border: none;
-
-        span{
-            display: flex;
-            align-items: center;
-
-            i{
-                font-size: 1.5rem;
-                margin-right: 10px;
-            }
-        }
-        
-
-        &:hover{
-            color:#fff;
-            box-shadow: 1px 3px 6px #000;
-        }
-    }
-
-}*/
 .button_floating {
   padding: 12px;
   position: absolute;
@@ -1668,6 +1640,9 @@ hr {
 .w92p {
   width: 92%; }
 
+.w98p {
+  width: 98%; }
+
 .w100p {
   width: 100%; }
 
@@ -1773,6 +1748,18 @@ hr {
 .mh25vh {
   max-height: 25vh; }
 
+.min15vh {
+  min-height: 15vh; }
+
+.min25vh {
+  min-height: 25vh; }
+
+.min30vh {
+  min-height: 30vh; }
+
+.min50vh {
+  min-height: 50vh; }
+
 .h20px {
   height: 20px !important; }
 
@@ -1794,6 +1781,9 @@ hr {
 .paall_5px {
   padding: 5px; }
 
+.over_auto {
+  overflow: auto; }
+
 /*checkbox*/
 input[type=checkbox]:focus {
   outline: 1px solid rgba(0, 0, 0, 0.2); }
@@ -1813,6 +1803,10 @@ input[type=checkbox] {
 input[type=checkbox]:checked {
   background-color: #409fd6;
   background: #409fd6 url("data:image/gif;base64,R0lGODlhCwAKAIABAP////3cnSH5BAEKAAEALAAAAAALAAoAAAIUjH+AC73WHIsw0UCjglraO20PNhYAOw==") 3px 3px no-repeat; }
+
+.display_grid {
+  display: -ms-grid;
+  display: grid; }
 
 .g2items1_5 {
   -webkit-column-gap: 10px;
@@ -1849,6 +1843,12 @@ input[type=checkbox]:checked {
   column-gap: 10px;
   -ms-grid-columns: 100px 1fr .5fr 1fr;
   grid-template-columns: 100px 1fr .5fr 1fr; }
+
+.g3items {
+  -webkit-column-gap: 10px;
+  column-gap: 10px;
+  -ms-grid-columns: 1fr 1fr .5fr;
+  grid-template-columns: 1fr 1fr .5fr; }
 
 .lh1_2rem {
   line-height: 1.2rem; }
@@ -1932,6 +1932,12 @@ input[type=checkbox]:checked {
   -ms-flex-pack: justify;
   justify-content: space-between; }
 
+.f7rem {
+  font-size: 0.7rem; }
+
+.f8rem {
+  font-size: 0.8rem; }
+
 .parpadea {
   animation-name: parpadeo;
   animation-duration: 1s;
@@ -1995,3 +2001,41 @@ input[type=checkbox]:checked {
   100% {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg); } }
+
+.boton4 {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 2px 1.2em;
+  background: #318aac;
+  border: 2px solid;
+  border-color: #318aac;
+  position: relative; }
+  .boton4:hover {
+    color: white !important;
+    -webkit-box-shadow: 0 4px 16px #318aac;
+    box-shadow: 0 4px 16px #318aac;
+    -webkit-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    transition: all 0.2s ease; }
+
+.boton1 {
+  border: none;
+  padding: 5px;
+  width: 210px;
+  border-radius: 5px;
+  height: 33px;
+  -webkit-transition: all .3s;
+  -o-transition: all .3s;
+  transition: all .3s;
+  outline: none;
+  background: #d1d4da;
+  background: -webkit-gradient(linear, left top, right top, color-stop(3%, #d1d4da), color-stop(95%, rgba(207, 210, 207, 0.795956)), to(#a7a7a7));
+  background: -webkit-linear-gradient(left, #d1d4da 3%, rgba(207, 210, 207, 0.795956) 95%, #a7a7a7 100%);
+  background: -o-linear-gradient(left, #d1d4da 3%, rgba(207, 210, 207, 0.795956) 95%, #a7a7a7 100%);
+  background: linear-gradient(90deg, #d1d4da 3%, rgba(207, 210, 207, 0.795956) 95%, #a7a7a7 100%); }
+  .boton1:hover {
+    -webkit-box-shadow: 2px 3px 5px #000;
+    box-shadow: 2px 3px 5px #000; }
+  .boton1:active {
+    margin-top: 3px; }

@@ -73,6 +73,7 @@ $(function(){
                 item["pedido"] = $(this).parent().data("pedido");
                 item['entidad'] = entidad;
                 item["detalle"] = $(this).parent().data("detalle");
+                item["unitario"] = $(this).parent().data("unitario");
             
                 fila.push(item);
             }else{
@@ -146,9 +147,6 @@ $(function(){
         $.post(RUTA+"adjudicacion/pasaverificar", {detalles:items},
             function (data, textStatus, jqXHR) {
                 if (data){
-                    //$("#waitmodal").fadeOut();
-                    //mostrarMensaje("msj_correcto","Cotizacion enviada para su verificación");
-
                     $("*").css("cursor", "pointer");
                 }
             },

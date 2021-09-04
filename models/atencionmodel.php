@@ -41,7 +41,6 @@
         
         public function obtenerExistencia($prod,$alm){
             try {
-                //$alm = 1;
                 $sql = $this->db->connect()->prepare("SELECT
                                                         alm_movimdet.ncodalm1,
                                                         alm_movimdet.id_cprod,

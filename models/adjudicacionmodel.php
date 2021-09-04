@@ -294,7 +294,8 @@
                             <td class="con_borde centro" data-position="'.$i.'" 
                                                          data-pedido="'.$rs[0]["id_regmov"].'" 
                                                          data-entidad="'.$rs[0]["id_centi"].'"
-                                                         data-detalle="'.$rs[0]["niddet"].'">
+                                                         data-detalle="'.$rs[0]["niddet"].'"
+                                                         data-precio="'.$rs[0]["precunit"].'">
                                 <input type="checkbox" class="chkVerificado">
                             </td>';
             }
@@ -374,9 +375,9 @@
             for ($i=0; $i < $nreg ; $i++) {
                 if ($datos[$i]->lugar){
                     $query = $this->db->connect()->prepare("UPDATE lg_pedidodet 
-                                                             SET id_centi=:entidad,nEstadoReg=6,nEstadoPed=6,nflgadjudicado=1
+                                                             SET id_centi=:entidad,nEstadoReg=6,nEstadoPed=6,nflgadjudicado=1,nprecioref=:unitario
                                                              WHERE nidpedi=:detalle");
-                    $query->execute(["entidad"=>$datos[$i]->entidad,"detalle"=>$datos[$i]->detalle]);
+                    $query->execute(["entidad"=>$datos[$i]->entidad,"detalle"=>$datos[$i]->detalle,"unitario"=>$datos[$i]->unitario]);
                 } 
                 
             }

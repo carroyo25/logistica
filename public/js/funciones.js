@@ -158,10 +158,10 @@ function fechaActual() {
 
 function abrirVentanaEspera(){
     $("#waitmodalCursorOffline").fadeIn();
-    $("*").css("cursor", "wait");
+    $("#waitmodalCursorOffline").css("cursor", "wait");
 }
 
 function cerrarVentanaEspera(){
     $("#waitmodalCursorOffline").fadeOut();
-    $("*").css("cursor", "pointer");
+    //$("#waitmodalCursorOffline").css("cursor", "default");
 }
