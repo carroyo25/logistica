@@ -291,14 +291,18 @@
                 if ($rowcount> 0) {
                     while ($rs = $query->fetch()) {
                         $salida .='<tr class="h25px">
-                                        <td class="con_borde centro" data-unitario="'.$rs['nprecioref'].'"><input type="checkbox"></td>
+                                        <td class="con_borde centro" 
+                                            data-unitario="'.$rs['nprecioref'].'"
+                                            data-iddet="'.$rs['nidpedi'].'"><input type="checkbox"></td>
                                         <td class="con_borde centro">'.str_pad($x,3,0,STR_PAD_LEFT).'</td>
                                         <td class="con_borde centro">'.$rs['ccodprod'].'</td>
                                         <td class="con_borde pl10">'.$rs['cdesprod'].'</td>
                                         <td class="con_borde centro">'.$rs['cabrevia'].'</td>
                                         <td class="con_borde drch pr10">'.number_format($rs['ncantapro'], 2, '.', ',').'</td>
                                         <td class="con_borde pl10"></td>
-                                        <td class="con_borde pl20">'.$rs['crazonsoc'].'</td>
+                                        <td class="con_borde pl20" 
+                                            data-entidadid="'.$rs['id_centi'].'"
+                                            data-ruc="'.$rs['cnumdoc'].'">'.$rs['crazonsoc'].'</td>
                                     </tr>';
                         $x++;
                     }
@@ -308,6 +312,330 @@
 
             } catch (PDOException $th) {
                 echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function consultarProformas($entidad,$pedido){
+            try {
+                $salida = "";
+                $query = $this->db->connect()->prepare("SELECT
+                                                        tb_moneda.ncodmon,
+                                                        tb_moneda.cmoneda,
+                                                        tb_moneda.cabrevia,
+                                                        tb_moneda.dmoneda AS moneda,
+                                                        pagos.cdesprm2 AS pago,
+                                                        entregas.cdesprm2 AS entrega,
+                                                        lg_proformacab.cnumero 
+                                                    FROM
+                                                        lg_proformacab
+                                                        INNER JOIN tb_moneda ON lg_proformacab.ncodmon = tb_moneda.ncodmon
+                                                        INNER JOIN tb_paramete2 AS pagos ON lg_proformacab.ccondpago = pagos.ncodprm2
+                                                        INNER JOIN tb_paramete2 AS entregas ON lg_proformacab.ccondentrega = entregas.ccodprm2 
+                                                    WHERE
+                                                        lg_proformacab.id_regmov = :ped 
+                                                        AND lg_proformacab.id_centi = :enti 
+                                                        AND pagos.ncodprm1 = 11 
+                                                        AND entregas.ncodprm1 = 12 
+                                                    LIMIT 1");
+                $query->execute(["enti"=>$entidad,"ped"=>$pedido]);
+                
+                $resultado = $query->fetchAll();
+                $salida = array("moneda"=>$resultado[0]['moneda'],
+                                "pago"=>$resultado[0]['pago'],
+                                "entrega"=>$resultado[0]['entrega'],
+                                "abrevia"=>$resultado[0]['cabrevia'],
+                                'idmoneda'=>$resultado[0]['ncodmon'],
+                                "cotizacion"=>$resultado[0]['cnumero']);
+               
+                return $salida;
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function obtenerAlmacenes(){
+            try {
+                $salida = "";
+                $sql = $this->db->connect()->query("SELECT
+                                                    tb_almacen.ncodalm,
+                                                    tb_almacen.ccodalm,
+                                                    tb_almacen.cdesalm,
+                                                    tb_almacen.nflgactivo,
+                                                    tb_almacen.ncubigeo,
+                                                    tb_almacen.cdespais,
+                                                    tb_almacen.cdesdpto,
+                                                    tb_almacen.cdesprov,
+                                                    tb_almacen.cdesdist,
+                                                    tb_almacen.ctipovia,
+                                                    tb_almacen.cdesvia,
+                                                    tb_almacen.cnrovia,
+                                                    tb_almacen.cintevia,
+                                                    tb_almacen.czonavia 
+                                                FROM
+                                                    tb_almacen 
+                                                WHERE
+                                                    tb_almacen.nflgactivo
+                                                ORDER BY
+	                                                tb_almacen.cdesalm");
+                $sql->execute();
+                $rowCount = $sql->rowcount();
+
+                if ($rowCount > 0) {
+                    while ($row = $sql->fetch()) {
+                        $salida.='<li><a href="'.$row['ncodalm'].'" data-via="'.$row['ctipovia'].'" 
+                                                                    data-nombre="'.$row['cdesvia'].'"
+                                                                    data-nro="'.$row['cnrovia'].'"
+                                                                    data-interior="'.$row['cintevia'].'"
+                                                                    data-zona="'.$row['czonavia'].'"
+                                                                    data-dpto="'.$row['cdesdpto'].'"
+                                                                    data-prov="'.$row['cdesprov'].'"
+                                                                    data-dist="'.$row['cdesdist'].'"
+                                                                    data-ubigeo="'.$row['ncubigeo'].'">'.strtoupper($row['cdesalm']).'</a></li>';
+                    }
+                }
+
+                return $salida;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function pasarDatosOrden($cabecera,$detalles,$condicion){
+            require_once("public/libsrepo/repooc.php");
+            
+            try {
+                
+    
+                if  ( $cabecera['ordenpdf'] !== ""){
+                    return $cabecera['ordenpdf'];    
+                } 
+                else {
+                    $entidad = $this->obtenerEntidad($cabecera['id_entidad']);
+                    $banco = $this->obtenerEntidadBanco($cabecera['id_entidad'],$cabecera['idmoneda']);
+                    $datos = json_decode($detalles);
+                    $contacto = $this->obtenerEntidadContacto($cabecera['id_entidad']);
+    
+                    $nombre_contacto    = isset($contacto['nombre']) ? $contacto['nombre'] : "";
+                    $telefono_contacto  =  isset($contacto['telefono']) ? $contacto['telefono'] : "";
+                    $mail_contacto      = isset($contacto['mail']) ? $contacto['mail'] : "";
+    
+                    $banco_entidad  = isset($banco['banco']) ? $banco['banco'] : "";
+                    $modena_entidad = isset($banco['cmoneda']) ? $banco['cmoneda'] : "";
+                    $cuenta_entidad = isset($banco['cta']) ? $banco['cta'] : "";
+    
+                    if ($cabecera['tipoPedido'] == "B") {
+                        $titulo = "ORDEN DE COMPRA" ;
+                        $prefix = "OC";
+                    }else{
+                        $titulo = "ORDEN DE SERVICIO";
+                        $prefix = "OS";
+                    }
+    
+                    $nOrd = $this->generarNumeroOrden();
+    
+                    $titulo = $titulo . " " . $nOrd;
+                    
+                    $anio = explode("-",$cabecera['fechaOrd']);
+                
+    
+                    $file = uniqid($prefix).".pdf";
+                    $filename = "public/ordenes/emitidas/".$file;
+    
+                    $pdf = new PDF($titulo,$condicion,$cabecera['fechaOrd'],$cabecera['monedaOrd'],$cabecera['condentrega'],$cabecera['lugarEntrega'],$cabecera['cotizacion'],
+                                $cabecera['entrega'],$cabecera['condpago'],$cabecera['precioOrd'],$cabecera['precioOrd'],$cabecera['detalleOrd'],$cabecera['elaborado'],
+                                $cabecera['entidad'],$cabecera['ruc'],$entidad['direccion'],$entidad['telefono'],$entidad['correo'],$entidad['retencion'],
+                                $nombre_contacto,$telefono_contacto,$mail_contacto );
+                    $pdf->AddPage();
+                    $pdf->AliasNbPages();
+                    $pdf->SetWidths(array(10,15,15,10,95,17,15,15));
+                    $pdf->SetFont('Arial','',5);
+                    $lc = 0;
+                    $rc = 0;
+    
+                    $nreg = count($datos);
+    
+                    for ($i=0; $i < $nreg; $i++) { 
+                        $pdf->SetAligns(array("C","C","R","C","L","C","R","R"));
+                                        $pdf->Row(array($datos[$i]->item,
+                                                        $datos[$i]->codigo,
+                                                        $datos[$i]->cantidad,
+                                                        $datos[$i]->unidad,
+                                                        $datos[$i]->descripcion,
+                                                        $datos[$i]->pedido,
+                                                        $datos[$i]->punit,
+                                                        $datos[$i]->total));
+                                        $lc++;
+                                        $rc++;
+                                        
+                                        if ($lc == 52) {
+                                            $pdf->AddPage();
+                                            $lc = 0;
+                                        }
+                    }
+    
+                    $pdf->Ln(3);
+    
+                    $pdf->SetFillColor(229, 229, 229);
+                    $pdf->SetFont('Arial','B',10);
+                    $pdf->Cell(20,6,"TOTAL :","LTB",0,"C",true);
+                    $pdf->SetFont('Arial','B',8);
+                    $pdf->Cell(140,6,$this->convertir($cabecera['precioOrd']),"TBR",0,"L",true); 
+                    $pdf->SetFont('Arial','B',10);
+                    $pdf->Cell(30,6,number_format($cabecera['precioOrd'], 2, '.', ','),"1",1,"R",true);
+                
+                    $pdf->Ln(1);
+                    $pdf->SetFont('Arial',"","7");
+                    $pdf->Cell(40,6,"Pedidos Asociados",1,0,"C",true);
+                    $pdf->Cell(5,6,"",0,0);
+                    $pdf->Cell(80,6,utf8_decode("Información Bancaria del Proveedor"),1,0,"C",true);
+                    $pdf->Cell(10,6,"",0,0);
+                    $pdf->Cell(40,6,"Valor Venta",0,0);
+                    $pdf->Cell(20,6,number_format($cabecera['precioOrd'], 2, '.', ','),0,1);
+                                    
+                    $pdf->Cell(10,4,utf8_decode("Año"),1,0);
+                
+                    $pdf->Cell(10,4,"Tipo",1,0);
+                    $pdf->Cell(10,4,"Pedido",1,0);
+                    $pdf->Cell(10,4,"Mantto",1,0);
+                    $pdf->Cell(5,6,"",0,0);
+                    $pdf->Cell(35,4,"Detalle del Banco",1,0);
+                    $pdf->Cell(15,4,"Moneda",1,0);
+                    $pdf->Cell(30,4,"Nro. Cuenta Bancaria",1,1);
+                
+                    $pdf->Cell(10,4,$anio[0],1,0);
+                    $pdf->Cell(10,4,$cabecera['tipoPedido'],1,0);
+                    $pdf->Cell(10,4,$cabecera['nropedido'],1,0);
+                    $pdf->Cell(10,4,"",1,0);
+                    $pdf->Cell(5,6,"",0,0);
+                    $pdf->Cell(35,4,utf8_decode($banco_entidad),1,0);
+                    $pdf->Cell(15,4,$modena_entidad,1,0);
+                    $pdf->Cell(30,4,$cuenta_entidad,1,0);
+                    $pdf->Cell(10,4,"",0,0);
+                    $pdf->SetFont('Arial',"B","8");
+                    $pdf->Cell(20,4,"TOTAL",1,0,"L",true);
+                    $pdf->Cell(15,4,$cabecera['mon_abrevia'],1,0,"C",true);
+                    $pdf->Cell(20,4,number_format($cabecera['precioOrd'], 2, '.', ','),1,1,"R",true);
+
+                    $pdf->Output($filename,'F');
+    
+                    return $filename;
+                }
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function obtenerEntidad($cod){
+            try {
+                $item = array();
+
+                $query = $this->db->connect()->prepare("SELECT
+                                                        cm_entidad.cnumdoc,
+                                                        cm_entidad.crazonsoc,
+                                                        cm_entidad.cviadireccion,
+                                                        cm_entidad.ctelefono,
+                                                        cm_entidad.cemail,
+                                                        cm_entidad.nagenret 
+                                                    FROM
+                                                        cm_entidad 
+                                                    WHERE
+                                                        cm_entidad.id_centi = :cod");
+                $query->execute(["cod"=>$cod]);
+                $rowCount = $query->rowcount();
+
+                if($rowCount > 0) {
+                    while ($row = $query->fetch()) {
+                        $item['ruc']        = $row['cnumdoc'];
+                        $item['razon']      = $row['crazonsoc'];
+                        $item['direccion']  = $row['cviadireccion'];
+                        $item['telefono']   = $row['ctelefono'];
+                        $item['correo']     = $row['cemail'];
+                        $item['retencion']  = $row['nagenret'];
+                    }
+                }
+
+                return $item;
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+        }
+
+        public function obtenerEntidadBanco($cod,$mon){
+            try {
+                $item = array();
+
+                $query = $this->db->connect()->prepare("SELECT
+                                                        cm_entidadbco.ncodbco,
+                                                        cm_entidadbco.cnrocta,
+                                                        cm_entidadbco.ctipcta,
+                                                        tb_banco.cdesbco,
+                                                        tb_moneda.dmoneda,
+                                                        tb_moneda.cmoneda 
+                                                    FROM
+                                                        cm_entidadbco
+                                                        INNER JOIN tb_banco ON cm_entidadbco.ncodbco = tb_banco.ccodbco
+                                                        INNER JOIN tb_moneda ON cm_entidadbco.cmoneda = tb_moneda.ncodmon 
+                                                    WHERE
+                                                        cm_entidadbco.id_centi = :cod 
+                                                        AND cm_entidadbco.cmoneda = :mon");
+                $query->execute(["cod"=>$cod,"mon"=>$mon]);
+                $rowCount = $query->rowcount();
+
+                if ($rowCount > 0) {
+                    while ($row = $query->fetch()) {
+                        $item['cta']    = $row['cnrocta'];
+                        $item['banco']  = $row['cdesbco'];
+                        $item['moneda'] = $row['dmoneda'];
+                        $item['cmoneda'] = $row['cmoneda'];
+                    }
+                }
+
+                return $item;
+
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+
+                return false;
+            }
+        }
+
+        public function obtenerEntidadContacto($cod){
+            try {
+                $item = array();
+
+                $query = $this->db->connect()->prepare("SELECT
+                                                            cm_entidadcon.cnombres,
+                                                            cm_entidadcon.ctelefono1,
+                                                            cm_entidadcon.cemail 
+                                                        FROM
+                                                            cm_entidadcon 
+                                                        WHERE
+                                                            cm_entidadcon.id_centi =:cod 
+                                                            LIMIT 1");
+                $query->execute(["cod"=>$cod]);
+                $rowCount = $query->rowcount();
+
+
+                if ($rowCount > 0) {
+                    
+                    while ($row = $query->fetch()) {
+                        $item['nombre']     = $row['cnombres'];
+                        $item['telefono']   = $row['ctelefono1'];
+                        $item['mail']       = $row['cemail'];
+                    }
+                }
+
+                return $item;
+
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+
                 return false;
             }
         }

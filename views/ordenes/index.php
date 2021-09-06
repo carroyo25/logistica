@@ -45,23 +45,23 @@
                 <a href="#" class="boton4" id="btnCancelarPedido">Cancelar</a>
             </div>
             <hr>
-            <div class="display_grid g3items f8rem">
+            <div class="display_grid g3items f8rem cabPed">
                 <div>
                     <div class="display_grid g4items mb5px">
                         <label class="negrita">Número :</label>
-                        <label class="con_borde pl20 h25px" id="numero"></label>
+                        <label class="con_borde pl20 h25px datoCabecera" id="numero"></label>
                         <label class="negrita">Emisión :</label>
-                        <label class="con_borde pl20 h25px" id="fecha"></label>    
+                        <label class="con_borde pl20 h25px datoCabecera" id="fecha"></label>    
                     </div>
                     <div class="display_grid g2items mb5px">
                         <label class="negrita">Proyecto :</label> 
-                        <label class="con_borde pl20 h25px" id="proyecto"></label>    
+                        <label class="con_borde pl20 h25px datoCabecera" id="proyecto"></label>    
                     </div>
                     <div class="display_grid g2items mb5px">
                         <label class="negrita">Area :</label>
-                        <label class="con_borde pl20 h25px" id="area"></label>    
+                        <label class="con_borde pl20 h25px datoCabecera" id="area"></label>    
                     </div>
-                    <div class="display_grid g2items mb5px">
+                    <div class="display_grid g2items mb5px datoCabecera">
                         <label class="negrita">C.Costos :</label>
                         <label class="con_borde pl20 h25px" id="costos"></label>    
                     </div>
@@ -69,29 +69,29 @@
                 <div>
                     <div class="display_grid g2items mb5px">
                         <label class="negrita">Transporte</label>
-                        <label class="con_borde pl20 h25px" id="transporte"></label>    
+                        <label class="con_borde pl20 h25px datoCabecera" id="transporte"></label>    
                     </div>
                     <div class="display_grid g2items mb5px">
                         <label class="negrita">Concepto :</label>
-                        <label class="con_borde pl20 h25px" id="concepto"></label>    
+                        <label class="con_borde pl20 h25px datoCabecera" id="concepto"></label>    
                     </div>
                     <div class="display_grid g2items mb5px">
                         <label class="negrita">Solicitante :</label>
-                        <label class="con_borde pl20 h25px" id="solicitante"></label>    
+                        <label class="con_borde pl20 h25px datoCabecera" id="solicitante"></label>    
                     </div>
                     <div class="display_grid g2items mb5px">
                         <label  class="negrita">Detalles :</label>
-                        <label class="con_borde pl20 h25px" id="espec_items"></label>    
+                        <label class="con_borde pl20 h25px datoCabecera" id="espec_items"></label>    
                     </div>
                 </div>
                 <div>
                     <div class="display_grid g2items mb5px">
                         <label class="negrita">Tipo:</label>
-                        <label class="con_borde pl20 h25px" id="tipo"></label>    
+                        <label class="con_borde pl20 h25px datoCabecera" id="tipo"></label>    
                     </div>
                     <div class="display_grid g2items mb5px">
                         <label class="negrita">Vencimiento</label>
-                        <label class="con_borde pl20 h25px" id="fechaven"></label>    
+                        <label class="con_borde pl20 h25px datoCabecera" id="fechaven"></label>    
                     </div>
                 </div>
             </div>
@@ -120,13 +120,38 @@
     <div class="modal" id="modalProcessOrden">
         <div class="process">
             <div class="sides_process">
-                <ul class="tabs">
-                    <li><a href="#" class="option_tab_selected">Descripción de la Orden</a></li>
-                    <li class="oculto"><a href="tab2">Descripción del Pedido</a> </li>
-                </ul>
+                <div class="descrip_title">
+                    <div class="titulo_compuesto">
+                        <span>Datos de la Orden</span>
+                        <div class="firmasTitulo">
+                            <div class="finanzas firma_pendiente">
+                                <span>Finanzas</span>
+                            </div>
+                            <div class="operacioes firma_pendiente">
+                                <span>Operaciones</span>
+                            </div>
+                            <div class="logistica firma_pendiente">
+                                <span>Logística</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <button type="button" id="saveItem" title="Grabar Orden" class="boton1">
+                            <span><i class="far fa-save"></i> Grabar Orden</span> 
+                        </button>
+                        <button type="button" id="cancelItem" title="Cancelar Orden" class="boton1">
+                            <i class="fas fa-ban"></i> Cancelar Orden
+                        </button>
+                        <button type="button" id="commentItem" title="Ver/añadir comentarios" class="boton1">
+                            <i class="far fa-comments"></i> Ver/Añadir Observaciones
+                        </button>   
+                    </div>
+                </div>
                 <div class="tab" id="tab1">
                     <form action="#" method="POST" id="formProcessOrder">
                         <input type="hidden" name="pedido" id="pedido">
+                        <input type="hidden" name="orden" id="orden">
                         <input type="hidden" name="nropedido" id="nropedido">
                         <input type="hidden" name="id_entidad" id="id_entidad">
                         <input type="hidden" name="cod_proyecto" id="cod_proyecto">
@@ -134,8 +159,14 @@
                         <input type="hidden" name="cod_costos" id="cod_costos">
                         <input type="hidden" name="cod_transporte" id="cod_transporte">
                         <input type="hidden" name="cod_solicitante" id="cod_solicitante">
+                        <input type="hidden" name="cod_almacen" id="cod_almacen">
+                        <input type="hidden" name="ordenpdf" id="ordenpdf">
+                        <input type="hidden" name="tipoPedido" id="tipoPedido">
+                        <input type="hidden" name="mon_abrevia" id="mon_abrevia"">
+                        <input type="hidden" name="idmoneda" id="idmoneda">
+                        <input type="hidden" name="cotizacion" id="cotizacion">
 
-                        <div class="process_header3ec desactivado">
+                        <div class="process_header3ec">
                             <div class="process_left">    
                                 <div class="input_process g4items">
                                     <label for="numero" class="w100px">Número :</label>
@@ -149,39 +180,45 @@
                                 </div>
                                 <div class="input_process g2items desplegable">
                                     <label for="proyectoOrd" class="w100px">Proyecto :</label>
-                                    <input type="text" name="proyectoOrd" id="proyectoOrd" class="pl10 mayusculas" >
+                                    <input type="text" name="proyectoOrd" id="proyectoOrd" class="pl10 mayusculas" readonly>
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="areaOrd" class="w100px">Area/Of. :</label>
-                                    <input type="text" name="areaOrd" id="areaOrd" class="pl10 mayusculas">
+                                    <input type="text" name="areaOrd" id="areaOrd" class="pl10 mayusculas" readonly>
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="costosOrd" class="w100px">C.Costos. :</label>
-                                    <input type="text" name="costosOrd" id="costosOrd" class="pl10 mayusculas">
+                                    <input type="text" name="costosOrd" id="costosOrd" class="pl10 mayusculas" readonly>
                                 </div>
                             </div>
                             <div class="process_right">
-                                <div class="input_process g2items">
-                                    <label for="transporteOrd" class="w100px">Transporte :</label>
-                                    <input type="text" name="transporteOrd" id="transporteOrd" class="pl10 mayusculas">
-                                </div>
+                                
                                 <div class="input_process g2items">
                                     <label for="conceptoOrd" class="w100px">Concepto :</label>
-                                    <textarea name="conceptoOrd" id="conceptoOrd" rows="1" class="pl10"></textarea>
+                                    <textarea name="conceptoOrd" id="conceptoOrd" rows="1" class="pl10" readonly></textarea>
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="detalleOrd" class="w100px">Detalle</label>
-                                    <input type="text" name="detalleOrd" id="detalleOrd" class="pl10 mayusculas">
+                                    <input type="text" name="detalleOrd" id="detalleOrd" class="pl10 mayusculas" readonly>
                                 </div>
                                 <div class="input_process g4items">
                                     <label for="moneda" class="w100px">Moneda :</label>
                                     <input type="text" name="monedaOrd" id="monedaOrd" class="pl10" readonly>
-                                    <label for="precio" class="w100px">Precio :</label>
-                                    <input type="text" name="precioOrd" id="precioOrd" class="drch pr20">
+                                    <label for="precio" class="w100px">Total :</label>
+                                    <input type="text" name="precioOrd" id="precioOrd" class="drch pr20 cuadro_resaltado" readonly>
                                 </div>
-                                <div class="input_process g2items">
+                                <div class="input_process g4items">
                                     <label for="tipo" class="w100px">Tipo</label>
-                                    <input type="text" name="tipoOrd" id="tipoOrd" class="pl10 mayusculas">
+                                    <input type="text" name="tipoOrd" id="tipoOrd" class="pl10 mayusculas" readonly>
+                                    <label for="atencion" class="w100px">Fecha Entrega:</label>
+                                    <input type="date" name="entrega" id="entrega">
+                                </div>
+                                <div class="input_process g4items">
+                                    <label for="condpago" class="w100px">Cond.Pago:</label>
+                                    <input type="text" name="condpago" id="condpago" class="pl10 mayusculas" readonly>
+                               
+                                    <label for="condentrega" class="w100px">Cond.Entrega:</label>
+                                    <input type="text" name="condentrega" id="condentrega" class="pl10 mayusculas" readonly>
                                 </div>
                             </div>
                             <div class="process_estate">
@@ -195,7 +232,20 @@
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="atencion" class="w100px">Atención:</label>
-                                    <input type="text" name="atencion" id="atencion" class="pl10 mayusculas" readonly>
+                                    <input type="text" name="atencion" id="atencion" class="pl10 mayusculas">
+                                </div>
+                                <div class="input_process g2items">
+                                    <label for="transporteOrd" class="w100px">Transporte :</label>
+                                    <input type="text" name="transporteOrd" id="transporteOrd" class="pl10 mayusculas" readonly>
+                                </div>
+                                <div class="input_process g2items">
+                                    <label for="lugarEntrega" class="w100px">Lugar Entrega :</label>
+                                    <input type="text" name="lugarEntrega" id="lugarEntrega" class="pl10 mayusculas" readonly>
+                                    <div class="seleccion seleccion_entrega w70p top2rem left7rem">
+                                    <ul id="listaAlmacen">
+                                        <?php echo $this->almacenes?>
+                                    </ul>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -206,7 +256,7 @@
                                     <i class="fas fa-upload"></i> Importar Pedido
                                 </button>
                                 <button type="button" id="btnSendMail" title="Cierra la orden y la envia por correo" class="boton1">
-                                    <i class="far fa-paper-plane"></i> Enviar Correo
+                                    <i class="far fa-paper-plane"></i> Enviar Orden Proveedor
                                 </button>
                                 <button type="button" id="btnGenDoc" title="Firmar Orden" class="boton1">
                                     <i class="far fa-file-pdf"></i> Vista Previa
@@ -236,88 +286,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="oculto tab" id="tab2">
-                    <div class="process_header desactivado">
-                            <div class="process_left">    
-                                <div class="input_process g4items">
-                                    <label for="numero" class="w100px">Número :</label>
-                                    <input type="number" name="numero" id="numero" class="pl10" readonly>
-                                    <label for="fecha" class="w100px">Fec.Emisión :</label>
-                                    <input type="date" name="fecha" id="fecha"  class="pl10">
-                                </div>
-                                <div class="input_process g2items">
-                                    <label for="usuario" class="w100px">Usuario :</label>
-                                    <input type="text" name="usuario" id="usuario" class="pl10 mayusculas">
-                                </div>
-                                <div class="input_process g2items desplegable">
-                                    <label for="proyecto" class="w100px">Proyecto :</label>
-                                    <input type="text" name="proyecto" id="proyecto" class="pl10 mayusculas">
-                                </div>
-                                <div class="input_process g2items">
-                                    <label for="area" class="w100px">Area/Of. :</label>
-                                    <input type="text" name="area" id="area" class="pl10 mayusculas">
-                                </div>
-                                <div class="input_process g2items">
-                                    <label for="area" class="w100px">C.Costos. :</label>
-                                    <input type="text" name="costos" id="costos" class="pl10 mayusculas">
-                                </div>
-                            </div>
-                            <div class="process_right">
-                                <div class="input_process g2items">
-                                    <label for="transporte" class="w100px">Transporte :</label>
-                                    <input type="text" name="transporte" id="transporte" class="pl10 mayusculas">
-                                </div>
-                                <div class="input_process g2items">
-                                    <label for="concepto" class="w100px">Concepto :</label>
-                                    <textarea name="concepto" id="concepto" rows="4"></textarea>
-                                </div>
-                                <div class="input_process g2items">
-                                    <label for="solicitante" class="w100px">Solicitante</label>
-                                    <input type="text" name="solicitante" id="solicitante" class="pl10 mayusculas">
-                                </div>
-                            </div>
-                            <div class="process_estate">
-                                <div class="input_process g2items">
-                                    <label for="registro" class="w100px">Est.Doc.:</label>
-                                    <input type="text" name="registro" id="registro" class="pl10 mayusculas adjudicado" value="CERRADO" readonly>
-                                </div>
-                                <div class="input_process g2items">
-                                    <label for="documento" class="w100px">Est.Registro:</label>
-                                    <input type="text" name="documento" id="documento" class="pl10 mayusculas adjudicado" value="CERRADO" readonly>
-                                </div>
-                                <div class="input_process g2items">
-                                    <label for="tipo" class="w100px">Tipo</label>
-                                    <input type="text" name="tipo" id="tipo" class="pl10 mayusculas">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="process_items">
-                            <div>
-                                <table class="con_borde w100p" id="detalle_pedido">
-                                    <thead>
-                                        <tr>
-                                            <th class="con_borde w5p">Item</th>
-                                            <th class="con_borde w8p">Codigo</th>
-                                            <th class="con_borde w35p">Descripcion</th>
-                                            <th class="con_borde w5p">UM</th>
-                                            <th class="con_borde w5p">Cantidad</th>
-                                            <th class="con_borde w8p">Atendido con orden</th>
-                                            <th class="con_borde w8p">Nro. Parte</th>
-                                            <th class="con_borde w8p">Tipo</th>
-                                        </tr>   
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="descrip_title">
-                            <span>Especificaciones Técnicas o Descripción del Item</span>
-                        </div>
-                        <div class="details_item desactivado">
-                            <textarea name="espec_items" id="espec_items" rows="3" class="w100p"></textarea>
-                        </div>
-                </div>
+                
             </div>
         </div>
         <a href="#" id="closeModalProcess" class="buttonClose"><i class="fas fa-reply-all"></i></a>

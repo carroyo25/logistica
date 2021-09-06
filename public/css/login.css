@@ -239,7 +239,7 @@
     margin-top: 3px; }
     .process .process_header .input_process label, .process .process_header3ec .input_process label {
       font-weight: bold;
-      font-size: .85rem; }
+      font-size: .8rem; }
     .process .process_header .input_process textarea, .process .process_header3ec .input_process textarea {
       padding: 10px; }
 
@@ -596,7 +596,7 @@
     padding-left: 20px; }
   .input_model label {
     font-weight: bold;
-    font-size: .85rem; }
+    font-size: .8rem; }
   .input_model textarea {
     padding: 10px; }
 
@@ -1495,6 +1495,11 @@ hr {
 .cursor_pointer {
   cursor: pointer; }
 
+.cuadro_resaltado {
+  border: 2px solid;
+  background: lightgrey;
+  font-weight: bold; }
+
 .mt10px {
   margin-top: 10px; }
 
@@ -1546,7 +1551,7 @@ hr {
     -webkit-box-shadow: 1px 3px 6px #000;
     box-shadow: 1px 3px 6px #000; }
 
-.firmas {
+.firmas, .firmasTitulo {
   border: 1px solid;
   margin-top: 19px;
   display: -webkit-box;
@@ -1555,12 +1560,25 @@ hr {
   -ms-flex-pack: distribute;
   justify-content: space-around;
   padding: 2px; }
-  .firmas .firma_pendiente {
+  .firmas .firma_pendiente, .firmasTitulo .firma_pendiente {
     background: darkorange;
     padding: 8px; }
-  .firmas .firma_confirmada {
+  .firmas .firma_confirmada, .firmasTitulo .firma_confirmada {
     background: limegreen;
     padding: 8px; }
+
+.firmasTitulo {
+  margin-top: 0;
+  font-size: .8rem;
+  margin-left: 50px; }
+
+.titulo_compuesto {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center; }
 
 .w2p {
   width: 1%; }
@@ -1621,6 +1639,9 @@ hr {
 
 .w60p {
   width: 60%; }
+
+.w65p {
+  width: 65%; }
 
 .w70p {
   width: 70%; }
@@ -1774,6 +1795,12 @@ hr {
 
 .h60vh {
   height: 62vh; }
+
+.top2rem {
+  top: 2rem; }
+
+.left7rem {
+  left: 7rem; }
 
 .va-top {
   vertical-align: top; }

@@ -284,7 +284,7 @@
 
             label{
                 font-weight: bold;
-                font-size: .85rem;
+                font-size: .8rem;
             }
 
             textarea{
@@ -757,7 +757,7 @@
 
     label{
         font-weight: bold;
-        font-size: .85rem;
+        font-size: .8rem;
     }
 
     textarea{
@@ -1867,6 +1867,12 @@ hr{
 .cursor_pointer{
     cursor: pointer;
 }
+
+.cuadro_resaltado{
+    border: 2px solid;
+    background: lightgrey;
+    font-weight: bold;
+}
 //margenes
 .mt10px{
     margin-top: 10px;
@@ -1928,7 +1934,7 @@ hr{
     }
 }
 
-.firmas{
+.firmas, .firmasTitulo{
     border: 1px solid;
     margin-top: 19px;
     display: flex;
@@ -1944,6 +1950,18 @@ hr{
         background: limegreen;
         padding: 8px;
     }
+}
+
+.firmasTitulo{
+    margin-top: 0;
+    font-size: .8rem;
+    margin-left: 50px;
+}
+
+
+.titulo_compuesto {
+    display: flex;
+    align-items: center;
 }
 
 //tamaños
@@ -2027,6 +2045,10 @@ hr{
 
 .w60p{
     width: 60%;
+}
+
+.w65p{
+    width: 65%;
 }
 
 .w70p{
@@ -2247,10 +2269,23 @@ hr{
     height: 62vh;
 }
 
+//margen top
+.top2rem {
+    top: 2rem;
+}
+
+//margen izquierdo
+.left7rem {
+    left: 7rem;
+}
+
 //alineaciones
 .va-top {
     vertical-align: top;
 }
+
+
+
 
 //paddinds
 .paall_5px{

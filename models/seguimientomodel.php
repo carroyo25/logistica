@@ -542,7 +542,7 @@
                                             $nombre_contacto,$telefono_contacto,$mail_contacto);
                                 $pdf->AddPage();
                                 $pdf->AliasNbPages();
-                                $pdf->SetWidths(array(10,15,70,8,10,17,15,15,15,15));
+                                $pdf->SetWidths(array(10,15,15,10,70,17,15,15,15,15));
                                 $pdf->SetFont('Arial','',5);
                                 $lc = 0;
                                 $rc = 0;
@@ -551,7 +551,7 @@
                                 $nreg = count($detalles);
 
                                 for ($i=1; $i <=$nreg ; $i++) { 
-                                    $pdf->SetAligns(array("C","L","L","C","R","L","L","C","L","L"));
+                                    $pdf->SetAligns(array("C","L","R","C","R","L","L","C","L","L"));
                                     $pdf->Row(array(str_pad($i,2,"0",STR_PAD_LEFT),
                                         $detalles[$rc]['id_cprod'],
                                         $detalles[$rc]['cdespro'],

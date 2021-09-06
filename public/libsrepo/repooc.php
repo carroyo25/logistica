@@ -145,12 +145,10 @@
 	        // Salto de línea
     		$this->Ln(3);
             $this->Rect(10,73,190,7,"F"); //fondo de mensaje
-    		$this->SetWidths(array(10,15,70,8,10,17,15,15,15,15));
-    		$this->SetAligns(array("C","C","C","C","C","C","C","C","C","C"));
-    		$this->Row(array('Item',utf8_decode('Código'),utf8_decode('Descripción'),
-    				'Und.Med.','Cant.','Stock Proyecto','Stock Acumulado','Orden Atendida',
-    				utf8_decode('N° Parte'),'Equipo'));
-
+    		$this->SetWidths(array(10,15,15,10,95,17,15,15));
+    		$this->SetAligns(array("C","C","C","C","C","C","C","C"));
+    		$this->Row(array('Item',utf8_decode('Código'),'Cant.','Und.',utf8_decode('Descripción'),'Nro.Pedido','Precio UNitario','Valor Total'));
+                    
         }
 
         function footer(){
