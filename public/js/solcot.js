@@ -173,7 +173,6 @@ $(function(){
             dataType: "text",
             success: function (response) {
                 //if (response) {
-                    console.log(response);
                     $("#btnEnviar").css("display","none");
                     $("#dialogConfirm").fadeOut();
                     mostrarMensaje("msj_correcto","Proforma enviada");

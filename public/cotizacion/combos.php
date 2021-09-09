@@ -4,7 +4,7 @@
     function general($pdo,$class){
         try {
             $sql = "SELECT tb_paramete2.ncodprm1,
-                        tb_paramete2.ncodprm2,
+                        tb_paramete2.ccodprm2,
                         tb_paramete2.cdesprm2 
                     FROM
                         tb_paramete2 
@@ -18,7 +18,7 @@
 
             if ($rowaffect > 0) {
                 foreach ($result as $rs) {
-                    $salida .= '<option value="'.$rs['ncodprm2'].'">'.$rs['cdesprm2'].'</option>';
+                    $salida .= '<option value="'.$rs['ccodprm2'].'">'.$rs['cdesprm2'].'</option>';
                 }
             }
 

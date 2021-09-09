@@ -164,6 +164,8 @@
                         <input type="hidden" name="tipoPedido" id="tipoPedido">
                         <input type="hidden" name="mon_abrevia" id="mon_abrevia"">
                         <input type="hidden" name="idmoneda" id="idmoneda">
+                        <input type="hidden" name="idpago" id="idpago">
+                        <input type="hidden" name="identrega" id="identrega">
                         <input type="hidden" name="cotizacion" id="cotizacion">
 
                         <div class="process_header3ec">
@@ -341,7 +343,7 @@
                     </div>
                 </div>
                 <div class="pedidos">
-                    <table class="w100p con_borde" id="tabla_pedidos">
+                    <table class="w100p con_borde" id="tabla_ordenes">
                         <thead>
                             <tr>
                                 <th class="con_borde w7p">Num.</th>
@@ -352,7 +354,6 @@
                                 <th class="con_borde">Logística</th>
                                 <th class="con_borde">Operaciones</th>
                                 <th class="con_borde">Financiera</th>
-                                <th class="con_borde">Atencion</th>
                                 <th class="con_borde">...</th>
                             </tr>
                         </thead>

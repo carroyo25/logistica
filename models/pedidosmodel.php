@@ -115,11 +115,12 @@
                                                             INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry
                                                             INNER JOIN logistica.tb_area ON logistica.lg_pedidocab.ncodarea = logistica.tb_area.ncodarea
                                                             INNER JOIN logistica.tb_ccostos ON logistica.lg_pedidocab.ncodcos = logistica.tb_ccostos.ncodcos
-                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ncodprm2
+                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ccodprm2
                                                             INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
                                                             INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
                                                         WHERE
-                                                            logistica.lg_pedidocab.id_regmov = :cod 
+                                                            logistica.lg_pedidocab.id_regmov = :cod
+                                                            AND transportes.ncodprm1 = 7
                                                             AND atenciones.ncodprm1 = 13 
                                                             AND estados.ncodprm1 = 4");
                 $query->execute(["cod"=>$cod]);
@@ -274,7 +275,7 @@
 
                 if ($rowcount > 0) {
                     while ($row = $query->fetch()) {
-                        $salida.='<li><a href="'.$row['ncodprm2'].'">'.$row['ccodprm2'].' '.$row['cdesprm2'].'</a></li>';
+                        $salida.='<li><a href="'.$row['ccodprm2'].'">'.$row['ccodprm2'].' '.$row['cdesprm2'].'</a></li>';
                     }
                 }
 

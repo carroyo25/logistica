@@ -15,7 +15,7 @@
         function genNumeroOrden(){
             $result = $this->model->generarNumeroOrden();
 
-            echo $result;
+            echo json_encode($result);
         }
 
 
@@ -65,11 +65,18 @@
         function grabaOrden(){
             $cabecera = $_POST['cabecera'];
             $detalles = $_POST['detalles'];
-            $condicion = $_POST['codicion'];
 
             $result = $this->model->grabarDatosOrden($cabecera,$detalles);
 
             echo $result;
+        }
+
+        function ordenesPorId(){
+            $cod = $_POST['cod'];
+
+            $result = $this->model->obtenerOrdenesId($cod);
+
+            echo json_encode($result);
         }
         
     }

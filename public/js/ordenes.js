@@ -10,12 +10,13 @@ $(function(){
 
         $.post(RUTA+"ordenes/genNumeroOrden", {user:$("#elaborado").val()},
             function (data, textStatus, jqXHR) {
-                $("#numOrd").val(data);
+                $("#numOrd").val(data.numero);
+                $("#orden").val(data.orden);
                 $("#modalProcessOrden").fadeIn();
 
                 cerrarVentanaEspera();
             },
-            "text"
+            "json"
         );
 
         return false;
@@ -51,6 +52,38 @@ $(function(){
         return false;
     });
 
+    $("#tabla_ordenes").on("click","a", function (e) {
+        e.preventDefault();
+
+        $.post(RUTA+"ordenes/ordenesPorId", {cod:$(this).attr("href")},
+            function (data, textStatus, jqXHR) {
+                $("#pedido").val();
+                $("#orden").val(data.id_regmov);
+                $("#nropedido").val();
+                $("#id_entidad").val();
+                $("#cod_proyecto").val();
+                $("#cod_area").val();
+                $("#cod_costos").val();
+                $("#cod_transporte").val();
+                $("#cod_solicitante").val();
+                $("#cod_almacen").val();
+                $("#ordenpdf").val();
+                $("#tipoPedido").val();
+                $("#mon_abrevia").val();
+                $("#idmoneda").val();
+                $("#idpago").val();
+                $("#identrega").val();
+                $("#cotizacion").val();
+
+                $("#modalProcessOrden").fadeIn();
+            },
+            "json"
+        );
+       
+        
+        return false;
+    });
+
     $("#tabla_lista_pedidos tbody").on("click","a", function (e) {
         e.preventDefault();
         
@@ -59,14 +92,14 @@ $(function(){
         $.post(RUTA+"ordenes/caberaPedidoID", {id:$(this).attr("href")},
             function (data, textStatus, jqXHR) {
                 $("#pedido").val(data.id_regmov);
-                $("#cod_transporte").text(data.ctiptransp);
+                $("#cod_transporte").val(data.ctiptransp);
                 $("#cod_proyecto").val(data.ncodpry);
                 $("#cod_area").val(data.ncodarea);
                 $("#cod_costos").val(data.ncodcos);
                 $("#cod_solicitante").val(data.ncodper);
                 $("#cod_estdoc").text(data.nEstadoDoc);
                 $("#cod_registro").text(data.nEstadoReg);
-                $("#cod_solicitante").text(data.ncodper);
+                $("#cod_solicitante").val(data.ncodper);
                 $("#tipoPedido").val(data.ctipmov);
                 $("#estado").text(data.nflgactivo);
                 $("#atencion").text(data.nNivAten);
@@ -137,6 +170,8 @@ $(function(){
                 $("#mon_abrevia").val(data.abrevia);
                 $("#idmoneda").val(data.idmoneda);
                 $("#cotizacion").val(data.cotizacion);
+                $("#idpago").val(data.idpago);
+                $("#identrega").val(data.identrega);
         
                 $("#detalle_orden tbody")
                     .empty()
@@ -258,9 +293,20 @@ $(function(){
                 detalles
             },
             dataType: "text",
+            beforeSend: function( xhr ) {
+                abrirVentanaEspera();
+            },
             success: function (response) {
                 if (response) {
-                    mostrarMensaje("msj_correcto","Se grabo la orden correctamente");s
+                    $(".datoCabecera, #tabla_detalle_pedidos tbody,#detalle_orden").empty();
+                    $("#modalProcessOrden").fadeOut();
+                    $("#saveItem span").removeClass('parpadea');
+                    $("#formProcessOrder")[0].reset();
+
+                    cerrarVentanaEspera();
+                    mostrarMensaje("msj_correcto","Se grabo la orden correctamente");
+                }else {
+                    mostrarMensaje("msj_error","No se pudo grabar el registro");
                 }
             }
         });
@@ -298,12 +344,15 @@ function obtenerDetallesPedido(){
             suma = suma + total;
             entidad = $(this).find('td').eq(7).data('entidadid');
             idpet =  $(this).find('td').eq(0).data('iddet');
+            idprod = $(this).find('td').eq(2).data('idprod');
+            idunid = $(this).find('td').eq(4).data('idunid');
+            factor = $(this).find('td').eq(4).data('factor');
 
             fila += '<tr>'+
                         '<td class="con_borde centro" data-iddet="'+idpet+'" data-entidad="'+entidad+'">'+ $(this).find('td').eq(1).text()+'</td>'+
-                        '<td class="con_borde centro">'+ $(this).find('td').eq(2).text()+'</td>'+
+                        '<td class="con_borde centro" data-idprod="'+idprod+'">'+ $(this).find('td').eq(2).text()+'</td>'+
                         '<td class="con_borde pl10">'+ $(this).find('td').eq(3).text()+'</td>'+
-                        '<td class="con_borde centro">'+ $(this).find('td').eq(4).text()+'</td>'+
+                        '<td class="con_borde centro" data-idunid="'+idunid+'" data-factor="'+factor+'">'+ $(this).find('td').eq(4).text()+'</td>'+
                         '<td class="con_borde drch pr10">'+ $(this).find('td').eq(5).text()+'</td>'+
                         '<td class="con_borde drch pr10">'+ unitario.toFixed(2) +'</td>'+ //precio unitario
                         '<td class="con_borde drch pr10 total">'+  total.toFixed(2) +'</td>'+ //total
@@ -336,6 +385,9 @@ function detallesparaOrden(){
             PEDIDO = $(this).find('td').eq(8).text();
             IDDET = $(this).find('td').eq(0).data('iddet'),
             ENTIDAD = $(this).find('td').eq(0).data('entidad'),
+            IDPROD = $(this).find('td').eq(1).data('idprod'),
+            IDUND = $(this).find('td').eq(3).data('idunid'),
+            FACTOR = $(this).find('td').eq(3).data('factor'),
 
         
         item = {};
@@ -352,6 +404,9 @@ function detallesparaOrden(){
             item['pedido'] = PEDIDO;
             item['iddet'] = IDDET;
             item['entidad'] = PEDIDO;
+            item['idprod'] = IDPROD;
+            item['idunid'] = IDUND;
+            item['factor'] = FACTOR;
         }
 
         DETALLES.push(item);
