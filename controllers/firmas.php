@@ -14,7 +14,7 @@
         function ordHeader(){
             $codigo = $_POST['cod'];
 
-            $result = $this->model->getOrdHeader($codigo);
+            $result = $this->model->obtenerOrdenesId($codigo);
 
             echo json_encode($result);
         }

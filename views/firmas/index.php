@@ -17,14 +17,17 @@
                 <ul class="tabs">
                     <li><a href="tab1" class="option_tab_selected">Descripción de la Orden</a></li>
                     <li><a href="tab2">Descripción del Pedido</a> </li>
-                    <!-- <li><a href="tab3">Observaciones</a> </li> -->
                 </ul>
                 <div class="tab" id="tab1">
                     <form action="#" method="POST" id="formProcessOrder">
                         <input type="hidden" name="orden" id="orden">
                         <input type="hidden" name="pedido" id="pedido">
                         <input type="hidden" name="nro_pedido" id="nro_pedido">
-                        <div class="process_header3ec desactivado">
+                        <input type="hidden" id="logistica">
+                        <input type="hidden" id="finanzas">
+                        <input type="hidden" id="operaciones">
+
+                        <div class="process_header3ec no_modificar">
                             <div class="process_left">    
                                 <div class="input_process g4items">
                                     <label for="numero" class="w100px">Número :</label>
@@ -56,7 +59,7 @@
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="conceptoOrd" class="w100px">Concepto :</label>
-                                    <textarea name="conceptoOrd" id="conceptoOrd" rows="1" class="pl10"></textarea>
+                                    <textarea name="conceptoOrd" id="conceptoOrd" rows="1" class="pl10 mayusculas"></textarea>
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="detalleOrd" class="w100px">Detalle</label>
@@ -66,7 +69,7 @@
                                     <label for="moneda" class="w100px">Moneda :</label>
                                     <input type="text" name="monedaOrd" id="monedaOrd" class="pl10" readonly>
                                     <label for="precio" class="w100px">Precio :</label>
-                                    <input type="number" name="precioOrd" id="precioOrd" class="drch pr20">
+                                    <input type="number" name="precioOrd" id="precioOrd" class="drch pr20 cuadro_resaltado">
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="tipo" class="w100px">Tipo</label>
@@ -96,11 +99,14 @@
                         <div class="descrip_title">
                             <span>Detalles</span>
                             <div>
-                                <button type="button" id="btnAddComment" title="Firmar Orden">
+                                <button type="button" id="commentItem" title="Firmar Orden" class="boton1">
                                     <i class="far fa-comments"></i> Ver/Agregar Observación
                                 </button>
-                                <button type="button" id="btnSignature" title="Firmar Orden">
+                                <button type="button" id="btnSignature" title="Firmar Orden" class="boton1">
                                     <i class="fas fa-signature"></i> Firmar Orden
+                                </button>
+                                <button type="button" id="btnVerProformas" title="Proformas" class="boton1">
+                                    <i class="fas fa-paperclip"></i> Ver Profromas
                                 </button>
                             </div>
                         </div>
@@ -128,7 +134,7 @@
                     </form>
                 </div>
                 <div class="oculto tab" id="tab2">
-                    <div class="process_header desactivado">
+                    <div class="process_header no_modificar">
                             <div class="process_left">    
                                 <div class="input_process g4items">
                                     <label for="numero" class="w100px">Número :</label>
@@ -192,7 +198,8 @@
                                             <th class="con_borde w35p">Descripcion</th>
                                             <th class="con_borde w5p">UM</th>
                                             <th class="con_borde w5p">Cantidad</th>
-                                            <th class="con_borde w8p">Atendido con orden</th>
+                                            <th class="con_borde w8p">Cantidad</br> Almacen</th>
+                                            <th class="con_borde w8p">Atendido</br> Orden</th>
                                             <th class="con_borde w8p">Nro. Parte</th>
                                             <th class="con_borde w8p">Tipo</th>
                                         </tr>   
@@ -209,24 +216,6 @@
                             <textarea name="espec_items" id="espec_items" rows="3" class="w100p"></textarea>
                         </div>
                 </div>
-                <!-- <div class="oculto tab" id="tab3">
-                    <div>
-                        <button class="button_floating" id="addObservation"><span><i class="far fa-clipboard"></i> Agregar Observación</span> </button>
-                        <table class="con_borde w50p margin5px_auto" id="table_observacion">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th class="w5p">Fecha</th>
-                                    <th>Observación</th>
-                                    <th class="w5p">...</th>
-                                    <th class="w5p">...</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div> -->
             </div>
         </div>
         <a href="#" id="closeModalProcess" class="buttonClose"><i class="fas fa-reply-all"></i></a>
@@ -327,18 +316,29 @@
             </div>
         </div>
     </div>
-    <div class="modal zindex3" id="modalObservaciones">
-        <div class="insideWindow w60p">
+    <div class="modal zindex3" id="viewAtach">
+        <div class="insidePreview">
+            <div class="atachListDiv">
+                <ul id="atachList">   
+                    
+                </ul>
+            </div>
+            <div class="preview" id="previewAttach">
+                <iframe src=""></iframe>
+            </div>
+        </div>
+        <a href="#" id="closeViewAtach" class="buttonClose"><i class="fas fa-reply-all"></i></a>
+    </div>
+    <div class="modal zindex3" id="modalComentarios">
+        <div class="insideWindow w50p h50vh">
             <h4 class="mb20px">Agregar Comentarios</h4>
-            <div>
-                <button class="button_floating" id="addObservation"><span><i class="far fa-clipboard"></i> Agregar Observación</span> </button>
-                <table class="con_borde table_dialog w70p" id="table_observacion">
+            <div class="h40vh over_auto">
+                <table class="con_borde table_dialog w100p f8rem" id="table_observacion">
                     <thead class="table_title_black">
                         <tr class="h35px">
                             <th class="con_borde">Nombre</th>
-                            <th class="con_borde">Fecha</th>
+                            <th class="con_borde w20p">Fecha</th>
                             <th class="con_borde">Observación</th>
-                            <th class="con_borde">...</th>
                             <th class="con_borde">...</th>
                         </tr>
                     </thead>
@@ -346,8 +346,11 @@
                     </tbody>
                 </table>
             </div>
+            <div class="drch mt10px">
+                <button class="boton1" id="addObservation"><span><i class="far fa-clipboard"></i> Agregar Observación</span> </button>
+            </div>
         </div>
-        <a href="#" id="closeModalObservation" class="buttonClose"><i class="fas fa-reply-all"></i></a>
+        <a href="#" id="closeModalObservation" class="buttonCloseAction"><i class="fas fa-reply-all"></i></a>
     </div>
     <script src="<?php echo constant('URL');?>public/js/jquery.js"></script>
     <script src="<?php echo constant('URL');?>public/js/funciones.js?<?php echo constant('VERSION')?>"></script>

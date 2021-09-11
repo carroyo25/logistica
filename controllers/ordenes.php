@@ -78,6 +78,48 @@
 
             echo json_encode($result);
         }
+
+        function detallesOrden(){
+            $cod = $_POST['cod'];
+            $ped = $_POST['pedido'];
+
+            $result = $this->model->obtenerDetallesOrden($cod,$ped);
+
+            echo $result;
+        }
+
+
+        function observaciones(){
+            $observaciones = $_POST['observaciones'];
+            
+            $result = $this->model->grabarComentarios($observaciones);
+
+            echo $result;
+        }
+
+        function consultaObservaciones() {
+            $cod = $_POST['orden'];
+
+            $result = $this->model->obtenerComentarios($cod);
+
+            echo $result;
+        }
+
+        function correoProveedor(){
+            $cabecera = $_POST['cabecera'];
+            $detalles = $_POST['detalles'];
+            $condicion = $_POST['codicion'];
+
+            $result = $this->model->pasarDatosOrden($cabecera,$detalles,$condicion);
+
+            echo $result;
+        }
+
+        function actualizaPrincipal(){
+            $result = $this->model->obtenerOrdenesUser($_SESSION['user']);
+
+            echo $result;
+        }
         
     }
 ?>

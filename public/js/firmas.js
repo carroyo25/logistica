@@ -34,9 +34,6 @@ $(function(){
             case "tab2":
                 obtenerPedido($("#pedido").val());
                 break;
-            /* case "tab3":
-                obtenerMensajes($("#orden").val());
-                break; */
         }
 
         return false;
@@ -65,14 +62,14 @@ $(function(){
 
         var date = fechaActual();
 
-        var $row = '<tr class="h35px"><td class="con_borde pl20 mayusculas">'+$(".userData h3").text()+'</td>'+
+        var row = '<tr class="h35px">'+
+                        '<td class="con_borde pl20 mayusculas" data-grabar="on">'+$(".userData h3").text()+'</td>'+
                         '<td class="con_borde centro"><input type="date" class="sin_borde" value="'+ date +'" readonly></td>'+
                         '<td class="con_borde"><input type="text" class="sin_borde pl20 w100p h35px" placeholder="Escriba su comentario"></td>'+
-                        '<td class="con_borde centro"><a href="#" id="saveComment"><i class="far fa-save"></i></a></td>'+
                         '<td class="con_borde centro"><a href="#" id="deleteComment"><i class="far fa-trash-alt"></i></a></td>'+
                     '</tr>';
 
-        $("#table_observacion").append($row);
+        $('#table_observacion > tbody tr:eq(0)').before(row);
 
         return false;
     });
@@ -149,10 +146,77 @@ $(function(){
         return false;
     });
 
-    $("#btnAddComment").on("click", function (e) {
+    $("#commentItem").click(function (e) { 
         e.preventDefault();
 
-        obtenerMensajes($("#orden").val());
+        abrirVentanaEspera();
+
+        $.post(RUTA+"ordenes/consultaObservaciones", {orden:$("#orden").val()},
+            function (data, textStatus, jqXHR) {
+                cerrarVentanaEspera();
+ 
+                $("#table_observacion tbody")
+                 .empty()
+                 .append(data);
+                 
+                $("#modalComentarios").fadeIn();
+            },
+            "text"
+        );
+ 
+        return false;
+    });
+
+    $(".buttonCloseAction").click(function (e) { 
+        e.preventDefault();
+
+        let observaciones = JSON.stringify(obtenerComentarios());
+        
+        $.post(RUTA+"ordenes/observaciones", {observaciones},
+            function (data, textStatus, jqXHR) {
+                
+            },
+            "text"
+        );
+
+        $(this).parent().fadeOut();
+
+        return false;
+    });
+
+    $("#btnVerProformas").click(function (e) { 
+        e.preventDefault();
+
+        abrirVentanaEspera();
+
+        $.post(RUTA+"adjudicacion/proformasPdf", {cod:$("#pedido").val()},
+            function (data, textStatus, jqXHR) {
+                $("#atachList")
+                    .empty()
+                    .append(data);
+                cerrarVentanaEspera();
+                $("#viewAtach").fadeIn();
+            },
+            "text"
+        );
+
+        return false;
+    });
+
+    //mostrar el archivo adjunto
+    $("#atachList").on("click","a", function (e) {
+        e.preventDefault();
+
+        $("#previewAttach iframe").attr("src",$(this).attr("href"));
+
+        return false;
+    });
+
+    $("#closeViewAtach").click(function (e) { 
+        e.preventDefault();
+        
+        $("#previewAttach iframe").attr("src","");
+        $(this).parent().fadeOut();
 
         return false;
     });
@@ -167,23 +231,27 @@ function obtenerOrden(codigo){
         },
         dataType: "json",
         success: function (response) {
-            $("#numOrd").val(response.numero);
-            $("#fechaOrd").val(response.fechadoc);
+            $("#numOrd").val(response.numOrd);
+            $("#fechaOrd").val(response.fechaOrd);
             $("#elaborado").val(response.elaborado);
-            $("#proyectoOrd").val(response.proyecto);
-            $("#areaOrd").val(response.area);
-            $("#costosOrd").val(response.costos);
-            $("#transporteOrd").val(response.transporte);
-            $("#conceptoOrd").val(response.concepto);
-            $("#detalleOrd").val(response.detalle);
-            $("#precioOrd").val(response.total);
-            $("#monedaOrd").val(response.moneda);
-            $("#tipoOrd").val(response.tipo);
+            $("#proyectoOrd").val(response.proyectoOrd);
+            $("#areaOrd").val(response.areaOrd);
+            $("#costosOrd").val(response.costosOrd);
+            $("#transporteOrd").val(response.transporteOrd);
+            $("#conceptoOrd").val(response.conceptoOrd);
+            $("#detalleOrd").val(response.detalleOrd);
+            $("#precioOrd").val(response.precioOrd);
+            $("#monedaOrd").val(response.monedaOrd);
+            $("#tipoOrd").val(response.tipoOrd);
             $("#entidad").val(response.entidad);
             $("#ruc").val(response.ruc);
+            $("#logistica").val(response.logistica);
+            $("#operaciones").val(response.operaciones);
+            $("#finanzas").val(response.finanzas);
+
             $("#atencion")
                 .val(response.atencion)
-                .addClass(response.atencion.toLowerCase());
+                .addClass(response.atencion);
 
             if (response.logistica == null){
                 $("#firma_log")
@@ -264,15 +332,29 @@ function obtenerPedido(codigo){
     });
 }
 
-function obtenerMensajes(codigo) {
-    $.post(RUTA+"firmas/listComments", {cod:codigo},
-        function (data, textStatus, jqXHR) {
-            $("#table_observacion tbody")
-                .empty()
-                .append(data);
+function obtenerComentarios() {
+    COMENTARIOS = [];
 
-                $("#modalObservaciones").fadeIn();
-        },
-        "text"
-    );
+    let TABLE = $("#table_observacion tbody > tr");
+
+    TABLE.each(function(){
+        var USER = $(this).find('td').eq(0).text(),
+            FECHA = fechaActual(),
+            COMMENT = $(this).find('td').eq(2).children().val(),
+            ORDEN = $("#orden").val();
+            SW = $(this).find('td').eq(0).data('grabar')
+
+        item = {}
+
+        if (SW == "on") {
+            item['user'] = USER;
+            item['fecha'] = FECHA;
+            item['comment'] = COMMENT;
+            item['orden'] = ORDEN;
+
+            COMENTARIOS.push(item);
+        }
+    });
+
+    return COMENTARIOS;
 }

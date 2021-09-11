@@ -159,7 +159,7 @@
     z-index: 2;
     display: none;
 
-    .buttonClose {
+    .buttonClose, .buttonCloseAction {
         color: #fff;
         font-size: 2rem;
         position: absolute;
@@ -2265,8 +2265,17 @@ hr{
     height: 30px;
 }
 
+//alto en lineas
+.h40vh{
+    height: 40vh;
+}
+
+.h50vh{
+    height: 50vh;
+}
+
 .h60vh{
-    height: 62vh;
+    height: 60vh;
 }
 
 //margen top
@@ -2283,8 +2292,6 @@ hr{
 .va-top {
     vertical-align: top;
 }
-
-
 
 
 //paddinds

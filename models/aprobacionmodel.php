@@ -288,7 +288,6 @@
 
                 if ($rowcount > 0){
                     $mensaje = "Pedido Aprobado";
-
                     $this->genOc($cod,strtoupper($nombre));
                 }
 

@@ -946,14 +946,14 @@
                 }
                 
                 if (!$mail->send()) {
-                    $mensaje = false;
+                    $mensaje = $mail->ErrorInfo;
 			    }else {
                     $mensaje = true;
                     $this->changeStatusHeader($data[0]->codped);
                     //$this->changeStatusDetails($data[0]->codped);
                 }
                 
-                return $existe;
+                return $mensaje;
 
             } catch (PDOException $e) {
                 echo $e->getMessage();

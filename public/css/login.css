@@ -127,7 +127,7 @@
   background: rgba(0, 0, 0, 0.7);
   z-index: 2;
   display: none; }
-  .modal .buttonClose {
+  .modal .buttonClose, .modal .buttonCloseAction {
     color: #fff;
     font-size: 2rem;
     position: absolute;
@@ -140,7 +140,7 @@
     -webkit-transition: all .6s;
     -o-transition: all .6s;
     transition: all .6s; }
-    .modal .buttonClose:hover {
+    .modal .buttonClose:hover, .modal .buttonCloseAction:hover {
       -webkit-box-shadow: 3px 6px 8px #000;
       box-shadow: 3px 6px 8px #000; }
   .modal .dialogContainer {
@@ -1793,8 +1793,14 @@ hr {
 .h35px {
   height: 30px; }
 
+.h40vh {
+  height: 40vh; }
+
+.h50vh {
+  height: 50vh; }
+
 .h60vh {
-  height: 62vh; }
+  height: 60vh; }
 
 .top2rem {
   top: 2rem; }

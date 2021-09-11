@@ -127,7 +127,7 @@
                             <div class="finanzas firma_pendiente">
                                 <span>Finanzas</span>
                             </div>
-                            <div class="operacioes firma_pendiente">
+                            <div class="operaciones firma_pendiente">
                                 <span>Operaciones</span>
                             </div>
                             <div class="logistica firma_pendiente">
@@ -167,6 +167,10 @@
                         <input type="hidden" name="idpago" id="idpago">
                         <input type="hidden" name="identrega" id="identrega">
                         <input type="hidden" name="cotizacion" id="cotizacion">
+                        <input type="hidden" id="status" value="0">
+                        <input type="hidden" id="logistica">
+                        <input type="hidden" id="operaciones">
+                        <input type="hidden" id="finanzas">
 
                         <div class="process_header3ec">
                             <div class="process_left">    
@@ -197,7 +201,7 @@
                                 
                                 <div class="input_process g2items">
                                     <label for="conceptoOrd" class="w100px">Concepto :</label>
-                                    <textarea name="conceptoOrd" id="conceptoOrd" rows="1" class="pl10" readonly></textarea>
+                                    <textarea name="conceptoOrd" id="conceptoOrd" rows="1" class="pl10 mayusculas" readonly></textarea>
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="detalleOrd" class="w100px">Detalle</label>
@@ -212,8 +216,8 @@
                                 <div class="input_process g4items">
                                     <label for="tipo" class="w100px">Tipo</label>
                                     <input type="text" name="tipoOrd" id="tipoOrd" class="pl10 mayusculas" readonly>
-                                    <label for="atencion" class="w100px">Fecha Entrega:</label>
-                                    <input type="date" name="entrega" id="entrega">
+                                    <label for="atencion" class="w100px ">Fecha Entrega:</label>
+                                    <input type="date" name="entrega" id="entrega" class="pl10">
                                 </div>
                                 <div class="input_process g4items">
                                     <label for="condpago" class="w100px">Cond.Pago:</label>
@@ -298,6 +302,44 @@
             <iframe src=""></iframe>
         </div>
         <a href="#" id="closeModalPreview" class="buttonClose"><i class="fas fa-reply-all"></i></a>
+    </div>
+    <div class="modal zindex3" id="modalComentarios">
+        <div class="insideWindow w50p h50vh">
+            <h4 class="mb20px">Agregar Comentarios</h4>
+            <div class="h40vh over_auto">
+                <table class="con_borde table_dialog w100p f8rem" id="table_observacion">
+                    <thead class="table_title_black">
+                        <tr class="h35px">
+                            <th class="con_borde">Nombre</th>
+                            <th class="con_borde w20p">Fecha</th>
+                            <th class="con_borde">Observación</th>
+                            <th class="con_borde">...</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="drch mt10px">
+                <button class="boton1" id="addObservation"><span><i class="far fa-clipboard"></i> Agregar Observación</span> </button>
+            </div>
+        </div>
+        <a href="#" id="closeModalObservation" class="buttonCloseAction"><i class="fas fa-reply-all"></i></a>
+    </div>
+    <div class="modal" id="dialogConfirm">
+        <div class="dialogContainer w35p">
+            <div class="dialogTitle">
+                <h4>Pregunta</h4>
+            </div>
+            <hr>
+            <div class="dialogBody">
+                <h1>¿Enviar la orden? </h1> <!--alt 168-->   
+                <div class="options">
+                    <button id="btnYes" class="botones">Si</button>
+                    <button id="btnNo" class="botones">No</button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>

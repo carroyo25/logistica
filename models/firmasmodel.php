@@ -25,12 +25,12 @@
                                                         tb_ccostos.cdescos,
                                                         tb_moneda.dmoneda,
                                                         tb_paramete2.cdesprm2,
-                                                        lg_registro.cconcepto,
-                                                        lg_registro.mobserva,
+                                                        lg_pedidocab.cconcepto,
+                                                        lg_pedidocab.mobserva,
                                                         lg_regabastec.nfirmaLog,
                                                         lg_regabastec.nfirmaFin,
                                                         lg_regabastec.nfirmaOpe,
-                                                        lg_registro.cnumero AS pedido,
+                                                        lg_pedidocab.cnumero AS pedido,
                                                         lg_regabastec.id_refpedi
                                                     FROM
                                                         lg_regabastec
@@ -39,7 +39,7 @@
                                                         INNER JOIN tb_ccostos ON lg_regabastec.ncodcos = tb_ccostos.ncodcos
                                                         INNER JOIN tb_moneda ON lg_regabastec.ncodmon = tb_moneda.ncodmon
                                                         INNER JOIN tb_paramete2 ON lg_regabastec.nNivAten = tb_paramete2.ccodprm2
-                                                        INNER JOIN lg_registro ON lg_regabastec.id_refpedi = lg_registro.id_regmov 
+                                                        INNER JOIN lg_pedidocab ON lg_regabastec.id_refpedi = lg_pedidocab.id_regmov 
                                                     WHERE
                                                         tb_paramete2.ncodprm1 = 13 
                                                         AND lg_regabastec.nflgactivo = 1");
@@ -84,92 +84,126 @@
             }
         }
 
-        public function getOrdHeader($cod){
-            $item = array();
+        public function obtenerOrdenesId($cod){
             try {
-                $sql = $this->db->connect()->prepare("SELECT
-                logistica.lg_regabastec.id_regmov,
-                logistica.lg_regabastec.ctipmov,
-                logistica.lg_regabastec.cserie,
-                logistica.lg_regabastec.cnumero,
-                logistica.lg_regabastec.ffechadoc,
-                logistica.lg_regabastec.ffechaent,
-                logistica.lg_regabastec.id_centi,
-                logistica.lg_regabastec.ncodmon,
-                logistica.lg_regabastec.ntotal,
-                logistica.lg_regabastec.ncodalm,
-                logistica.lg_regabastec.mobserva,
-                logistica.lg_regabastec.nNivAten,
-                logistica.lg_regabastec.ncodpago,
-                logistica.lg_regabastec.nplazo,
-                logistica.lg_regabastec.cnumcot,
-                logistica.lg_regabastec.nflgactivo,
-                logistica.lg_regabastec.fregsys,
-                logistica.lg_regabastec.nfirmaLog,
-                logistica.lg_regabastec.nfirmaFin,
-                logistica.lg_regabastec.nfirmaOpe,
-                rrhh.tabla_aquarius.apellidos,
-                rrhh.tabla_aquarius.nombres,
-                logistica.tb_proyecto1.ccodpry,
-                logistica.tb_proyecto1.cdespry,
-                logistica.tb_area.ccodarea,
-                logistica.tb_area.cdesarea,
-                logistica.lg_regabastec.id_refpedi,
-                logistica.tb_ccostos.ccodcos,
-                logistica.tb_ccostos.cdescos,
-                logistica.lg_regabastec.cper,
-                logistica.lg_regabastec.cmes,
-                transporte.cdesprm2 AS transporte,
-                logistica.lg_registro.cconcepto,
-                logistica.tb_moneda.dmoneda,
-                logistica.cm_entidad.crazonsoc,
-                logistica.cm_entidad.cnumdoc,
-                atencion.cdesprm2 AS atencion
-            FROM
-                logistica.lg_regabastec
-                INNER JOIN rrhh.tabla_aquarius ON logistica.lg_regabastec.ncodper = rrhh.tabla_aquarius.internal
-                INNER JOIN logistica.tb_proyecto1 ON logistica.lg_regabastec.ncodpry = logistica.tb_proyecto1.ncodpry
-                INNER JOIN logistica.tb_area ON logistica.lg_regabastec.ncodarea = logistica.tb_area.ncodarea
-                INNER JOIN logistica.tb_ccostos ON logistica.lg_regabastec.ncodcos = logistica.tb_ccostos.ncodcos
-                INNER JOIN logistica.tb_paramete2 AS transporte ON logistica.lg_regabastec.ctiptransp = transporte.ncodprm2
-                INNER JOIN logistica.lg_registro ON logistica.lg_regabastec.id_refpedi = logistica.lg_registro.id_regmov
-                INNER JOIN logistica.tb_moneda ON logistica.lg_regabastec.ncodmon = logistica.tb_moneda.ncodmon
-                INNER JOIN logistica.cm_entidad ON logistica.lg_regabastec.id_centi = logistica.cm_entidad.id_centi
-                INNER JOIN logistica.tb_paramete2 AS atencion ON logistica.lg_regabastec.nNivAten = atencion.ccodprm2 
-            WHERE
-                logistica.lg_regabastec.id_regmov = :cod 
-                AND transporte.ncodprm1 = 7 
-                AND atencion.ncodprm1 = 13");
-                $sql->execute(["cod"=>$cod]);
-                $rowcount = $sql->rowcount();
+                $query = $this->db->connect()->prepare("SELECT
+                                                        orden.id_regmov,
+                                                        orden.id_refpedi,
+                                                        orden.ctipmov,
+                                                        orden.cnumero AS orden,
+                                                        orden.ffechadoc,
+                                                        orden.ffechaent,
+                                                        orden.id_centi,
+                                                        orden.ncodmon,
+                                                        orden.ntcambio,
+                                                        orden.nigv,
+                                                        orden.nexonera,
+                                                        orden.ntotal,
+                                                        orden.ncodalm,
+                                                        orden.ncodpry,
+                                                        orden.ncodcos,
+                                                        orden.ncodarea,
+                                                        orden.ncodper,
+                                                        orden.nEstadoDoc,
+                                                        orden.id_cuser,
+                                                        orden.ncodpago,
+                                                        orden.nplazo,
+                                                        orden.nfirmaLog,
+                                                        orden.nfirmaFin,
+                                                        orden.nfirmaOpe,
+                                                        orden.cnumcot,
+                                                        orden.cdocPDF,
+                                                        orden.nflgactivo,
+                                                        pagos.cdesprm2 AS pago,
+                                                        entrega.cdesprm2 AS entrega,
+                                                        logistica.cm_entidad.cnumdoc,
+                                                        logistica.cm_entidad.crazonsoc,
+                                                        logistica.tb_proyecto1.ccodpry,
+                                                        logistica.tb_proyecto1.cdespry,
+                                                        logistica.tb_area.cdesarea,
+                                                        logistica.tb_area.ccodarea,
+                                                        logistica.tb_ccostos.ccodcos,
+                                                        logistica.tb_ccostos.cdescos,
+                                                        pedido.cnumero AS pedido,
+                                                        pedido.cconcepto,
+                                                        pedido.mdetalle,
+                                                        transporte.cdesprm2,
+                                                        rrhh.tabla_aquarius.apellidos,
+                                                        rrhh.tabla_aquarius.nombres,
+                                                        rrhh.tabla_aquarius.internal,
+                                                        logistica.tb_moneda.cabrevia,
+                                                        logistica.tb_moneda.dmoneda,
+                                                        logistica.tb_almacen.cdesalm 
+                                                    FROM
+                                                        logistica.lg_regabastec AS orden
+                                                        INNER JOIN logistica.tb_paramete2 AS pagos ON orden.ncodpago = pagos.ccodprm2
+                                                        INNER JOIN logistica.tb_paramete2 AS entrega ON orden.nplazo = entrega.ccodprm2
+                                                        INNER JOIN logistica.cm_entidad ON orden.id_centi = cm_entidad.id_centi
+                                                        INNER JOIN logistica.tb_proyecto1 ON orden.ncodpry = tb_proyecto1.ncodpry
+                                                        INNER JOIN logistica.tb_area ON orden.ncodarea = tb_area.ncodarea
+                                                        INNER JOIN logistica.tb_ccostos ON orden.ncodcos = tb_ccostos.ncodcos
+                                                        INNER JOIN logistica.lg_pedidocab AS pedido ON orden.id_refpedi = pedido.id_regmov
+                                                        INNER JOIN logistica.tb_paramete2 AS transporte ON orden.ctiptransp = transporte.ccodprm2
+                                                        INNER JOIN rrhh.tabla_aquarius ON pedido.ncodper = rrhh.tabla_aquarius.internal
+                                                        INNER JOIN logistica.tb_moneda ON orden.ncodmon = logistica.tb_moneda.ncodmon
+                                                        INNER JOIN logistica.tb_almacen ON orden.ncodalm = logistica.tb_almacen.ncodalm 
+                                                    WHERE
+                                                        orden.id_regmov = :cod 
+                                                        AND pagos.ncodprm1 = 11 
+                                                        AND entrega.ncodprm1 = 12 
+                                                        AND transporte.ncodprm1 = 7");
+                $query->execute(["cod"=>$cod]);
+                $rowCount = $query->rowCount();
+                
+                if ($rowCount > 0) {
+                    
+                    $result = $query->fetchAll();
+                    $contacto = $this->obtenerEntidadContacto($result[0]["id_centi"]);
 
-                if ($rowcount > 0){
-                    while ($row = $sql->fetch()) {
-                        $tipo = $row['ctipmov'] == "B"?"BIENES":"SERVICIOS";
+                    $tipo = $result[0]["ctipmov"] == "B" ? "BIENES" : "SERVICIOS";
 
-                        $item['numero']     = str_pad($row['cnumero'],3,"0",STR_PAD_LEFT).'-'.$row['cper'];
-                        $item['fechadoc']   = $row['ffechadoc'];
-                        $item['elaborado']  = strtoupper($row['nombres'].' '.$row['apellidos']);
-                        $item['proyecto']   = strtoupper($row['ccodpry'].' '.$row['cdespry']);
-                        $item['costos']     = strtoupper($row['ccodcos'].' '.$row['cdescos']);
-                        $item['area']       = strtoupper($row['ccodarea'].' '.$row['cdesarea']);
-                        $item['transporte'] = $row['transporte'];
-                        $item['concepto']   = $row['cconcepto'];
-                        $item['detalle']    = $row['mobserva'];
-                        $item['total']      = round($row['ntotal'],2);
-                        $item['moneda']     = $row['dmoneda'];
-                        $item['tipo']       = $tipo;
-                        $item['entidad']    = $row['crazonsoc'];
-                        $item['ruc']        = $row['cnumdoc'];
-                        $item['atencion']   = $row['atencion'];
-                        $item['logistica']  = $row['nfirmaLog'];
-                        $item['finanzas']   = $row['nfirmaFin'];
-                        $item['operaciones']= $row['nfirmaOpe'];
-                    }
+                    $salida = array("orden"=>$result[0]["id_regmov"],
+                                    "pedido"=>$result[0]["id_refpedi"],
+                                    "nropedido"=>$result[0]["pedido"],
+                                    "id_entidad"=>$result[0]["id_centi"],
+                                    "cod_proyecto"=>$result[0]["ncodpry"],
+                                    "cod_area"=>$result[0]["ncodarea"],
+                                    "cod_costos"=>$result[0]["ncodcos"],
+                                    "cod_transporte"=>$result[0]["cdesprm2"],
+                                    "cod_solicitante"=>$result[0]["internal"],
+                                    "cod_almacen"=>$result[0]["ncodalm"],
+                                    "ordenpdf"=>$result[0]["cdocPDF"],
+                                    "tipoPedido"=>$result[0]["ctipmov"],
+                                    "mon_abrevia"=>$result[0]["cabrevia"],
+                                    "idmoneda"=>$result[0]["ncodmon"],
+                                    "idpago"=>$result[0]["ncodpago"],
+                                    "identrega"=>$result[0]["nplazo"],
+                                    "cotizacion"=>$result[0]["cnumcot"],
+                                    "numOrd"=>$result[0]['orden'],
+                                    "elaborado"=>$result[0]['id_cuser'],
+                                    "proyectoOrd"=>$result[0]['ccodpry'].' '.$result[0]['cdespry'],
+                                    "areaOrd"=>$result[0]['ccodarea'].' '.$result[0]['cdesarea'],
+                                    "costosOrd"=>$result[0]['ccodcos'].' '.$result[0]['cdescos'],
+                                    "conceptoOrd"=>$result[0]['cconcepto'],
+                                    "detalleOrd"=>$result[0]['mdetalle'],
+                                    "precioOrd"=>number_format($result[0]['ntotal'], 2, '.', ','),
+                                    "entrega"=>$result[0]['ffechaent'],
+                                    "condpago"=>$result[0]['pago'],
+                                    "condentrega"=>$result[0]['entrega'],
+                                    "entidad"=>$result[0]['crazonsoc'],
+                                    "ruc"=>$result[0]['cnumdoc'],
+                                    "atencion"=> $contacto['nombre'],
+                                    "transporteOrd"=>$result[0]['cdesprm2'],
+                                    "lugarEntrega"=>$result[0]['cdesalm'],
+                                    "monedaOrd" =>$result[0]['dmoneda'],
+                                    "logistica" =>$result[0]['nfirmaLog'],
+                                    "operaciones" =>$result[0]['nfirmaOpe'],
+                                    "finanzas" =>$result[0]['nfirmaFin'],
+                                    "tipoOrd" =>$tipo,
+                                    "fechaOrd" =>$result[0]['ffechadoc']);
+                    
+                    return $salida;
                 }
-
-                return $item;
-
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
@@ -187,7 +221,7 @@
                                                     lg_detaabastec.ncanti,
                                                     lg_detaabastec.ncodmed,
                                                     lg_detaabastec.nfactor,
-                                                    lg_detaabastec.nvventa,
+                                                    lg_detaabastec.npventa,
                                                     lg_detaabastec.ntotal,
                                                     cm_producto.ccodprod,
                                                     cm_producto.cdesprod,
@@ -210,9 +244,9 @@
                                     <td class="centro con_borde">'.$row['id_cprod'].'</td>
                                     <td class="pl20 con_borde">'.$row['cdesprod'].'</td>
                                     <td class="con_borde centro">'.$row['cabrevia'].'</td>
-                                    <td class="con_borde drch pr20">'.round($row['ncanti'],2).'</td>
-                                    <td class="con_borde drch pr20">'.round($row['nvventa'],2).'</td>
-                                    <td class="con_borde drch pr20">'.round($row['ntotal'],2).'</td>
+                                    <td class="con_borde drch pr20">'.number_format($row['ncanti'], 2, '.', ',').'</td>
+                                    <td class="con_borde drch pr20">'.number_format($row['npventa'], 2, '.', ',').'</td>
+                                    <td class="con_borde drch pr20">'.number_format($row['ntotal'], 2, '.', ',').'</td>
                                     <td class="con_borde"></td>
                                     <td class="con_borde centro">'.str_pad($ped,6,"0",STR_PAD_LEFT).'</td>
                                 </tr>';
@@ -231,25 +265,25 @@
                 $item = array();
 
                 $query = $this->db->connect()->prepare("SELECT
-                                                            logistica.lg_registro.id_regmov,
-                                                            logistica.lg_registro.cnumero,
-                                                            logistica.lg_registro.ctipmov,
-                                                            logistica.lg_registro.ncodmov,
-                                                            logistica.lg_registro.ccoddoc,
-                                                            logistica.lg_registro.cserie,
-                                                            logistica.lg_registro.ffechadoc,
-                                                            logistica.lg_registro.ncodpry,
-                                                            logistica.lg_registro.ncodcos,
-                                                            logistica.lg_registro.ncodarea,
-                                                            logistica.lg_registro.ncodper,
-                                                            logistica.lg_registro.cconcepto,
-                                                            logistica.lg_registro.mdetalle,
-                                                            logistica.lg_registro.ctiptransp,
-                                                            logistica.lg_registro.nEstadoReg,
-                                                            logistica.lg_registro.nEstadoDoc,
-                                                            logistica.lg_registro.id_cuser,
-                                                            logistica.lg_registro.nflgactivo,
-                                                            logistica.lg_registro.nNivAten,
+                                                            logistica.lg_pedidocab.id_regmov,
+                                                            logistica.lg_pedidocab.cnumero,
+                                                            logistica.lg_pedidocab.ctipmov,
+                                                            logistica.lg_pedidocab.ncodmov,
+                                                            logistica.lg_pedidocab.ccoddoc,
+                                                            logistica.lg_pedidocab.cserie,
+                                                            logistica.lg_pedidocab.ffechadoc,
+                                                            logistica.lg_pedidocab.ncodpry,
+                                                            logistica.lg_pedidocab.ncodcos,
+                                                            logistica.lg_pedidocab.ncodarea,
+                                                            logistica.lg_pedidocab.ncodper,
+                                                            logistica.lg_pedidocab.cconcepto,
+                                                            logistica.lg_pedidocab.mdetalle,
+                                                            logistica.lg_pedidocab.ctiptransp,
+                                                            logistica.lg_pedidocab.nEstadoReg,
+                                                            logistica.lg_pedidocab.nEstadoDoc,
+                                                            logistica.lg_pedidocab.id_cuser,
+                                                            logistica.lg_pedidocab.nflgactivo,
+                                                            logistica.lg_pedidocab.nNivAten,
                                                             rrhh.tabla_aquarius.apellidos,
                                                             rrhh.tabla_aquarius.nombres,
                                                             rrhh.tabla_aquarius.dni,
@@ -264,16 +298,16 @@
                                                             atenciones.cdesprm2 AS atencion,
                                                             estados.cdesprm2 AS estado 
                                                         FROM
-                                                            logistica.lg_registro
-                                                            INNER JOIN rrhh.tabla_aquarius ON logistica.lg_registro.ncodper = rrhh.tabla_aquarius.internal
-                                                            INNER JOIN logistica.tb_proyecto1 ON logistica.lg_registro.ncodpry = logistica.tb_proyecto1.ncodpry
-                                                            INNER JOIN logistica.tb_area ON logistica.lg_registro.ncodarea = logistica.tb_area.ncodarea
-                                                            INNER JOIN logistica.tb_ccostos ON logistica.lg_registro.ncodcos = logistica.tb_ccostos.ncodcos
-                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_registro.ctiptransp = transportes.ncodprm2
-                                                            INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_registro.nNivAten = atenciones.ccodprm2
-                                                            INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_registro.nEstadoDoc = estados.ccodprm2 
+                                                            logistica.lg_pedidocab
+                                                            INNER JOIN rrhh.tabla_aquarius ON logistica.lg_pedidocab.ncodper = rrhh.tabla_aquarius.internal
+                                                            INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry
+                                                            INNER JOIN logistica.tb_area ON logistica.lg_pedidocab.ncodarea = logistica.tb_area.ncodarea
+                                                            INNER JOIN logistica.tb_ccostos ON logistica.lg_pedidocab.ncodcos = logistica.tb_ccostos.ncodcos
+                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ncodprm2
+                                                            INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
+                                                            INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
                                                         WHERE
-                                                            logistica.lg_registro.id_regmov = :cod 
+                                                            logistica.lg_pedidocab.id_regmov = :cod 
                                                             AND atenciones.ncodprm1 = 13 
                                                             AND estados.ncodprm1 = 4");
                 $query->execute(["cod"=>$cod]);
@@ -320,10 +354,11 @@
                 $salida = '';
                 
                 $query = $this->db->connect()->prepare("SELECT
-                                                        lg_detapedido.nidpedi,
-                                                        lg_detapedido.id_cprod,
-                                                        ROUND( lg_detapedido.ncantpedi, 2 ) AS cantidad,
-                                                        lg_detapedido.nEstadoPed,
+                                                        lg_pedidodet.nidpedi,
+                                                        lg_pedidodet.id_cprod,
+                                                        lg_pedidodet.ncantaten,
+                                                        ROUND( lg_pedidodet.ncantpedi, 2 ) AS cantidad,
+                                                        lg_pedidodet.nEstadoPed,
                                                         tb_unimed.nfactor,
                                                         tb_unimed.cabrevia,
                                                         estados.cdesprm2 AS estado,
@@ -332,15 +367,15 @@
                                                         lg_regabastec.cper,
                                                         lg_regabastec.cnumero 
                                                     FROM
-                                                        lg_detapedido
-                                                        INNER JOIN tb_unimed ON lg_detapedido.ncodmed = tb_unimed.ncodmed
-                                                        INNER JOIN tb_paramete2 AS estados ON lg_detapedido.nEstadoPed = estados.ccodprm2
-                                                        INNER JOIN cm_producto ON lg_detapedido.id_cprod = cm_producto.id_cprod
-                                                        LEFT JOIN lg_regabastec ON lg_detapedido.idreg_ref = lg_regabastec.id_regmov 
+                                                        lg_pedidodet
+                                                        INNER JOIN tb_unimed ON lg_pedidodet.ncodmed = tb_unimed.ncodmed
+                                                        INNER JOIN tb_paramete2 AS estados ON lg_pedidodet.nEstadoPed = estados.ccodprm2
+                                                        INNER JOIN cm_producto ON lg_pedidodet.id_cprod = cm_producto.id_cprod
+                                                        LEFT JOIN lg_regabastec ON lg_pedidodet.idreg_ref = lg_regabastec.id_regmov 
                                                     WHERE
-                                                        lg_detapedido.id_regmov = :cod 
+                                                        lg_pedidodet.id_regmov = :cod 
                                                         AND estados.ncodprm1 = 4 
-                                                        AND lg_detapedido.nflgactivo = 1");
+                                                        AND lg_pedidodet.nflgactivo = 1");
                 $query->execute(["cod"=>$cod]);
                 $rowcount = $query->rowcount();
                 $line = 0;
@@ -357,6 +392,7 @@
                             <td class="con_borde pl10">'. $row['cdesprod'] .'</td>
                             <td class="con_borde centro">'. $row['cabrevia'] .'</td>
                             <td class="con_borde drch pr10">'.$row['cantidad'] .'</td>
+                            <td class="con_borde centro">'.number_format($row['ncantaten'], 2, '.', ',').'</td>
                             <td class="con_borde centro">'. $orden .'</td>
                             <td class="con_borde"></td>
                             <td class="con_borde centro"></td>
@@ -457,6 +493,41 @@
                 return $cargo;
             } catch (PDOException $th) {
                 echo $th->getMessage();
+
+                return false;
+            }
+        }
+
+        public function obtenerEntidadContacto($cod){
+            try {
+                $item = array();
+
+                $query = $this->db->connect()->prepare("SELECT
+                                                            cm_entidadcon.cnombres,
+                                                            cm_entidadcon.ctelefono1,
+                                                            cm_entidadcon.cemail 
+                                                        FROM
+                                                            cm_entidadcon 
+                                                        WHERE
+                                                            cm_entidadcon.id_centi =:cod 
+                                                            LIMIT 1");
+                $query->execute(["cod"=>$cod]);
+                $rowCount = $query->rowcount();
+
+
+                if ($rowCount > 0) {
+                    
+                    while ($row = $query->fetch()) {
+                        $item['nombre']     = $row['cnombres'];
+                        $item['telefono']   = $row['ctelefono1'];
+                        $item['mail']       = $row['cemail'];
+                    }
+                }
+
+                return $item;
+
+            } catch (PDOException $e) {
+                echo $e->getMessage();
 
                 return false;
             }
