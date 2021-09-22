@@ -63,16 +63,16 @@
                         <div class="descrip_title">
                             <span>Datos Generales</span>
                             <div>
-                                <button type="button" id="importarIngreso" title="Importar Orden">
-                                    <i class="far fa-folder-open"></i> Importar Ingreso 
+                                <button type="button" id="importarIngreso" title="Importar Orden" class="boton1">
+                                    <i class="far fa-folder-open"></i> Importar Nota de Ingreso 
                                 </button>
-                                <button type="button" id="grabarDoc" title="Grabar Registro">
+                                <button type="button" id="grabarDoc" title="Grabar Registro" class="boton1">
                                     <span><i class="far fa-save"></i> Grabar Salida </span>
                                 </button>
-                                <button type="button" id="cerrarDoc" title="Cerrar Registro">
+                                <button type="button" id="cerrarDoc" title="Cerrar Registro" class="boton1">
                                     <i class="fas fa-ban"></i> Cerrar Salida
                                 </button>
-                                <button type="button" id="cancelarDoc" title="Cancelar Registro">
+                                <button type="button" id="cancelarDoc" title="Cancelar Registro" class="boton1">
                                     <i class="fas fa-ban"></i> Cancelar Salida
                                 </button>
                             </div>
@@ -149,19 +149,19 @@
                         <div class="descrip_title">
                             <span>Detalles</span>
                             <div>
-                                <button type="button" id="docsAtach" title="Documentos Adjuntos">
+                                <button type="button" id="docsAtach" title="Documentos Adjuntos" class="boton1">
                                     <i class="fas fa-envelope-open-text"></i> Documentos Adjuntos
                                 </button>
-                                <button type="button" id="orderDetail" title="Orden de compra asociada">
+                                <button type="button" id="orderDetail" title="Orden de compra asociada" class="boton1">
                                     <i class="fas fa-envelope-open-text"></i> Orden de compra asociada
                                 </button>
-                                <button type="button" id="guiaDetail" title="Guia de Remision - Envio y transporte">
+                                <button type="button" id="guiaDetail" title="Guia de Remision - Envio y transporte" class="boton1">
                                     <i class="fas fa-envelope-open-text"></i> Guia de Remision - Envio y transporte
                                 </button>
-                                <button type="button" id="previewSalida" title="Vista Previa R SALIDA">
+                                <button type="button" id="previewSalida" title="Vista Previa R SALIDA" class="boton1">
                                     <i class="fas fa-envelope-open-text"></i> Vista Previa R SALIDA
                                 </button>
-                                <button type="button" id="previewGuia" title="Vista Previa GUIA REMISION">
+                                <button type="button" id="previewGuia" title="Vista Previa GUIA REMISION" class="boton1">
                                     <i class="fas fa-envelope-open-text"></i> Vista Previa GUIA REMISION
                                 </button>
                             </div>
@@ -293,8 +293,7 @@
             </div>
         </div>
     </div>
-    <div class="modal zindex5" id="waitmodal">
-        <div class="loader"></div>
+    <div class="modal zindex5" id="waitmodalCursorOffline">
     </div>
     <div class="modal zindex3" id="modalGuia">
         <div class="insideWindow w60p">
@@ -309,6 +308,7 @@
                 <input type="hidden" name="coddespacha" id="coddespacha">
                 <input type="hidden" name="coddestinatario" id="coddestinatario">
                 <input type="hidden" name="codentidad" id="codentidad">
+                <input type="hidden" name="codmodtraslado" id="codmodtraslado">
                 <input type="hidden" name="codchofer" id="codchofer">
 
                 <div class="gridMain g2items50">
@@ -351,29 +351,29 @@
                                 <div class="ml30px">
                                     <div>
                                         <label for="viatiporg" class="w15p">Via Tipo</label>
-                                        <input type="text" name="viatiporg" id="viatiporg" class="mb5px w30p">
+                                        <input type="text" name="viatiporg" id="viatiporg" class="mb5px w30p mayusculas" readonly>
                                         <label for="vianomorg" class="w15p">Via Nombre</label>
-                                        <input type="text" name="vianomorg" id="vianomorg" class="mb5px w30p">
+                                        <input type="text" name="vianomorg" id="vianomorg" class="mb5px w30p mayusculas" readonly>
                                     </div>
                                     <div>
                                         <label for="nroorg" class="w15p">N°</label>
-                                        <input type="text" name="nroorg" id="nroorg" class="w20p mb5px">
+                                        <input type="text" name="nroorg" id="nroorg" class="w20p mb5px mayusculas" readonly>
                                         <label for="intorg" class="w10p">Interior</label>
-                                        <input type="text" name="intorg" id="intorg" class="w20p mb5px">
+                                        <input type="text" name="intorg" id="intorg" class="w20p mb5px mayusculas" readonly>
                                         <label for="zonaorg">Zona</label>
-                                        <input type="text" name="zonaorg" id="zonaorg" class="w18p mb5px">
+                                        <input type="text" name="zonaorg" id="zonaorg" class="w18p mb5px mayusculas" readonly>
                                     </div>
                                     <div>
                                         <label for="deporg" class="w15p">Dep.</label>
-                                        <input type="text" name="deporg" id="deporg" class="mb5px w30p">
+                                        <input type="text" name="deporg" id="deporg" class="mb5px w30p mayusculas" readonly>
                                         <label for="distorg" class="w15p">Distrito</label>
-                                        <input type="text" name="distorg" id="distorg" class="mb5px w30p">
+                                        <input type="text" name="distorg" id="distorg" class="mb5px w30p mayusculas" readonly>
                                     </div>
                                     <div>
                                         <label for="provorg" class="w15p">Prov.</label>
-                                        <input type="text" name="provorg" id="provorg" class="mb5px w30p">
+                                        <input type="text" name="provorg" id="provorg" class="mb5px w30p mayusculas" readonly>
                                         <label for="ubigorg" class="w15p">Ubigeo.</label>
-                                        <input type="text" name="ubigorg" id="ubigorg" class="mb5px w30p">
+                                        <input type="text" name="ubigorg" id="ubigorg" class="mb5px w30p mayusculas" readonly>
                                     </div>
                                 </div>
                         </div>
@@ -480,29 +480,29 @@
                             <div class="ml30px">
                                 <div>
                                     <label for="viatipodest" class="w15p">Via Tipo</label>
-                                    <input type="text" name="viatipodest" id="viatipodest" class="mb5px w30p">
+                                    <input type="text" name="viatipodest" id="viatipodest" class="mb5px w30p mayusculas" readonly>
                                     <label for="vianomodest">Via Nombre</label>
-                                    <input type="text" name="vianomodest" id="vianomodest" class="mb5px w30p">
+                                    <input type="text" name="vianomodest" id="vianomodest" class="mb5px w30p mayusculas" readonly>
                                 </div>
                                 <div>
                                     <label for="viadest" class="w15p">N°</label>
-                                    <input type="text" name="nrodest" id="nrodest" class="w20p mb5px">
+                                    <input type="text" name="nrodest" id="nrodest" class="w20p mb5px mayusculas" readonly>
                                     <label for="intdest" class="w10p">Interior</label>
-                                    <input type="text" name="intdest" id="intdest" class="w20p mb5px">
+                                    <input type="text" name="intdest" id="intdest" class="w20p mb5px mayusculas" readonly>
                                     <label for="zondest">Zona</label>
-                                    <input type="text" name="zondest" id="zondest" class="w15p mb5px">
+                                    <input type="text" name="zondest" id="zondest" class="w15p mb5px mayusculas" readonly>
                                 </div>
                                 <div>
                                     <label for="depdest" class="w15p">Dep.</label>
-                                    <input type="text" name="depdest" id="depdest" class="mb5px">
+                                    <input type="text" name="depdest" id="depdest" class="mb5px mayusculas" readonly>
                                     <label for="distdest" class="w15p">Dist.</label>
-                                    <input type="text" name="distdest" id="distdest" class="mb5px">
+                                    <input type="text" name="distdest" id="distdest" class="mb5px mayusculas" readonly>
                                 </div>
                                 <div>
                                     <label for="provdest" class="w15p">Prov.</label>
-                                    <input type="text" name="provdest" id="provdest" class="mb5px">
+                                    <input type="text" name="provdest" id="provdest" class="mb5px mayusculas" readonly>
                                     <label for="ubigdest" class="w15p">Ubigeo.</label>
-                                    <input type="text" name="ubigdest" id="ubigdest" class="mb5px">
+                                    <input type="text" name="ubigdest" id="ubigdest" class="mb5px mayusculas" readonly>
                                 </div>
                             </div>
                         </div>
@@ -530,7 +530,7 @@
                 </div>
                 <hr>
                 <div class="optionGuia">
-                    <button id="btnAceptarGuia">Vista Previa</button>
+                    <button id="btnImprimirGuia">Imprimir Guia</button>
                     <button id="btnCancelarGuia">Cancelar</button>
                 </div>
             </form>

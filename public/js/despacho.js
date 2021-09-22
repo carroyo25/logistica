@@ -1,4 +1,4 @@
-var accion          = "n";
+var accion      = "n";
 
 $(function(){
     activar_opcion();
@@ -20,14 +20,13 @@ $(function(){
             .removeClass('aprobado','emitido')
             .addClass('proceso');
 
-        /*
-        $.post(RUTA+"despachos/newRequest", {data:0},
+        $.post(RUTA+"despachos/newRequest",
             function (data, textStatus, jqXHR) {
                 $("#numero").val(data.numero);
                 $("#cod_pedido").val(data.codigo);
             },
             "json"
-        );*/
+        );
 
         accion = "n";
 
@@ -77,14 +76,17 @@ $(function(){
                         $("#detalle_despacho tbody")
                             .empty()
                             .append(data);
+
+                            $("#modalProcess").fadeIn();
+
+                            $(".process_header").addClass("no_modificar");
                     },
                     "text"
                 );
             },
             "json"
         );
-        $("#modalProcess").fadeIn();
-
+       
         return false;
     });
 
@@ -100,15 +102,16 @@ $(function(){
     $("#importarIngreso").on("click",function(e){
         e.preventDefault();
 
-        $("#modalNotas").fadeIn();
-        $("#waitmodal").fadeIn();
+        abrirVentanaEspera();
 
         $.post(RUTA+"despacho/notas",
             function (data, textStatus, jqXHR) {
-                $("#waitmodal").fadeOut();
+                $("#modalNotas").fadeIn();
                 $("#listaIngresos tbody")
                     .empty()
                     .append(data);
+
+                cerrarVentanaEspera();
             },
             "text"
         );
@@ -144,18 +147,18 @@ $(function(){
                 $("#cargo_almacen").val(data[0].dcargo);
                 $("#idorden").val(data[0].idref_abas);
                 $("#idpedido").val(data[0].idref_pedi);
-                $("#estado").val(1);
+                $("#estadoc").val(data[0].estado);
                 $("#nrosalida").val(data[1].nrodoc);
                 $("#movalma").val(data[1].nromov);
                 $("#proyecto").val(data[0].proyecto);
                 $("#solicita").val(data[0].solicita);
                 $("#aprueba").val(data[0].aprueba);
                 $("#almacen").val(data[0].almacen);
-                $("#nroped").val(data[0].nroped);
+                $("#nroped").val(data[0].pedido);
                 $("#fecped").val(data[0].fechaPedido);
-                $("#nrord").val(data[0].nrorden);
+                $("#nrord").val(data[0].orden);
                 $("#fecord").val(data[0].fechaOrden);
-                //$("#espec").val(data[0].cconcepto);
+                $("#espec").val(data[0].mdetalle);
                 $("#guia").val(data[0].cnumguia);
                 $("#entidad").val(data[0].crazonsoc);
 
@@ -551,90 +554,18 @@ $(function(){
         return false;
     });
 
-    //grabar y enviar la guia
-    $("#formguia").on("submit", function (e) {
-        e.preventDefault();
-
-        getDetails();
-
-        $.ajax({
-            type: "POST",
-            url: RUTA+"despacho/guiaRemision",
-            data: { codmodalidadguia:$("#codmodalidadguia").val(),
-                    codtipoguia:$("#codtipoguia").val(),
-                    codalmacendestino:$("#codalmacendestino").val(),
-                    codalmacenorigen:$("#codalmacenorigen").val(),
-                    codautoriza:$("#codautoriza").val(),
-                    coddespacha:$("#coddespacha").val(),
-                    coddestinatario:$("#coddestinatario").val(),
-                    codentidad:$("#codentidad").val(),
-                    codchofer:$("#codchofer").val(),
-                    serieguia:$("#serieguia").val(),
-                    nroguia:$("#nroguia").val(),
-                    packinlist:$("#packinlist").val(),
-                    fecemin:$("#fecemin").val(),
-                    feenttrans:$("#feenttrans").val(),
-                    ruc:$("#ruc").val(),
-                    razondest:$("#razondest").val(),
-                    direccdest:$("#direccdest").val(),
-                    almorg:$("#almorg").val(),
-                    viatiporg:$("#viatiporg").val(),
-                    vianomorg:$("#vianomorg").val(),
-                    nroorg:$("#nroorg").val(),
-                    intorg:$("#intorg").val(),
-                    zonaorg:$("#zonaorg").val(),
-                    deporg:$("#deporg").val(),
-                    distorg:$("#distorg").val(),
-                    provorg:$("#provorg").val(),
-                    ubigorg:$("#ubigorg").val(),
-                    mottrans:$("#mottrans").val(),
-                    modtras:$("#modtras").val(),
-                    tenvio:$("#tenvio").val(),
-                    bultos:$("#bultos").val(),
-                    peso:$("#peso").val(),
-                    observaciones:$("#observaciones").val(),
-                    autoriza:$("#autoriza").val(),
-                    despacha:$("#despacha").val(),
-                    destinatario:$("#destinatario").val(),
-                    raztransp:$("#raztransp").val(),
-                    ructransp:$("#ructransp").val(),
-                    dirtransp:$("#dirtransp").val(),
-                    representate:$("#representate").val(),
-                    almdest:$("#almdest").val(),
-                    vianomodest:$("#vianomodest").val(),
-                    intdest:$("#intdest").val(),
-                    zondest:$("#zondest").val(),
-                    viatipodest:$("#viatipodest").val(),
-                    nrodest:$("#nrodest").val(),
-                    depdest:$("#depdest").val(),
-                    distdest:$("#distdest").val(),
-                    provdest:$("#provdest").val(),
-                    ubigdest:$("#ubigdest").val(),
-                    dnicond:$("#dnicond").val(),
-                    detcond:$("#detcond").val(),
-                    licencia:$("#licencia").val(),
-                    certificado:$("#certificado").val(),
-                    marca:$("#marca").val(),
-                    placa:$("#placa").val(),
-                    configveh:$("#configveh").val(),
-                    detalles:$("#detalles").val(),
-                    proyecto:$("#proyecto").val(),
-                    costos:$("#cod_costos").val(),
-                    salida:$("#id_salida").val(),
-                    details:JSON.stringify(DETALLES)},
-            dataType: "text",
-            success: function (response) {
-                $("#modalVistaGuia .insidePreview iframe").attr("src",response);
-                $("#modalVistaGuia").fadeIn();
-            }
-        });
-
-        return false;
-    });
-
     //grabar el documento de salida
     $("#grabarDoc").on("click", function (e) {
         e.preventDefault();
+
+        if($("#nrosalida").val().length == 0){
+            mostrarMensaje("msj_error","Elija la nota de movimiento");
+            return false;
+        }
+        else if ($("#cod_movimiento").val().length = 0){
+            mostrarMensaje("msj_error","Elija el tipo de movimiento");
+            return false;
+        }
 
         getDetails();
 
@@ -670,9 +601,11 @@ $(function(){
             espec:$("#espec").val(),
             estado:$("#estado").val(),
             ingreso:$("id_ingreso").val(),
+            nroguiasal:$('#nroguia').val(),
             details:JSON.stringify(DETALLES)
         },
             function (data, textStatus, jqXHR) {
+                console.log("No cierra")
                 if (data){
                     mostrarMensaje("msj_correcto","Registro insertado...");
                     $("#modalProcess").fadeOut();
@@ -680,10 +613,40 @@ $(function(){
                     mostrarMensaje("msj_error","Error.. no se inserto el registro");
                 }
             },
-            "texto"
+            "text"
         );
 
         return false;
+    });
+
+    $("#btnImprimirGuia").click(function (e) { 
+        e.preventDefault();
+
+        var result = {};
+        let detalles = JSON.stringify(getDetails());
+
+        $.each($("#formguia").serializeArray(),function(){
+            result[this.name] = this.value;
+        });
+
+        $.ajax({
+            type: "POST",
+            url: RUTA+"despacho/guiaremision",
+            data: {
+                cabecera:result,
+                detalles,
+                salida:$("#id_salida").val()
+            },
+            dataType: "text",
+            beforeSend: function(){
+                abrirVentanaEspera();
+            },
+            success: function (response) {
+                cerrarVentanaEspera();
+            }
+        });
+        
+        return false
     });
 })
 

@@ -23,7 +23,8 @@ $(function(){
         $("#detalle_series tbody, #tableAdjuntos tbody, #detalle_ingreso tbody").empty();
         $("#documento")
                 .removeClass("emitido")
-                .addClass("proceso");
+                .addClass("proceso")
+                .val('proceso');
 
         accion = "n";
 
@@ -246,8 +247,7 @@ $(function(){
                 $("#entidad").val(data.entidad);
                 $("#nroped").val(data.pedido);
                 $("#nrord").val(data.orden);
-                $("#registro").val("PROCESO");
-                $("#documento").val("PROCESO");
+                $("#documento").val(data.estado);
                 $("#order_file").val(data.pdf);
                 $("#id_ingreso").val(data.id);
                 $("#idorden").val(data.idord);
@@ -326,9 +326,9 @@ $(function(){
     $("#addSerials").on("click", function (e) {
         e.preventDefault();
 
-        var maxSerial = $("#nroItemSerial").text();
-        var codigoPro = $("#codigoProducto").text();
-        var itemShow = $("#detalle_series tbody tr").length + 1;
+        let maxSerial = $("#nroItemSerial").text();
+        let codigoPro = $("#codigoProducto").text();
+        let itemShow = $("#detalle_series tbody tr").length + 1;
         itemsfila++;
 
         if ( itemsfila <= maxSerial ) {
@@ -358,7 +358,6 @@ $(function(){
         if ( itemsfila == maxSerial ){
             getSeries();
             $("#modalSerie").fadeOut();
-            console.log(SERIES);
         }else{
             mostrarMensaje("msj_error","Faltan series del producto");
         }
@@ -582,7 +581,7 @@ $(function(){
         e.preventDefault();
 
         $(".seleccion").fadeOut();
-        $("#waitmodal").fadeIn();
+        abrirVentanaEspera();
 
         $.post(RUTA+"ingresos/llamaIngresoPorId", {nota:$(this).attr('href')},
             function (data, textStatus, jqXHR) {
@@ -625,10 +624,12 @@ $(function(){
                 $("#concepto").val(data.concepto);
                 $("#espec").val(data.espec);
                 $("#registro").val(data.registro);
+                
                 $("#documento")
                     .val(data.documento)
                     .removeClass("proceso")
                     .addClass(data.documento.toLowerCase());
+
                 $("#order_file").val(data.order_file);
 
                 $.post(RUTA+"ingresos/llamarDetallesCodigo", {index:data.id_ingreso},
@@ -640,6 +641,7 @@ $(function(){
                         var items = $("#detalle_ingreso tbody tr").length;
 
                         $("#items").val(items);
+                        cerrarVentanaEspera();
                     },
                     "text"
                 );
@@ -647,6 +649,41 @@ $(function(){
                 accion = "u";
             },
             "json"
+        );
+
+        return false;
+    });
+
+    $("#detalle_ingreso tbody").on("blur","input", function (e) {
+        e.preventDefault();
+
+        let pediente = $(this).parent().parent().find('td').eq(8).text();
+        let ingreso = $(this).val();
+        let total = pediente - ingreso;
+
+        if ( ingreso > -1 ) {
+            $(this).parent().parent().find('td').eq(8).text( total.toFixed(2) );
+        }else{
+            mostrarMensaje("msj_error","Verifique la cantidad Ingresada");
+            return false;
+        }
+
+
+        return false
+    });
+    
+    $("#closeDoc").click(function (e) { 
+        e.preventDefault();
+        getDetails();
+
+        let details = JSON.stringify(getDetails());
+        $.post("ingresos/cierreIngreso", {cod:$("#id_ingreso").val(),details,condicion:$("#chkCalidad").prop("checked")},
+            function (data, textStatus, jqXHR) {
+                if (data){
+                    mostrarMensaje("msj_info","Ingreso actualizado");
+                }
+            },
+            "text"
         );
 
         return false;
@@ -688,7 +725,7 @@ function getDetails(){
             CANTING     = $(this).find('td').eq(7).children().val(),
             NESTADO     = $(this).find("select[name='estado']").val(),
             TESTADO     = $(this).find("select[name='estado'] option:selected").text(),
-            UBICACION   = $(this).find('td').eq(9).text(),
+            UBICACION   = '',
             LOTE        = $(this).find('td').eq(10).text(),
             VENCE       = $(this).find('td').eq(11).text(),
             NIDDETA     = $(this).find('td').eq(2).data('iddetalle'),
@@ -697,7 +734,8 @@ function getDetails(){
             IDPROD      = $(this).find('td').eq(2).data('idprod'),
             IDDETPED    = $(this).find('td').eq(2).data('iddetpedido'),
             IDDERORD    = $(this).find('td').eq(2).data('iddetorden'),
-            CANTORD     = $(this).find('td').eq(6).text(),    
+            CANTORD     = $(this).find('td').eq(6).text(),
+            CANTPEND    = $(this).find('td').eq(8).text(),    
 
 
             item = {};
@@ -721,6 +759,7 @@ function getDetails(){
                 item["iddetped"]    = IDDETPED;
                 item["iddetord"]    = IDDERORD;
                 item["cantord"]     = CANTORD;
+                item["cantpend"]    = CANTPEND;
             }
 
             DETALLES.push(item);

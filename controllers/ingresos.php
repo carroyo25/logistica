@@ -168,5 +168,15 @@
 
             echo $result;
         }
+
+        function cierreIngreso(){
+            $cod = $_POST['cod'];
+            $detalles = $_POST['details'];
+            $condicion = $_POST['condicion'];
+
+            $result = $this->model->cerrarIngreso($cod,$detalles,$condicion);
+
+            echo $result;
+        }
     }
 ?>

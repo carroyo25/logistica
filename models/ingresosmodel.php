@@ -21,7 +21,7 @@
                                                         lg_regabastec.cnumero AS orden,
                                                         tb_proyecto1.ccodpry,
                                                         tb_proyecto1.cdespry,
-                                                        lg_registro.cnumero AS pedido,
+                                                        lg_pedidocab.cnumero AS pedido,
                                                         tb_almacen.cdesalm,
                                                         tb_almacen.ccodalm,
                                                         tb_paramete2.cdesprm2 AS estado 
@@ -29,11 +29,12 @@
                                                         alm_recepcab
                                                         INNER JOIN lg_regabastec ON alm_recepcab.idref_abas = lg_regabastec.id_regmov
                                                         INNER JOIN tb_proyecto1 ON lg_regabastec.ncodpry = tb_proyecto1.ncodpry
-                                                        INNER JOIN lg_registro ON alm_recepcab.idref_pedi = lg_registro.id_regmov
+                                                        INNER JOIN lg_pedidocab ON alm_recepcab.idref_pedi = lg_pedidocab.id_regmov
                                                         INNER JOIN tb_almacen ON alm_recepcab.ncodalm1 = tb_almacen.ncodalm
                                                         INNER JOIN tb_paramete2 ON alm_recepcab.nEstadoDoc = tb_paramete2.ccodprm2 
                                                     WHERE
                                                         tb_paramete2.ncodprm1 = 4
+                                                        AND alm_recepcab.nEstadoDoc = 1
                                                     LIMIT 30");
                 $sql->execute();
                 $rowCount = $sql->rowcount();
@@ -98,7 +99,7 @@
             try {
                 $sql= $this->db->connect()->query("SELECT
                                                         tb_paramete2.ncodprm1,
-                                                        tb_paramete2.ncodprm2,
+                                                        tb_paramete2.ccodprm2,
                                                         tb_paramete2.cdesprm2 
                                                     FROM
                                                         tb_paramete2 
@@ -109,9 +110,9 @@
 
                 if ($rowCount > 0) {
                     while ($row = $sql->fetch()) {
-                        $select = $selected == $row['ncodprm2'] ? "selected":"";
+                        $select = $selected == $row['ccodprm2'] ? "selected":"";
 
-                        $salida.='<option value="'.$row['ncodprm2'].'" '.$select.'>'.$row['cdesprm2'].'</option>';
+                        $salida.='<option value="'.$row['ccodprm2'].'" '.$select.'>'.$row['cdesprm2'].'</option>';
                     }
                 }
 
@@ -220,11 +221,11 @@
                             INNER JOIN tb_proyecto1 ON lg_regabastec.ncodpry = tb_proyecto1.ncodpry
                             INNER JOIN tb_ccostos ON lg_regabastec.ncodcos = tb_ccostos.ncodcos
                             INNER JOIN tb_paramete2 ON lg_regabastec.nNivAten = tb_paramete2.ccodprm2
-                            INNER JOIN lg_registro ON lg_regabastec.id_refpedi = lg_registro.id_regmov 
+                            INNER JOIN lg_pedidocab ON lg_regabastec.id_refpedi = lg_pedidocab.id_regmov 
                         WHERE
                             tb_paramete2.ncodprm1 = 13 
                             AND lg_regabastec.nflgactivo = 1 
-                            AND lg_regabastec.nEstadoDoc = 4 
+                            AND lg_regabastec.nEstadoDoc = 2 
                             AND lg_regabastec.ctipmov = 'B' 
                             AND lg_regabastec.cper = YEAR ( NOW( ) ) 
                             AND lg_regabastec.cmes = MONTH ( NOW( ) )
@@ -279,7 +280,7 @@
                                                     INNER JOIN tb_proyecto1 ON lg_regabastec.ncodpry = tb_proyecto1.ncodpry
                                                     INNER JOIN tb_ccostos ON lg_regabastec.ncodcos = tb_ccostos.ncodcos
                                                     INNER JOIN tb_paramete2 ON lg_regabastec.nNivAten = tb_paramete2.ccodprm2
-                                                    INNER JOIN lg_registro ON lg_regabastec.id_refpedi = lg_registro.id_regmov 
+                                                    INNER JOIN lg_pedidocab ON lg_regabastec.id_refpedi = lg_pedidocab.id_regmov 
                                                 WHERE
                                                     tb_paramete2.ncodprm1 = 13 
                                                     AND lg_regabastec.nflgactivo = 1 
@@ -330,7 +331,7 @@
                                                         logistica.lg_regabastec.ncodarea,
                                                         logistica.lg_regabastec.ncodcos,
                                                         logistica.cm_entidad.crazonsoc,
-                                                        logistica.lg_registro.cnumero AS pedido,
+                                                        logistica.lg_pedidocab.cnumero AS pedido,
                                                         logistica.tb_proyecto1.ccodpry,
                                                         logistica.tb_proyecto1.cdespry,
                                                         logistica.tb_area.ccodarea,
@@ -340,16 +341,17 @@
                                                         rrhh.tabla_aquarius.nombres,
                                                         rrhh.tabla_aquarius.apellidos,
                                                         logistica.cm_entidad.cnumdoc,
-                                                        logistica.lg_registro.cconcepto,
+                                                        logistica.lg_pedidocab.cconcepto,
+                                                        logistica.lg_pedidocab.mdetalle,
                                                         logistica.lg_regabastec.cnumero AS orden
                                                     FROM
                                                         logistica.lg_regabastec
                                                         INNER JOIN logistica.cm_entidad ON logistica.lg_regabastec.id_centi = logistica.cm_entidad.id_centi
-                                                        INNER JOIN logistica.lg_registro ON logistica.lg_regabastec.id_refpedi = logistica.lg_registro.id_regmov
+                                                        INNER JOIN logistica.lg_pedidocab ON logistica.lg_regabastec.id_refpedi = logistica.lg_pedidocab.id_regmov
                                                         INNER JOIN logistica.tb_proyecto1 ON logistica.lg_regabastec.ncodpry = logistica.tb_proyecto1.ncodpry
                                                         INNER JOIN logistica.tb_area ON logistica.lg_regabastec.ncodarea = logistica.tb_area.ncodarea
                                                         INNER JOIN logistica.tb_ccostos ON logistica.lg_regabastec.ncodcos = logistica.tb_ccostos.ncodcos
-                                                        INNER JOIN rrhh.tabla_aquarius ON logistica.lg_registro.ncodper = rrhh.tabla_aquarius.internal 
+                                                        INNER JOIN rrhh.tabla_aquarius ON logistica.lg_pedidocab.ncodper = rrhh.tabla_aquarius.internal 
                                                     WHERE
                                                         logistica.lg_regabastec.id_regmov = :cod");
                 $sql->execute(["cod"=>$codigo]);
@@ -365,7 +367,7 @@
                         $item['costos']     = strtoupper($row['ccodcos'].' '.$row['cdescos']);
                         $item['area']       = strtoupper($row['ccodarea'].' '.$row['cdesarea']);
                         $item['concepto']   = $row['cconcepto'];
-                        $item['detalle']    = $row['mobserva'];
+                        $item['detalle']    = $row['mdetalle'];
                         $item['entidad']    = $row['crazonsoc'];
                         $item['ruc']        = $row['cnumdoc'];
                         $item['orden']      = str_pad($row['orden'],5,"0",STR_PAD_LEFT).'-'.$row['cper'];
@@ -377,6 +379,7 @@
                         $item['idproy']      = $row['ncodpry'];
                         $item['idarea']      = $row['ncodarea'];
                         $item['idcost']      = $row['ncodcos'];
+                        
                     }
                 }
 
@@ -423,18 +426,16 @@
                         $salida.='<tr class="lh1_2rem pointertr" data-id="'.$row['nidpedi'].'">
                                     <td class="con_borde centro"><a href="'.$row['nidpedi'].'" data-action="register"><i class="fas fa-barcode"></i></a></td>
                                     <td class="con_borde centro"><a href="'.$row['nidpedi'].'" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
-                                    <td class="centro con_borde" data-iddetpedido ="'.$row['nidpedi'].'"
-                                                                 data-iddetorden ="'.$row['niddeta'].'"    
-                                                                 data-factor="'.$row['nfactor'].'"
-                                                                 data-coduni="'.$row['ncodmed'].'"
-                                                                 data-idprod="'.$row['id_cprod'].'">
-                                                                '.str_pad($cont,3,"0",STR_PAD_LEFT).'
-                                    </td>
+                                    <td class="con_borde centro" data-iddetpedido ="'.$row['nidpedi'].'" data-iddetorden ="'.$row['niddeta'].'" data-factor="'.$row['nfactor'].'" data-coduni="'.$row['ncodmed'].'"
+                                                                 data-idprod="'.$row['id_cprod'].'">'.str_pad($cont,3,"0",STR_PAD_LEFT).'</td>
                                     <td class="centro con_borde">'.$row['ccodprod'].'</td>
                                     <td class="pl20 con_borde">'.$row['cdesprod'].'</td>
                                     <td class="con_borde centro">'.$row['cabrevia'].'</td>
                                     <td class="con_borde drch pr20">'.number_format($row['ncanti'], 2, '.', ',').'</td>
-                                    <td class="con_borde centro"><input type="number" onClick="this.select();" class="drch pr10" value="'.number_format($row['ncanti'], 2, '.', ',').'"></td>
+                                    <td class="con_borde centro">
+                                        <input type="number" onClick="this.select();" class="drch pr10 ingresar" value="'.number_format(0, 2, '.', ',').'">
+                                    </td>
+                                    <td class="con_borde drch pr20">'.number_format($row['ncanti'], 2, '.', ',').'</td>
                                     <td class="con_borde"><select name="estado">'. $estados .'</select></td>
                                     <td class="con_borde"></td>
                                     <td class="con_borde"><input type="date"></td>
@@ -526,7 +527,7 @@
                                 "ngi"=>$guia,
                                 "ped"=>$pedido,
                                 "apro"=>$autoriza,
-                                "est"=>$estado,
+                                "est"=>1,
                                 "flag"=>1,
                                 "nmov"=>$guia_actual["mov_nmr"],
                                 "nnot"=>$guia_actual["guia_nmr"],
@@ -540,7 +541,7 @@
                 
                 if ($rowCount == 1) {
                     $mensaje = "Registro insertado";
-                    $this->insertarDetalles($cod,$detalles,$origen,$orden,$pedido,$estado);
+                    $this->insertarDetalles($cod,$detalles,$origen,$orden,$pedido);
                     $this->insertarSeries($cod,$series);
                     $this->insertarAdjuntos($cod,$adjuntos);
                     $this->saveAction("CREA",$cod,"INGRESOS ALMACEN",$_SESSION['user']);
@@ -587,7 +588,7 @@
             }
         }
 
-        public function insertarDetalles($cod,$detalles,$origen,$estado){
+        public function insertarDetalles($cod,$detalles,$origen){
             $datos = json_decode($detalles);
             $nreg = count($datos);
             $rc = 0;
@@ -604,27 +605,17 @@
                                     "fac"=>$datos[$rc]->factor,
                                     "ped"=>$datos[$rc]->iddetped,
                                     "ord"=>$datos[$rc]->iddetord,
-                                    "est"=>$estado,
+                                    "est"=>$datos[$rc]->nestado,
                                     "flag"=>1,
-                                    "sal"=> $datos[$rc]->cantord - $datos[$rc]->cantidad]);
+                                    "sal"=>$datos[$rc]->cantpend]);
 
-                    $this->changeDetailStatus($datos[$rc]->iddetped);
+                    //$this->changeDetailStatus($datos[$rc]->iddetped);
 
                     $rc++;
                 } catch (PDOException $th) {
                     echo $th;
                     return false;
                 }
-            }
-        }
-
-        public function changeDetailStatus($codigo){
-            try {
-                $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nEstadoPed = 7 WHERE nidpedi=:idp");
-                $query->execute(["idp"=>$codigo]);
-            } catch (PDOException $e) {
-                echo $e->getMessage();
-                return false;
             }
         }
 
@@ -653,13 +644,14 @@
 
         public function insertarSeries($cod,$series){
             $datos = json_decode($series);
+            
             $nreg = count($datos);
             $rc=0;
 
             for ($i=0; $i <= $nreg-1; $i++) { 
                 try {
                     if ( $datos[$rc]->codpro !== null) {
-                        $sql=$this->db->connect()->prepare("INSERT INTO cm_prodserie SET id_cprod=:prod,cdesserie=:serie,nflgactivo=:flag,idref_alma=:cod");
+                        $sql=$this->db->connect()->prepare("INSERT INTO cm_prodserie SET id_cprod=:prod,cdesserie=:serie,nflgactivo=:flag,idref_movi=:cod");
                         $sql->execute([ "prod"=>$datos[$rc]->codpro,
                                     "serie"=>$datos[$rc]->serie,
                                     "flag"=>1,
@@ -676,54 +668,60 @@
         public function cambiarNota($index){
             try {
                 $sql = $this->db->connect()->prepare("SELECT
-                                                        logistica.alm_recepcab.id_regalm,
-                                                        logistica.alm_recepcab.ncodmov,
-                                                        logistica.alm_recepcab.nnromov,
-                                                        logistica.alm_recepcab.nnronota,
-                                                        logistica.alm_recepcab.ncodalm1,
-                                                        logistica.alm_recepcab.ffecdoc,
-                                                        logistica.alm_recepcab.id_centi,
-                                                        logistica.alm_recepcab.cnumguia,
-                                                        logistica.alm_recepcab.ncodpry,
-                                                        logistica.alm_recepcab.ncodcos,
-                                                        logistica.alm_recepcab.ncodarea,
-                                                        logistica.alm_recepcab.idref_pedi,
-                                                        logistica.alm_recepcab.idref_abas,
-                                                        logistica.alm_recepcab.id_userAprob,
-                                                        logistica.alm_recepcab.nEstadoDoc,
-                                                        logistica.alm_recepcab.nflgactivo,
-                                                        logistica.alm_recepcab.ffecconta,
-                                                        logistica.tb_almacen.cdesalm,
-                                                        logistica.tb_proyecto1.cdespry,
-                                                        logistica.tb_area.cdesarea,
-                                                        logistica.tb_ccostos.cdescos,
-                                                        logistica.lg_regabastec.cnumero AS orden,
-                                                        logistica.cm_entidad.cnumdoc,
-                                                        logistica.cm_entidad.crazonsoc,
-                                                        logistica.lg_regabastec.cdocPDF,
-                                                        CONCAT( rrhh.tabla_aquarius.apellidos, ' ', rrhh.tabla_aquarius.nombres ) AS aprueba,
-                                                        rrhh.tabla_aquarius.dcargo,
-                                                        logistica.viewpedidos.cnumero AS pedido,
-                                                        CONCAT( logistica.viewpedidos.apellidos, ' ', logistica.viewpedidos.nombres ) AS solicitante,
-                                                        logistica.lg_movimiento.cdesmov,
-                                                        logistica.lg_regabastec.mobserva,
-                                                        logistica.viewpedidos.cconcepto,
-                                                        logistica.tb_paramete2.cdesprm2 
-                                                    FROM
-                                                        logistica.alm_recepcab
-                                                        INNER JOIN logistica.tb_almacen ON logistica.alm_recepcab.ncodalm1 = logistica.tb_almacen.ncodalm
-                                                        INNER JOIN logistica.tb_proyecto1 ON logistica.alm_recepcab.ncodpry = logistica.tb_proyecto1.ncodpry
-                                                        INNER JOIN logistica.tb_area ON logistica.alm_recepcab.ncodarea = logistica.tb_area.ncodarea
-                                                        INNER JOIN logistica.tb_ccostos ON logistica.alm_recepcab.ncodcos = logistica.tb_ccostos.ncodcos
-                                                        INNER JOIN logistica.lg_regabastec ON logistica.alm_recepcab.idref_abas = logistica.lg_regabastec.id_regmov
-                                                        INNER JOIN logistica.cm_entidad ON logistica.alm_recepcab.id_centi = logistica.cm_entidad.id_centi
-                                                        INNER JOIN rrhh.tabla_aquarius ON logistica.alm_recepcab.id_userAprob = rrhh.tabla_aquarius.internal
-                                                        INNER JOIN logistica.viewpedidos ON logistica.alm_recepcab.idref_pedi = logistica.viewpedidos.id_regmov
-                                                        INNER JOIN logistica.lg_movimiento ON logistica.alm_recepcab.ncodmov = logistica.lg_movimiento.ncodmov
-                                                        INNER JOIN logistica.tb_paramete2 ON logistica.alm_recepcab.nEstadoDoc = logistica.tb_paramete2.ccodprm2 
-                                                    WHERE
-                                                        logistica.alm_recepcab.id_regalm = :cod
-                                                        AND logistica.tb_paramete2.ncodprm1 = 4");
+                logistica.alm_recepcab.id_regalm,
+                logistica.alm_recepcab.ncodmov,
+                logistica.alm_recepcab.nnromov,
+                logistica.alm_recepcab.nnronota,
+                logistica.alm_recepcab.ncodalm1,
+                logistica.alm_recepcab.ffecdoc,
+                logistica.alm_recepcab.ffecrecep,
+                logistica.alm_recepcab.id_centi,
+                logistica.alm_recepcab.cnumguia,
+                logistica.alm_recepcab.ncodpry,
+                logistica.alm_recepcab.ncodarea,
+                logistica.alm_recepcab.idref_pedi,
+                logistica.alm_recepcab.ncodcos,
+                logistica.alm_recepcab.idref_abas,
+                logistica.alm_recepcab.nEstadoDoc,
+                logistica.alm_recepcab.cdocPDF,
+                logistica.alm_recepcab.nflgactivo,
+                logistica.tb_proyecto1.ccodpry,
+                logistica.tb_proyecto1.cdespry,
+                logistica.tb_area.ccodarea,
+                logistica.tb_area.cdesarea,
+                logistica.tb_ccostos.ccodcos,
+                logistica.tb_ccostos.cdescos,
+                orden.cnumero AS orden,
+                logistica.cm_entidad.cnumdoc,
+                logistica.cm_entidad.crazonsoc,
+                orden.cdocPDF,
+                CONCAT( rrhh.autoriza.apellidos, ' ', rrhh.autoriza.nombres ) AS aprueba,
+                pedido.cnumero AS pedido,
+                pedido.cconcepto,
+                CONCAT( rrhh.solicita.apellidos, ' ', rrhh.solicita.nombres ) AS solicitante,
+                logistica.tb_paramete2.cdesprm2,
+                logistica.alm_recepcab.id_userAprob,
+                logistica.alm_recepcab.ffecconta,
+                logistica.lg_movimiento.cdesmov,
+                autoriza.dcargo,
+                logistica.tb_almacen.cdesalm,
+                pedido.mdetalle 
+            FROM
+                logistica.alm_recepcab
+                INNER JOIN logistica.tb_proyecto1 ON alm_recepcab.ncodpry = tb_proyecto1.ncodpry
+                INNER JOIN logistica.tb_area ON alm_recepcab.ncodarea = tb_area.ncodarea
+                INNER JOIN logistica.tb_ccostos ON alm_recepcab.ncodcos = tb_ccostos.ncodcos
+                INNER JOIN logistica.lg_regabastec AS orden ON alm_recepcab.idref_abas = logistica.orden.id_regmov
+                INNER JOIN logistica.cm_entidad ON alm_recepcab.id_centi = cm_entidad.id_centi
+                INNER JOIN rrhh.tabla_aquarius AS autoriza ON logistica.alm_recepcab.id_userAprob = autoriza.internal
+                INNER JOIN logistica.lg_pedidocab AS pedido ON logistica.alm_recepcab.idref_pedi = logistica.pedido.id_regmov
+                INNER JOIN rrhh.tabla_aquarius AS solicita ON pedido.ncodper = solicita.internal
+                INNER JOIN logistica.tb_paramete2 ON logistica.alm_recepcab.nEstadoDoc = logistica.tb_paramete2.ccodprm2
+                INNER JOIN logistica.lg_movimiento ON logistica.alm_recepcab.ncodmov = logistica.lg_movimiento.ncodmov
+                INNER JOIN logistica.tb_almacen ON logistica.alm_recepcab.ncodalm1 = logistica.tb_almacen.ncodalm 
+            WHERE
+                alm_recepcab.id_regalm = :cod 
+                AND logistica.tb_paramete2.ncodprm1 = 4");
                 $sql->execute(["cod"=>$index]);
 
                 $rs = $sql->fetchAll();
@@ -740,7 +738,6 @@
                                     "cargo_almacen"=>$rs[0]['dcargo'],
                                     "idorden"=>$rs[0]['idref_abas'],
                                     "idpedido"=>$rs[0]['idref_pedi'],
-                                    
                                     "almacen"=>$rs[0]['cdesalm'],
                                     "fechadoc"=>$rs[0]['ffecdoc'],
                                     "fechacont"=>$rs[0]['ffecconta'],
@@ -758,9 +755,10 @@
                                     "nroguia"=>$rs[0]['cnumguia'],
                                     "entidad"=>$rs[0]['crazonsoc'],
                                     "concepto"=>$rs[0]['cconcepto'],
-                                    "espec"=>$rs[0]['mobserva'],
+                                    "espec"=>$rs[0]['mdetalle'],
                                     "documento"=>$rs[0]['cdesprm2'],
-                                    "order_file"=>$rs[0]['cdocPDF']
+                                    "order_file"=>$rs[0]['cdocPDF'],
+                                    "estado"=>$rs[0]['cdesprm2'],
                                 );
                 return $salidajson;
 
@@ -773,29 +771,31 @@
         public function listaDetallesCodigo($index){
             try {
                 $sql = $this->db->connect()->prepare("SELECT
-                                                        alm_recepdet.id_regalm,
-                                                        alm_recepdet.niddeta,
-                                                        alm_recepdet.ncodalm1,
-                                                        alm_recepdet.id_cprod,
-                                                        alm_recepdet.ncantidad,
-                                                        alm_recepdet.nfactor,
-                                                        alm_recepdet.nsaldo,
-                                                        alm_recepdet.niddetaped,
-                                                        alm_recepdet.niddetaord,
-                                                        alm_recepdet.nestadoreg,
-                                                        alm_recepdet.nflgactivo,
-                                                        alm_recepdet.fregsys,
-                                                        cm_producto.ccodprod,
-                                                        cm_producto.cdesprod,
-                                                        cm_producto.ncodmed,
-                                                        tb_unimed.cabrevia 
-                                                    FROM
-                                                        alm_recepdet
-                                                        INNER JOIN cm_producto ON alm_recepdet.id_cprod = cm_producto.id_cprod
-                                                        INNER JOIN tb_unimed ON cm_producto.ncodmed = tb_unimed.ncodmed 
-                                                    WHERE
-                                                        alm_recepdet.nflgactivo = 1 
-                                                        AND alm_recepdet.id_regalm = :cod");
+                                                            alm_recepdet.id_regalm,
+                                                            alm_recepdet.niddeta,
+                                                            alm_recepdet.ncodalm1,
+                                                            alm_recepdet.id_cprod,
+                                                            alm_recepdet.ncantidad,
+                                                            alm_recepdet.nfactor,
+                                                            alm_recepdet.nsaldo,
+                                                            alm_recepdet.nestadoreg,
+                                                            alm_recepdet.nflgactivo,
+                                                            alm_recepdet.fregsys,
+                                                            cm_producto.ccodprod,
+                                                            cm_producto.cdesprod,
+                                                            cm_producto.ncodmed,
+                                                            tb_unimed.cabrevia,
+                                                            alm_recepdet.niddetaOrd,
+                                                            alm_recepdet.niddetaPed,
+                                                            lg_pedidodet.ncantapro 
+                                                        FROM
+                                                            alm_recepdet
+                                                            INNER JOIN cm_producto ON alm_recepdet.id_cprod = cm_producto.id_cprod
+                                                            INNER JOIN tb_unimed ON cm_producto.ncodmed = tb_unimed.ncodmed
+                                                            INNER JOIN lg_pedidodet ON alm_recepdet.niddetaPed = lg_pedidodet.nidpedi 
+                                                        WHERE
+                                                            alm_recepdet.nflgactivo = 1 
+                                                            AND alm_recepdet.id_regalm = :cod");
                 $sql->execute(["cod"=>$index]);
                 $rowCount= $sql->rowcount();
                 $salida = "";
@@ -804,24 +804,23 @@
                 if ($rowCount > 0) {
                     while ($row = $sql->fetch()) {
                         $swstate =  $row['nsaldo'] == 0 ? 'desactivado': '';
+                        
 
-                        $salida .=$cont++;
+                        $cont++;
                         $salida.='<tr class="lh1_2rem pointertr '.$swstate.'" data-id="'.$row['niddeta'].'">
                                     <td class="con_borde centro"><a href="" data-action="register"><i class="fas fa-barcode"></i></a></td>
                                     <td class="con_borde centro"><a href="" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
-                                    <td class="centro con_borde" data-iddetpedido ="'.$row['niddetaped'].'"
-                                                                 data-iddetorden ="'.$row['niddetaord'].'"    
-                                                                 data-factor="'.$row['nfactor'].'"
-                                                                 data-coduni="'.$row['ncodmed'].'"
-                                                                 data-idprod="'.$row['id_cprod'].'">
-                                                                '.str_pad($cont,3,"0",STR_PAD_LEFT).'
-                                    </td>
+                                    <td class="con_borde centro" data-iddetpedido ="'.$row['niddetaPed'].'"
+                                                                    data-iddetorden ="'.$row['niddetaOrd'].'"    
+                                                                    data-factor="'.$row['nfactor'].'"
+                                                                    data-coduni="'.$row['ncodmed'].'"
+                                                                    data-idprod="'.$row['id_cprod'].'">'.str_pad($cont,3,0,STR_PAD_LEFT).'</td>
                                     <td class="centro con_borde">'.$row['ccodprod'].'</td>
                                     <td class="pl20 con_borde">'.$row['cdesprod'].'</td>
                                     <td class="con_borde centro">'.$row['cabrevia'].'</td>
-                                    <td class="con_borde centro">'.number_format($row['ncantidad'], 2, '.', ',').'</td>
-                                    <td class="con_borde drch pr20">'.number_format($row['nsaldo'], 2, '.', ',').'</td>
-                                    <td class="con_borde centro"><input type="number" onClick="this.select();" class="drch pr10" value="'.number_format($row['nsaldo'], 2, '.', ',').'"></td>
+                                    <td class="con_borde centro">'.number_format($row['ncantapro'], 2, '.', ',').'</td>
+                                    <td class="con_borde centro"><input type="number" onClick="this.select();" class="drch pr10" ></td>
+                                    <td class="con_borde drch pr20">'.number_format( $row['nsaldo'], 2, '.', ',').'</td>
                                     <td class="con_borde"><select name="estado">'.  $this->getParameters($row['nestadoreg']) .'</select></td>
                                     <td class="con_borde"></td>
                                     <td class="con_borde"><input type="date"></td>
@@ -901,14 +900,11 @@
             try {
                 $datos = json_decode($detalles);
                 $nreg = count($datos);
-                $rc = 0;
 
                 for ($i=0; $i < $nreg ; $i++) { 
                     $sql = $this->db->connect()->prepare("UPDATE alm_recepdet SET nsaldo=:sal WHERE niddetaped=:cod");
                     $sql->execute(["cod"=>$datos[$i]->iddetped,
-                                   "sal"=>$datos[$i]->cantord - $datos[$i]->cantidad]);
-
-                    $this->changeDetailStatus($datos[$i]->iddetped);
+                                   "sal"=>$datos[$i]->cantpend]);
                 }
                 
 
@@ -954,6 +950,56 @@
                 echo $salida;
             } catch (PDOException $th) {
                 echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function cerrarIngreso($cod,$detalles,$condicion){
+            try {
+                $est = 11;
+                
+                if ( $condicion == "true") {
+                    $est = 10; //aca debe ir 10
+                }
+
+                $query = $this->db->connect()->prepare("UPDATE alm_recepcab SET nEstadoDoc =:est WHERE id_regalm=:cod LIMIT 1");
+                $query->execute(["cod"=>$cod,"est"=>$est]);
+                
+                $rowCount = $query->rowCount();
+
+                if ($rowCount > 0) {
+                    $this->actualizarPorcentajeEntrega($detalles,$cod,$est);
+                }
+
+                return $rowCount;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function actualizarPorcentajeEntrega($detalles,$cod,$estdoc){
+            $datos = json_decode($detalles);
+            $nreg = count($datos);
+
+            for ($i=0; $i < $nreg ; $i++) {
+                if($datos[$i]->cantpend == 0){
+                    $porcent = 100;
+                } else {
+                    $porcent = ($datos[$i]->cantpend*100)/$datos[$i]->cantord;
+                }
+
+                $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoPed =:estado,nPorcenEntr=:porcentaje,id_ingreso=:cod WHERE nidpedi=:idp");
+                $query->execute(["idp"=>$datos[$i]->iddetped,"porcentaje"=>$porcent,"cod"=>$cod,"estado"=>$estdoc]);
+            }
+        }
+
+        public function changeDetailStatus($codigo){ //aca se graba el porcentaje para el cargo plan añadir campo nporcent
+            try {
+                $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoPed = 9 WHERE nidpedi=:idp");
+                $query->execute(["idp"=>$codigo]);
+            } catch (PDOException $e) {
+                echo $e->getMessage();
                 return false;
             }
         }

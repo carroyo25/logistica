@@ -61,7 +61,7 @@
             echo $result;
         }
 
-        function guiaRemision(){
+        /*function guiaRemision(){
             $codmodalidadguia = $_POST['codmodalidadguia'];
             $codtipoguia = $_POST['codtipoguia'];
             $codalmacendestino = $_POST['codalmacendestino'];
@@ -124,7 +124,7 @@
             $salida = $_POST['salida'];
             $detalles = $_POST['details'];
 
-            /*$result = $this->model->guardarGuia($codmodalidadguia,$codtipoguia,$codalmacendestino,$codalmacenorigen,$codautoriza,$coddespacha,
+            $result = $this->model->guardarGuia($codmodalidadguia,$codtipoguia,$codalmacendestino,$codalmacenorigen,$codautoriza,$coddespacha,
                                                 $coddestinatario,$codentidad,$codchofer,$serieguia,$nroguia,$packinlist,$fecemin,$feenttrans,
                                                 $ruc,$razondest,$direccdest,$almorg,$viatiporg,$vianomorg,$nroorg,$intorg,$zonaorg,$viatipodest,$nrodest,$deporg,$distorg,
                                                 $provorg,$ubigorg,$mottrans,$modtras,$tenvio,$bultos,$peso,$observaciones,$autoriza,$despacha,$destinatario,
@@ -132,8 +132,8 @@
                                                 $provdest,$ubigdest,$dnicond,$detcond,$licencia,$certificado,$marca,$placa,$configveh,$proyecto,$costos,
                                                 $salida,$detalles);
 
-            echo $result;*/
-        }
+            echo $result;
+        }*/
 
         function nuevoNroGuia(){
             $result = $this->model->genNroGuia();
@@ -194,6 +194,16 @@
             $idx = $_POST['id'];
 
             $result = $this->model->buscarDellatesId($idx);
+
+            echo $result;
+        }
+
+        function guiaRemision(){
+            $cabecera = $_POST['cabecera'];
+            $detalles = $_POST['detalles'];
+            $salida = $_POST['salida'];
+
+            $result = $this->model->grabarGuiaRemision($cabecera,$detalles,$salida);
 
             echo $result;
         }

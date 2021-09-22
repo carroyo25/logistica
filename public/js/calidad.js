@@ -6,11 +6,10 @@ $(function(){
         e.preventDefault();
 
         $(".seleccion").fadeOut();
-        $("#waitmodal").fadeIn();
+        abrirVentanaEspera();
 
         $.post(RUTA+"calidad/llamaIngresoPorId", {nota:$(this).attr('href')},
             function (data, textStatus, jqXHR) {
-                $("#waitmodal").fadeOut();
                 $("#importOrd").addClass("oculto");
                 $("#modalProcess").fadeIn();
 
@@ -64,6 +63,8 @@ $(function(){
                         var items = $("#detalle_ingreso tbody tr").length;
 
                         $("#items").val(items);
+
+                        cerrarVentanaEspera();
                     },
                     "text"
                 );
@@ -78,7 +79,7 @@ $(function(){
         e.preventDefault()
        
         $("#modalProcess").fadeOut()
-        $("#waitmodal").fadeIn();
+        abrirVentanaEspera();
 
         $.post(RUTA+"calidad/refreshMain",
             function (data, textStatus, jqXHR) {
@@ -86,6 +87,8 @@ $(function(){
                 $("#tabla_ingresos tbody")
                     .empty()
                     .append(data);
+
+                cerrarVentanaEspera();
             },
             "text"
         );
@@ -104,11 +107,15 @@ $(function(){
             $("#descripProducto").text(descrip);
             $("#codigoProducto").text(idprod);
 
+            abrirVentanaEspera()
+
             $.post(RUTA+"calidad/llamarSeries", {index:$("#id_ingreso").val(),prod:idprod},
                 function (data, textStatus, jqXHR) {
                     $("#detalle_series tbody")
                     .empty()
                     .append(data);
+
+                    cerrarVentanaEspera();
                 },
                 "text"
             );
@@ -194,6 +201,8 @@ $(function(){
 
         getDetails();
 
+        abrirVentanaEspera();
+
         $.post(RUTA+"calidad/cambiarEstado", {ningreso:$("#id_ingreso").val(),
                                              detalles:JSON.stringify(DETALLES)},
             function (data, textStatus, jqXHR) {
@@ -202,6 +211,8 @@ $(function(){
                 }else{
                     mostrarMensaje("msj_error","No se anotaron las observaciones");
                 }
+
+                cerrarVentanaEspera();
             },
             "text"
         );

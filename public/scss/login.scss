@@ -294,7 +294,7 @@
     }
 
     .process_header{
-        grid-template-columns: 1fr 1fr .5fr;
+        grid-template-columns: 2fr 2fr 1fr;
     }
 
     .process_header3ec{
@@ -2337,6 +2337,10 @@ input[type=checkbox]:checked
     display: grid;
 }
 
+.g2items20px_1{
+    column-gap: 10px;
+    grid-template-columns: 20px 1fr;
+}
 
 .g2items1_5{
     column-gap: 10px;
@@ -2408,7 +2412,7 @@ input[type=checkbox]:checked
     margin-bottom: 20px;
 }
 //estado
-.emitido,.activo {
+.emitido,.activo,.recepcionado {
     background: dodgerblue !important;
     color: white;
     font-weight: 800;
@@ -2436,6 +2440,7 @@ input[type=checkbox]:checked
     background: yellow !important;
     outline: none;
     font-weight: 800;
+    color: #000;
 }
 
 .normal{

@@ -11,6 +11,8 @@
     <div class="mensaje msj_error">
         <span></span>
     </div>
+    <div class="modal zindex5" id="waitmodalCursorOffline">
+    </div>
     <div class="modal" id="modalProcess">
         <form action="#" autocomplete="off" id="formProcess">
             <input type="hidden" name="id_ingreso" id="id_ingreso">
@@ -32,10 +34,13 @@
                         <div class="descrip_title">
                             <span>Datos Generales</span>
                             <div>
-                                <button type="button" id="saveDoc" title="Grabar Observaciones">
-                                    <i class="far fa-save"></i> Grabar Anotaciones
+                                <button type="button" id="saveDoc" title="Aceptar Ingreso" class="boton1">
+                                    <i class="far fa-save"></i> Aceptar Ingreso
                                 </button>
-                                <button type="button" id="cancelDoc" title="Cancelar Registro">
+                                <button type="button" id="bannDoc" title="Observar Ingreso" class="boton1">
+                                    <i class="far fa-save"></i> Observar Ingreso
+                                </button>
+                                <button type="button" id="cancelDoc" title="Cancelar Registro" class="boton1">
                                     <i class="fas fa-ban"></i> Cancelar Anotaciones
                                 </button>
                             </div>
@@ -44,7 +49,7 @@
                             <div class="process_left">
                                 <div class="input_process g4items">
                                     <label for="almacen" class="w100px">Almacen :</label>
-                                    <input type="text" name="almacen" id="almacen" class="w300px pl10" placeholder="seleccione opcion">
+                                    <input type="text" name="almacen" id="almacen" class="w300px pl10" readonly>
                                     <label for="nro_ingreso" class="w100px">Nro Ingreso :</label>
                                     <input type="text" name="nro_ingreso" id="nro_ingreso" class="w100px pl10" readonly>
                                 </div>
@@ -56,55 +61,55 @@
                                 </div>
                                 <div class="input_process g2items desplegable">
                                     <label for="proyecto" class="w100px">Proyecto :</label>
-                                    <input type="text" name="proyecto" id="proyecto" class="pl20 mayusculas">
+                                    <input type="text" name="proyecto" id="proyecto" class="pl20 mayusculas"  readonly>
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="area" class="w100px">Area/Of. :</label>
-                                    <input type="text" name="area" id="area" class="pl20 mayusculas">
+                                    <input type="text" name="area" id="area" class="pl20 mayusculas" readonly>
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="costos" class="w100px">C.Costos. :</label>
-                                    <input type="text" name="costos" id="costos" class="pl20 mayusculas">
+                                    <input type="text" name="costos" id="costos" class="pl20 mayusculas" readonly>
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="solicita" class="w100px">Solicita :</label>
-                                    <input type="text" name="solicita" id="solicita" class="pl20 mayusculas" placeholder="seleccione opcion">
+                                    <input type="text" name="solicita" id="solicita" class="pl20 mayusculas" readonly>
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="aprueba" class="w100px">Aprueba :</label>
-                                    <input type="text" name="aprueba" id="aprueba" class="pl20 mayusculas">
+                                    <input type="text" name="aprueba" id="aprueba" class="pl20 mayusculas" readonly>
                                 </div>
                             </div>
                             <div class="process_right">
                                 <div class="input_process g4items">
                                     <label for="tipomov" class="w100px">Tipo Mov :</label>
-                                    <input type="text" name="tipomov" id="tipomov" class="w300px pl10" placeholder="seleccione opcion">
+                                    <input type="text" name="tipomov" id="tipomov" class="w300px pl10" readonly>
                                     <label for="movalmacen" class="w100px">Mov.Almacén :</label>
                                     <input type="text" name="movalmacen" id="movalmacen" class="w100px pl10" readonly>
                                 </div>
                                 <div class="input_process g4items">
                                     <label for="nrord" class="w100px">Nro. Orden:</label>
-                                    <input type="text" name="nrord" id="nrord" class="pl20">
+                                    <input type="text" name="nrord" id="nrord" class="pl20" readonly>
                                     <label for="nroped" class="w100px">Nro. Pedido :</label>
-                                    <input type="text" name="nroped" id="nroped" class="pl20">
+                                    <input type="text" name="nroped" id="nroped" class="pl20" readonly>
                                 </div>
                                 <div class="input_process g4items">
                                     <label for="ruc" class="w100px">Nro. RUC:</label>
-                                    <input type="text" name="nruc" id="nruc" class="pl20 ">
+                                    <input type="text" name="nruc" id="nruc" class="pl20 " readonly>
                                     <label for="nroguia" class="w150px">Nro. Guia Remisión:</label>
-                                    <input type="text" name="nroguia" id="nroguia" class="pl20 mayusculas">
+                                    <input type="text" name="nroguia" id="nroguia" class="pl20 mayusculas" readonly>
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="entidad" class="w100px">Razón Social :</label>
-                                    <input type="text" name="entidad" id="entidad" class="pl20 mayusculas">
+                                    <input type="text" name="entidad" id="entidad" class="pl20 mayusculas" readonly>
                                 </div>
                                 <div class="input_process g2items">
                                     <label for="concepto" class="w100px">Concepto :</label>
-                                    <textarea name="concepto" id="concepto" rows="2"></textarea>
+                                    <textarea name="concepto" id="concepto" rows="1" readonly></textarea>
                                 </div>
                                 <div class="input_process g2items">
-                                    <label for="espec" class="w100px">Especificaciones </br> Técnicas :</label>
-                                    <textarea name="espec" id="espec" rows="2"></textarea>
+                                    <label for="espec" class="w100px">Espec. Técnicas :</label>
+                                    <textarea name="espec" id="espec" rows="1" readonly></textarea>
                                 </div>
                             </div>
                             <div class="process_estate">
@@ -125,10 +130,10 @@
                         <div class="descrip_title">
                             <span>Detalles</span>
                             <div>
-                                <button type="button" id="docsAtach" title="Documentos Adjuntos/Estados">
+                                <button type="button" id="docsAtach" title="Documentos Adjuntos/Estados" class="boton1">
                                     <i class="fas fa-envelope-open-text"></i> Documentos Adjuntos/Estados
                                 </button>
-                                <button type="button" id="orderDetail" title="Detalle Original de la Orden">
+                                <button type="button" id="orderDetail" title="Detalle Original de la Orden" class="boton1">
                                     <i class="fas fa-envelope-open-text"></i> Detalle Original de la Orden
                                 </button>
                             </div>
@@ -143,7 +148,7 @@
                                         <th class="con_borde w10p">Codigo</th>
                                         <th class="con_borde w30p">Descripcion</th>
                                         <th class="con_borde w5p">Unidad</th>
-                                        <th class="con_borde w5p">Cantidad Orden</th>
+                                        <th class="con_borde w5p">Cantidad Ingresada</th>
                                         <th class="con_borde w10p">Estado</th>
                                         <th class="con_borde w10p">Observaciones</th>
                                     </tr>
@@ -210,9 +215,6 @@
             </div>
         </div>
         <a href="#" id="closeModalPreview" class="buttonClose"><i class="fas fa-reply-all"></i></a>
-    </div>
-    <div class="modal zindex5" id="waitmodal">
-        <div class="loader"></div>
     </div>
     <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>
