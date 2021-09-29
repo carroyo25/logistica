@@ -20,6 +20,7 @@
                                                         logistica.lg_docusunat.ncodalm1,
                                                         logistica.lg_docusunat.ncodalm2,
                                                         almacen_origen.cdesalm AS almorigen,
+                                                        almacen_destino.ccodalm,
                                                         almacen_destino.cdesalm AS destino,
                                                         logistica.tb_proyecto1.ccodpry,
                                                         logistica.tb_proyecto1.cdespry,
@@ -49,7 +50,8 @@
                                                         INNER JOIN logistica.alm_recepcab ON logistica.lg_regabastec.id_refpedi = logistica.alm_recepcab.idref_pedi 
                                                     WHERE
                                                         logistica.tb_almausu.nflgactivo = 1 
-                                                        AND logistica.tb_almausu.id_cuser =:user");
+                                                        AND logistica.tb_almausu.id_cuser =:user
+                                                        AND logistica.lg_docusunat.nflgactivo = 1");
                 $query->execute(["user"=>$user]);
                 $rowCount = $query->rowCount();
 
@@ -59,18 +61,20 @@
                                         <td class="con_borde centro">'.$rs['cnumero'].'</td>
                                         <td class="con_borde centro">'.$rs['ffechdoc'].'</td>
                                         <td class="con_borde pl20">'.$rs['ffechtrasl'].'</td>
-                                        <td class="con_borde pl20">'.$rs['almorigen'].'</td>
+                                        <td class="con_borde pl20 mayusculas">'.$rs['almorigen'].'</td>
                                         <td class="con_borde pl20 mayusculas">'.$rs['cdespry'].'</td>
                                         <td class="con_borde pl20 mayusculas">'.$rs['cdescos'].'</td>
                                         <td class="con_borde pl20 mayusculas">'.$rs['cdesarea'].'</td>
                                         <td class="con_borde centro">'.$rs['solicitante'].'</td>
                                         <td class="con_borde centro">'.$rs['pedido'].'</td>
                                         <td class="con_borde centro">'.$rs['orden'].'</td>
-                                        <td class="con_borde centro"><a href="'.$rs['id_refmov'].'"data-ingreso="'.$rs['ingreso'].'"><i class="fas fa-pen-alt"></i></a></td>
+                                        <td class="con_borde centro"><a href="'.$rs['id_refmov'].'"data-ingreso="'.$rs['ingreso'].'" data-destino="'.$rs['ccodalm'].'">
+                                            <i class="fas fa-pen-alt"></i></a>
+                                        </td>
                                     </tr>';
                     }
                 }else{
-                    $salida = '<tr><tr class="con_borde" span="12">No se encontraron registros</tr></tr>';
+                    $salida = '<tr><td class="con_borde centro" colspan="12">No se encontraron registros</td></tr>';
                 }
 
                 return $salida;
@@ -84,6 +88,7 @@
         public function obternerDespachoId($idx){
             try {
                 $query = $this->db->connect()->prepare("SELECT
+                                                        logistica.lg_docusunat.id_refmov,
                                                         logistica.lg_docusunat.ffechdoc,
                                                         logistica.lg_docusunat.cnumero AS guia,
                                                         logistica.lg_docusunat.nbultos,
@@ -108,6 +113,7 @@
                                                         logistica.tb_almacen.cdesalm,
                                                         LPAD( logistica.alm_despachocab.ncodmov, 5, 0 ) AS ncodmov,
                                                         logistica.lg_docusunat.ffechtrasl,
+                                                        logistica.lg_docusunat.ncodalm2,
                                                         logistica.tb_paramete2.cdesprm2 AS estado 
                                                     FROM
                                                         logistica.lg_docusunat
@@ -171,7 +177,13 @@
                     while ($rs = $query->fetch()) {
                         $salida .= '<tr>
                                         <td class="con_borde centro"><input type="checkbox"></td>
-                                        <td class="con_borde centro"><a href="'.$rs['niddetaPed'].'" data-idprod="'.$rs['id_cprod'].'"><i class="fas fa-barcode"></i></a></td>
+                                        <td class="con_borde centro">
+                                            <a href="'.$rs['niddetaPed'].'" data-idprod="'.$rs['id_cprod'].'" 
+                                                                            data-factor="'.$rs['nfactor'].'"
+                                                                            data-unidad="'.$rs['ncoduni'].'">
+                                                <i class="fas fa-barcode"></i>
+                                            </a>
+                                        </td>
                                         <td class="con_borde centro">'.str_pad($item++,3,0,STR_PAD_LEFT ).'</td>
                                         <td class="con_borde pl10">'.$rs['ccodprod'].'</td>
                                         <td class="con_borde pl10">'.$rs['cdesprod'].'</td>
@@ -209,7 +221,7 @@
                     $item = 1;
                     while ($rs = $query->fetch()) {
                         $salida .='<tr>
-                                        <td class="con_borde centro"><input type="checkbox"></td>
+                                        <td class="con_borde centro"><input type="checkbox" checked></td>
                                         <td class="con_borde centro">'.str_pad($item++,3,0,STR_PAD_LEFT).'</td>
                                         <td class="con_borde pl10">'.$rs['cdesserie'].'</td>
                                         <td class="con_borde"><input type="text" class="pl20"></td>
@@ -222,5 +234,58 @@
                 return false;
             }
         }
+
+        public function actualizarAlmacen($idx,$detalles,$almacen,$guia){
+            $data = json_decode($detalles);
+            $nreg = count($data);
+
+            for ($i=0; $i < $nreg; $i++) { 
+                try {
+                    $id = uniqid("alm");
+                    $query = $this->db->connect()->prepare("INSERT INTO alm_movimdet SET niddeta=:iddet,id_cprod=:idprod,ncantidad=:cantidad,
+                                                                                        ncoduni=:cunid,nfactor=:factor,ncodalm2=:almacen,id_regalm=:id");
+                    $query->execute(["iddet"=>$data[$i]->niddeta,
+                                    "idprod"=>$data[$i]->idprod,
+                                    "cantidad"=>$data[$i]->cantidad,
+                                    "cunid"=>$data[$i]->unid,
+                                    "factor"=>$data[$i]->factor,
+                                    "almacen"=>$almacen,
+                                    "id"=>$id]);
+
+                } catch (PDOException $th) {
+                    echo $th->getMessage();
+
+                    return false;
+                }
+            }
+
+             $this->actualizarSeries($idx,$almacen);
+             $this->actualizarDespacho($guia);
+             //$this->actualizarPedido();
+             //$this->actualizarDetallesPedido();
+            
+        }
+
+
+        public function actualizarSeries($idx,$almacen){
+            try {
+                $query=$this->db->connect()->prepare("UPDATE cm_prodserie SET idref_alma=:almacen WHERE idref_movi=:id");
+                $query->execute(["id"=>$idx,"almacen"=>$almacen]);
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function actualizarDespacho($guia){
+            try {
+                $query=$this->db->connect()->prepare("UPDATE lg_docusunat SET nflgactivo=0 WHERE id_refmov=:guia");
+                $query->execute(["guia"=>$guia]);
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
     }
 ?>

@@ -112,14 +112,17 @@
     <div class="modal" id="modalProcess">
         <form action="#" autocomplete="off" id="formProcess">
             <input type="hidden" id="cod_despacho">
-            <input type="text" id="cod_ingreso">
+            <input type="hidden" id="cod_ingreso">
+            <input type="hidden" id="alm_destino">
+            <input type="hidden" id="cod_guia">
+
             <div class="process">
                 <div class="sides_process">
                         <div class="descrip_title">
                             <span>Datos Generales</span>
                             <div>
-                                <button type="button" id="grabarDoc" title="Grabar Registro" class="boton1">
-                                    <span><i class="far fa-save"></i> Grabar Registro </span>
+                                <button type="button" id="grabarDoc" title="Confirma Recepción" class="boton1">
+                                    <span><i class="far fa-save"></i> Confirma Recepción </span>
                                 </button>
                             </div>
                         </div>

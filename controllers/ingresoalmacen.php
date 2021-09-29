@@ -35,5 +35,17 @@
 
             echo $result;
         }
+
+
+        function ingreso() {
+            $idx = $_POST['idx'];
+            $detalles = $_POST['detalles'];
+            $almacen = $_POST['almacen'];
+            $guia = $_POST['guia'];
+
+            $result = $this->model->actualizarAlmacen($idx,$detalles,$almacen,$guia);
+
+            echo $result;
+        }
     }
 ?>
