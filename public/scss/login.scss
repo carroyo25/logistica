@@ -239,13 +239,16 @@
 .process{
     >div{
         position: absolute;
-        left: 10%;
-        top: 15%;
-        width: 85%;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
         min-height: 75%;
-        max-height: 82%;
+        max-height: 75%;
         background: #fff;
         border: 2px solid black;
+        margin: auto;
+        overflow: auto;
     }
 
     .descrip_title {
@@ -271,7 +274,7 @@
         }
     }
 
-    .process_header, .process_header3ec {
+    .process_header, .process_header3ec, .process_header1ec {
         padding: 5px;
         display: grid;
         column-gap: 20px;
@@ -299,6 +302,10 @@
 
     .process_header3ec{
         grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .process_header1ec{
+        grid-template-columns: 1fr;
     }
 
     table {
@@ -2065,6 +2072,10 @@ hr{
 
 .w81p{
     width: 81%;
+}
+
+.w85p{
+    width: 85%;
 }
 
 .w90p{

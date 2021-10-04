@@ -370,12 +370,39 @@ $(function(){
     });
 
     //filtrar los items
-    $("#inputSearchItems").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        $("#tableSeekItems tbody tr").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
+    $("#inputSearchItems").on("keyup", function(e) {
+        if(e.which == 13 && $(this).val().length > 2) {
+            $("#waitmodal").fadeIn();
+            $.post(RUTA+"bienes/ItemsByWord", {palabra:$(this).val(),tipo:1},
+                function (data, textStatus, jqXHR) {
+                    $("#tableSeekItems tbody")
+                        .empty()
+                        .append(data);
+                    $("#waitmodal").fadeOut();  
+                },
+                "text"
+            );
+        }
     });
+
+    $(".pagination").on("click","a",function(e){
+        e.preventDefault();
+
+        $("#waitmodal").fadeIn();
+
+        $.post(RUTA+"bienes/ItemsByLetter", {tipo:1,letra:$(this).attr("href")},
+                function (data, textStatus, jqXHR) {
+                    $("#tableSeekItems tbody")
+                        .empty()
+                        .append(data);
+                    
+                    $("#waitmodal").fadeOut();
+                },
+                "text"
+        )
+
+        return false;
+    })
 
     //cerrar el modal de busqueda
     $(".buttonClose").on("click", function (e) {

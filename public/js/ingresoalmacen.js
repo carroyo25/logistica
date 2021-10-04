@@ -39,6 +39,7 @@ $(function(){
                 $("#cod_ingreso").val(data[0].idref_abas);
                 $("#alm_destino").val(data[0].ncodalm2);
                 $("#cod_guia").val(data[0].id_refmov);
+                $("#cod_pedido").val(data[0].idref_pedi);
                 
                 $.post(RUTA+"ingresoalmacen/detallesDepacho", {idx: data[0].id_regalm},
                     function (data, textStatus, jqXHR) {
@@ -102,13 +103,31 @@ $(function(){
         $.post(RUTA+"ingresoalmacen/ingreso", {idx:$("#cod_ingreso").val(),
                                                 detalles:details,
                                                 almacen:$("#alm_destino").val(),
-                                                guia:$("#cod_guia").val()},
+                                                guia:$("#cod_guia").val(),
+                                                pedido:$("#cod_pedido").val()},
             function (data, textStatus, jqXHR) {
                 
             },
             "text"
         );
 
+        return false;
+    });
+
+    $("#closeModalProcess").click(function (e) { 
+        e.preventDefault();
+
+        $.post(RUTA+"ingresoalmacen/registros",
+            function (data, textStatus, jqXHR) {
+                $("#tabla_pedidos tbody")
+                    .empty()
+                    .append(data);
+            },
+            "text"
+        );
+
+        $("#modalProcess").fadeOut();
+        
         return false;
     });
 })

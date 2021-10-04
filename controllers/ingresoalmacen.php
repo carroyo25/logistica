@@ -42,8 +42,15 @@
             $detalles = $_POST['detalles'];
             $almacen = $_POST['almacen'];
             $guia = $_POST['guia'];
+            $pedido = $_POST['pedido'];
 
-            $result = $this->model->actualizarAlmacen($idx,$detalles,$almacen,$guia);
+            $result = $this->model->actualizarAlmacen($idx,$detalles,$almacen,$guia,$pedido);
+
+            echo $result;
+        }
+
+        function registros() {
+            $result = $this->model->obtenerGuiasDespacho($_SESSION['id_user']);
 
             echo $result;
         }

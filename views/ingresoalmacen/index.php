@@ -11,7 +11,8 @@
     <?php require 'views/header.php'; ?>
     <div class="mensaje msj_error">
         <span></span>
-    </div><div class="main_panel">
+    </div>
+    <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>
         <div class="workOneForm">
             <div class="tilewindow">
@@ -115,6 +116,7 @@
             <input type="hidden" id="cod_ingreso">
             <input type="hidden" id="alm_destino">
             <input type="hidden" id="cod_guia">
+            <input type="hidden" id="cod_pedido">
 
             <div class="process">
                 <div class="sides_process">

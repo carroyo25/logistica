@@ -195,13 +195,16 @@
 
 .process > div {
   position: absolute;
-  left: 10%;
-  top: 15%;
-  width: 85%;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
   min-height: 75%;
-  max-height: 82%;
+  max-height: 75%;
   background: #fff;
-  border: 2px solid black; }
+  border: 2px solid black;
+  margin: auto;
+  overflow: auto; }
 
 .process .descrip_title {
   display: -webkit-box;
@@ -225,22 +228,22 @@
     margin: 5px;
     padding: 0 20px; }
 
-.process .process_header, .process .process_header3ec {
+.process .process_header, .process .process_header3ec, .process .process_header1ec {
   padding: 5px;
   display: -ms-grid;
   display: grid;
   -webkit-column-gap: 20px;
   column-gap: 20px;
   line-height: 2rem; }
-  .process .process_header .input_process, .process .process_header3ec .input_process {
+  .process .process_header .input_process, .process .process_header3ec .input_process, .process .process_header1ec .input_process {
     position: relative;
     display: -ms-grid;
     display: grid;
     margin-top: 3px; }
-    .process .process_header .input_process label, .process .process_header3ec .input_process label {
+    .process .process_header .input_process label, .process .process_header3ec .input_process label, .process .process_header1ec .input_process label {
       font-weight: bold;
       font-size: .8rem; }
-    .process .process_header .input_process textarea, .process .process_header3ec .input_process textarea {
+    .process .process_header .input_process textarea, .process .process_header3ec .input_process textarea, .process .process_header1ec .input_process textarea {
       padding: 10px; }
 
 .process .process_header {
@@ -250,6 +253,10 @@
 .process .process_header3ec {
   -ms-grid-columns: 1fr 1fr 1fr;
   grid-template-columns: 1fr 1fr 1fr; }
+
+.process .process_header1ec {
+  -ms-grid-columns: 1fr;
+  grid-template-columns: 1fr; }
 
 .process table {
   border-collapse: collapse;
@@ -1654,6 +1661,9 @@ hr {
 
 .w81p {
   width: 81%; }
+
+.w85p {
+  width: 85%; }
 
 .w90p {
   width: 90%; }

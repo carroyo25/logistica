@@ -11,12 +11,12 @@
         //metodos
         public function __construct()
         {
-            $this->host = constant('HOST');
-            $this->db = constant('DB');
-            $this->db2 = constant('DB2');
-            $this->user = constant('USER');
+            $this->host     = constant('HOST');
+            $this->db       = constant('DB');
+            $this->db2      = constant('DB2');
+            $this->user     = constant('USER');
             $this->password = constant('PASSWORD');
-            $this->charset = constant('CHARSET');
+            $this->charset  = constant('CHARSET');
         }
 
         function connect(){

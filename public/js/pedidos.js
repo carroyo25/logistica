@@ -402,7 +402,7 @@ $(function() {
         e.preventDefault();
 
         if ( $("#tipo").val().length <= 0 ) {
-            mostrarMensaje("msj_error","Seleccione el tipo");
+            mostrarMensaje("msj_error","Seleccione el tipo de pedido");
             $("#tipo").focus();
             
             return false;
@@ -527,7 +527,6 @@ $(function() {
             $("#detalle_pedido tbody").append(row);
             DATA.push(indice);
 
-            //mostrarMensaje("msj_info","Item añadido");
             $("#saveItem span").addClass('parpadea');
 
         }else{

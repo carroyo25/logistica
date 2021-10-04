@@ -271,7 +271,7 @@
                                     WHERE cm_producto.nflgactivo = '1' AND  cm_producto.ntipoprod = '1'
                                     ORDER BY
                                     cm_producto.ccodprod ASC
-                                    LIMIT 50");
+                                    LIMIT 20");
                 $query->execute();
 
                 while($row = $query->fetch()){
@@ -574,6 +574,107 @@
                     $salida .= '<li><a href="'.$row['inicial'].'">'.$row['inicial'].'</a></li>';
                 }
 
+                return $salida;
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+        }
+
+        public function getAllItemsByWord($tipo,$palabra){
+            try {
+                $salida ="";
+                $query  = $this->db->connect()->prepare("SELECT
+                                                            cm_producto.id_cprod,
+                                                            cm_producto.ccodprod,
+                                                            cm_producto.cdesprod,
+                                                            cm_producto.cdescomer,
+                                                            cm_producto.cdestecni,
+                                                            cm_producto.cmarca,
+                                                            cm_producto.cmodelo,
+                                                            cm_producto.fregsys,
+                                                            cm_producto.ccolor,
+                                                            cm_producto.cnroparte 
+                                                        FROM
+                                                            cm_producto
+                                                            INNER JOIN tb_unimed ON cm_producto.ncodmed = tb_unimed.ncodmed 
+                                                        WHERE
+                                                            cm_producto.nflgactivo = '1' 
+                                                            AND cm_producto.ntipoprod = :tipo
+                                                            AND cm_producto.cdesprod LIKE :palabra
+                                                        ORDER BY
+                                                            cm_producto.cdesprod ASC");
+                $query->execute(["tipo"=>$tipo,"palabra"=>"%".$palabra."%"]);
+                $rowcount = $query->rowcount();
+
+                if ($rowcount > 0) {
+                    while($row = $query->fetch()){
+                        $salida.='<tr>
+                                    <td>'.$row['ccodprod'].'</td>
+                                    <td>'.strtoupper($row['cdesprod']).'</td>
+                                    <td>'.strtoupper($row['cdescomer']).'</td>
+                                    <td>'.strtoupper($row['cdestecni']).'</td>
+                                    <td>'.strtoupper($row['cmarca']).'</td>
+                                    <td>'.strtoupper($row['cmodelo']).'</td>
+                                    <td>'.strtoupper($row['cnroparte']).'</td>
+                                    <td><a href="'.$row['id_cprod'].'"><i class="far fa-edit"></i></a></td>
+                                </tr>';
+                    }
+                }else {
+                    $salida .= '<tr><td colspan="6" class="centro">NO HAY REGISTROS</td></tr>';
+                }
+                
+                return $salida;
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+        }
+
+        public function getAllItemsByLetter($tipo,$letra){
+            try {
+                $salida ="";
+                $query  = $this->db->connect()->prepare("SELECT
+                                                            cm_producto.id_cprod,
+                                                            cm_producto.ccodprod,
+                                                            cm_producto.cdesprod,
+                                                            cm_producto.cdescomer,
+                                                            cm_producto.cdestecni,
+                                                            cm_producto.cmarca,
+                                                            cm_producto.cmodelo,
+                                                            cm_producto.fregsys,
+                                                            cm_producto.ccolor,
+                                                            cm_producto.cnroparte
+                                                        FROM
+                                                            cm_producto
+                                                            INNER JOIN tb_unimed ON cm_producto.ncodmed = tb_unimed.ncodmed 
+                                                        WHERE
+                                                            cm_producto.nflgactivo = '1' 
+                                                            AND cm_producto.ntipoprod = :tipo
+                                                            AND SUBSTR(cm_producto.cdesprod,1,1) = :letra
+                                                        ORDER BY
+                                                            cm_producto.cdesprod ASC");
+                $query->execute(["tipo"=>$tipo,"letra"=>$letra]);
+                $rowcount = $query->rowcount();
+
+                if ($rowcount > 0) {
+                    while($row = $query->fetch()){
+                        $salida.='<tr>
+                                    <td>'.$row['ccodprod'].'</td>
+                                    <td>'.strtoupper($row['cdesprod']).'</td>
+                                    <td>'.strtoupper($row['cdescomer']).'</td>
+                                    <td>'.strtoupper($row['cdestecni']).'</td>
+                                    <td>'.strtoupper($row['cmarca']).'</td>
+                                    <td>'.strtoupper($row['cmodelo']).'</td>
+                                    <td>'.strtoupper($row['cnroparte']).'</td>
+                                    <td><a href="'.$row['id_cprod'].'"><i class="far fa-edit"></i></a></td>
+                                </tr>';
+                    }
+                }else {
+                    $salida .= '<tr><td colspan="6" class="centro">NO HAY REGISTROS</td></tr>';
+                }
+                
+                
                 return $salida;
             } catch (PDOException $e) {
                 echo $e->getMessage();

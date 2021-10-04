@@ -235,7 +235,7 @@
             }
         }
 
-        public function actualizarAlmacen($idx,$detalles,$almacen,$guia){
+        public function actualizarAlmacen($idx,$detalles,$almacen,$guia,$pedido){
             $data = json_decode($detalles);
             $nreg = count($data);
 
@@ -258,11 +258,11 @@
                     return false;
                 }
             }
-
-             $this->actualizarSeries($idx,$almacen);
-             $this->actualizarDespacho($guia);
-             //$this->actualizarPedido();
-             //$this->actualizarDetallesPedido();
+             
+            $this->actualizarSeries($idx,$almacen);
+            $this->actualizarDespacho($guia);
+            $this->actualizarPedido($pedido);
+            $this->actualizarDetallesPedido($detalles);
             
         }
 
@@ -284,6 +284,31 @@
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
+            }
+        }
+
+        public function actualizarPedido($idx){
+            try {
+                $sql = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc = 13 WHERE id_regmov = :cod LIMIT 1");
+                $sql->execute(["cod"=>$idx]);
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function actualizarDetallesPedido($detalles){
+            $datos = json_decode($detalles);
+            $nreg = count($datos);
+            
+            for ($i=0; $i < $nreg; $i++) { 
+                try {
+                    $sql = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoReg = :est WHERE nidpedi =:cod");
+                    $sql->execute(["cod"=>$datos[$i]->niddeta,"est"=>13]);
+                } catch (PDOException $th) {
+                    echo $th->getMessage();
+                    return false;
+                }
             }
         }
 

@@ -259,23 +259,23 @@
             <input type="hidden" name="estado" id="estado" value="1">
             <input type="hidden" name="atencion" id="atencion" value="3">
             <div class="process">
-                <div class="sides_process">
+                <div class="sides_process w85p">
                 <div class="descrip_title">
                     <span>Datos Generales</span>
                     <div>
-                        <button type="button" id="saveItem" title="Grabar Pedido">
+                        <button type="button" id="saveItem" title="Grabar Pedido" class="boton1">
                             <span><i class="far fa-save"></i> Grabar Pedido</span> 
                         </button>
-                        <button type="button" id="cancelItem" title="Cancelar Pedido">
+                        <button type="button" id="cancelItem" title="Cancelar Pedido" class="boton1">
                             <i class="fas fa-ban"></i> Cancelar Pedido
                         </button>
-                        <button type="button" id="upAttach" title="Importar Adjuntos">
+                        <button type="button" id="upAttach" title="Importar Adjuntos" class="boton1">
                             <i class="fas fa-upload"></i> Adjuntar Archivos
                         </button>
-                        <button type="button" id="preview" title="Vista Previa">
+                        <button type="button" id="preview" title="Vista Previa" class="boton1">
                             <i class="fab fa-wpexplorer"></i> Vista Previa
                         </button>
-                        <button type="button" id="sendItem" title="Enviar Pedido">
+                        <button type="button" id="sendItem" title="Enviar Pedido" class="boton1">
                             <i class="far fa-paper-plane"></i> Enviar Almacen
                         </button>
                     </div>
@@ -366,10 +366,10 @@
                     <div class="descrip_title">
                         <span>Detalles</span>
                         <div>
-                            <button type="button" id="addItem" title="Añadir Item">
+                            <button type="button" id="addItem" title="Añadir Item" class="boton1">
                                 <i class="far fa-plus-square"></i> Agregar Item
                             </button>
-                            <button type="button" id="imporItems" title="Importar Registros">
+                            <button type="button" id="imporItems" title="Importar Registros" class="boton1">
                                 <i class="fas fa-file-import"></i> Importar Items
                             </button>
                         </div>

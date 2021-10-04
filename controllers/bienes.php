@@ -221,5 +221,21 @@
             $resultado = $this->model->showHistory( $cod);
             echo $resultado ;
         }
+
+        function ItemsByWord(){
+            $tipo = $_POST['tipo'];
+            $palabra = $_POST['palabra'];
+            $items = $this->model->getAllItemsByWord($tipo,$palabra);
+            
+            echo $items;
+        }
+
+        function ItemsByLetter(){
+            $tipo = $_POST['tipo'];
+            $letra = $_POST['letra'];
+            $items = $this->model->getAllItemsByLetter($tipo,$letra);
+            
+            echo $items;
+        }
     }
 ?>
