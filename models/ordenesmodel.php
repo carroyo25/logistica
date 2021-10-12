@@ -595,7 +595,6 @@
 
         public function pasarDatosOrden($cabecera,$detalles,$condicion){
             require_once("public/libsrepo/repooc.php");
-            
 
             $fileExist = $cabecera['ordenpdf'];
 

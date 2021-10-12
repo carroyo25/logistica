@@ -8,8 +8,24 @@
         function render(){
             $this->view->menu = $this->model->acordeon($_SESSION['id_user']);
             $this->view->almacenes = $this->model->obtenerAlmacenes($_SESSION['id_user']);
-            //$this->view->registros = $this->model->obtenerGuiasDespacho($_SESSION['id_user']);
+            $this->view->registros = $this->model->obtenerRegistros();
             $this->view->render('salidaalmacen/index');
+        }
+
+        function salidaPorId(){
+            $id = $_POST["id"];
+
+            $result = $this->model->consultarSalidaId($id);
+
+            echo json_encode($result);
+        }
+
+        function detallesId(){
+            $id = $_POST['id'];
+
+            $result = $this->model->consultarDetalleSalida($id);
+
+            echo $result;
         }
 
         function solicitante(){
@@ -29,15 +45,16 @@
         }
 
         function registroSalida(){
+            $cabecera = $_POST['cabecera'];
+            $detalles = $_POST['detalles'];
 
-        }
+            $result = $this->model->grabarSalida($cabecera,$detalles);
 
-        function actualizaExistencia(){
-
+            echo $result;
         }
 
         function inicialesItems(){
-            $result = $this->model->obtenerIncialesProductos();
+            $result = $this->model->obtenerInicialesProductos();
             echo $result;
         }
 
@@ -49,7 +66,6 @@
 
             echo $result;
         }
-        
 
         function itemPorPalabra(){
             $palabra = $_POST['palabra'];

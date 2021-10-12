@@ -1216,6 +1216,40 @@
             }
         }
 
+        .bannerCompuesto{
+            display: grid;
+            grid-template-columns: 1fr .1fr;
+            background: #0078D4;
+            color: #fff;
+            padding: 10px;
+            width: 100%;
+
+            .lineaInterna{
+                display: flex;
+                line-height: 2rem;
+
+                label{
+                    margin-right: 10px;
+                    margin-left: 22px;
+                }
+
+                input {
+                    padding-left: 20px;
+                    height: 25px;
+                }
+
+                select{
+                    height: 25px;
+                }
+
+            }
+
+            .comandoBanner{
+                display: flex;
+                justify-content: center;
+            }
+        }
+
         .menu_horizontal {
             background: #fff;
             margin-top: 20px;

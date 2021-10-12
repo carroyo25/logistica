@@ -61,21 +61,16 @@
                     <table class="w100p con_borde" id="tabla_pedidos">
                         <thead>
                             <tr>
-                                <th class="con_borde w55px">Num. Guia</th>
+                                <th class="con_borde w55px">Num. Salida</th>
                                 <th class="con_borde">F.Emisión</th>
-                                <th class="con_borde ">F.Traslado</th>
-                                <th class="con_borde">Almacen Origen</th>
-                                <th class="con_borde">Proyecto/Sede</th>
-                                <th class="con_borde">Centro Costos</th>
-                                <th class="con_borde">Area</th>
+                                <th class="con_borde ">F.Entrega</th>
+                                <th class="con_borde">Almacen</th>
                                 <th class="con_borde">Solicitante</th>
-                                <th class="con_borde">Pedido</th>
-                                <th class="con_borde">Orden</th>
                                 <th class="con_borde">...</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- <?php echo $this->registros?> -->
+                            <?php echo $this->registros?>
                         </tbody>
                     </table>
                 </div>
@@ -114,8 +109,9 @@
     </div>
     <div class="modal" id="modalProcess">
         <form action="#" autocomplete="off" id="formProcess">
-            <input type="hidden" id="cod_almacen">
-            <input type="hidden" id="cod_personal">
+            <input type="hidden" id="cod_almacen" name="cod_almacen">
+            <input type="hidden" id="cod_personal" name="cod_personal">
+            <input type="hidden" name="cod_salida" name="cod_salida">
 
             <div class="process">
                 <div class="two_sides_process w50p">
@@ -131,7 +127,7 @@
                             <div class="process_left">
                                 <div class="input_process g4items">
                                     <label for="nrosalida" class="w100px">Nro. Salida :</label>
-                                    <input type="text" name="nroguia" id="nroguia" class="pl10" readonly>
+                                    <input type="text" name="nrosalida" id="nrosalida" class="pl10" readonly>
                                     <label for="movalma" class="w100px">Nro.Documento:</label>
                                     <input type="text" name="nrodocumento" id="nrodocumento" class="pl10">
                                 </div>
