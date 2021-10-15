@@ -845,10 +845,11 @@
                    $veri = $data[$i]->verifica;
                    $aten = 3;
                    $flag = 1;
+                   $pedido = $data[$i]->pedido;
 
-                   $query = $this->db->connect()->prepare("INSERT INTO lg_pedidodet (id_regmov,id_cprod,ncodmed,nEstadoPed,ncantpedi,nTipoAten,nFlgCalidad,nflgactivo) 
-                                                            VALUES (:codp,:id,:unid,:esta,:cant,:aten,:veri,:flag)");
-                   $query->execute(["codp"=>$codp,"cant"=>$cant,"esta"=>$esta,"unid"=>$unid,"aten"=>$aten,"flag"=>$flag,"id"=>$id,"veri"=>$veri]);
+                   $query = $this->db->connect()->prepare("INSERT INTO lg_pedidodet (id_regmov,id_cprod,ncodmed,nEstadoReg,ncantpedi,nTipoAten,nFlgCalidad,nflgactivo,pedido) 
+                                                            VALUES (:codp,:id,:unid,:esta,:cant,:aten,:veri,:flag,:pedido)");
+                   $query->execute(["codp"=>$codp,"cant"=>$cant,"esta"=>$esta,"unid"=>$unid,"aten"=>$aten,"flag"=>$flag,"id"=>$id,"veri"=>$veri,"pedido"=>$pedido]);
                 }
 
             } catch (PDOException $e) {
@@ -950,7 +951,7 @@
 			    }else {
                     $mensaje = true;
                     $this->changeStatusHeader($data[0]->codped);
-                    //$this->changeStatusDetails($data[0]->codped);
+                    $this->changeStatusDetails($data[0]->codped);
                 }
                 
                 return $mensaje;
@@ -975,12 +976,12 @@
         }
 
         //cambia el estado de los detalles
-        // por si acso cambbiar de acuero al modelo $cest = 2;
+        // el estado es 2 para verificar las existencias en almacen
         public function changeStatusDetails($codigo){
             try {
                 
                 $cest = 2;
-                $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoPed=:cest WHERE id_regmov=:idx AND nflgactivo = 1");
+                $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoReg=:cest WHERE id_regmov=:idx AND nflgactivo = 1");
                 $query->execute(["cest"=>$cest,"idx"=>$codigo]);
 
             } catch (PDOException $e) {

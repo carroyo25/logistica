@@ -87,18 +87,25 @@
                     <table class="w100p con_borde" id="tabla_ingresos">
                         <thead>
                             <tr>
-                                <th class="con_borde w55px">Num. Nota</th>
-                                <th class="con_borde w100px">Fecha </br> Registro</th>
-                                <th class="con_borde w60px">Registo </br> Mov.Alm</th>
-                                <th class="con_borde">Almacen</th>
-                                <th class="con_borde">Descripcion/Detalle </br> Proyecto - Oficina</th>
-                                <th class="con_borde w60px">Año Doc.</th>
-                                <th class="con_borde w60px">Nro. Orden</th>
+                                <th class="con_borde w55px">Items</th>
+                                <th class="con_borde w100px">Estado</br>Actual</th>
+                                <th class="con_borde w60px">Código</br>Proyecto</th>
+                                <th class="con_borde">Area</br>Solicita</th>
+                                <th class="con_borde">Prioridad</th>
+                                <th class="con_borde w60px">Tipo</th>
+                                <th class="con_borde w60px">Año</th>
                                 <th class="con_borde w100px">Nro. Pedido</th>
-                                <th class="con_borde w80px">Guia </br> Remisión</th>
-                                <th class="con_borde w150px">Observaciones</th>
-                                <th class="con_borde w60px">Estado </br> Documento</th>
-                                <th class="con_borde">...</th>
+                                <th class="con_borde w80px">Creación </br> Pedido</th>
+                                <th class="con_borde w150px">Aprobacion </br>Pedido</th>
+                                <th class="con_borde w60px">Código</th>
+                                <th class="con_borde w60px">UND</th>
+                                <th class="con_borde w60px">Descripción</th>
+                                <th class="con_borde w60px">Cantidad</th>
+                                <th class="con_borde w60px">Orden</th>
+                                <th class="con_borde w60px">Fecha</br>Orden</th>
+                                <th class="con_borde w60px">Cantidad</br>Recibida</th>
+                                <th class="con_borde w60px">Saldo</th>
+                                <th class="con_borde w60px">...</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -386,7 +386,7 @@ $(function() {
     $("#listaTipo").on("click","a", function (e) {
         e.preventDefault();
 
-        $("#cod_tipo").val( $(this).attr("href") == 39 ? "B":"S" );
+        $("#cod_tipo").val( $(this).attr("href") == "01" ? "B":"S" );
         $("#tipo").val($(this).text());
 
         $("#tipo").addClass("desactivado");
@@ -663,7 +663,7 @@ $(function() {
             $.post(RUTA+"pedidos/registro", str,
                 function (data, textStatus, jqXHR) {
                     //registra los detalles
-                    registerItemsTable($("#cod_pedido").val());
+                    registerItemsTable($("#cod_pedido").val(),$("#numero").val());
                     //envia los adjuntos
                     if (atachs > 0) {
                         $("#fileAtachs").trigger("submit");
@@ -681,7 +681,7 @@ $(function() {
                 $.post(RUTA+"pedidos/actualiza", str,
                 function (data, textStatus, jqXHR) {
                     //registra los detalles
-                    registerItemsTable($("#cod_pedido").val());
+                    registerItemsTable($("#cod_pedido").val(),$("#numero").val());
                     //envia los adjuntos
                     if (atachs > 0) {
                         $("#fileAtachs").trigger("submit");
@@ -1018,7 +1018,7 @@ function dataPreview(){
         });
 }
 
-function registerItemsTable(codigo){
+function registerItemsTable(codigo,pedido){
     if ( $("#detalle_pedido tbody tr").length > 0) {
         DATA = [];
         var TABLA = $("#detalle_pedido tbody > tr");
@@ -1032,6 +1032,7 @@ function registerItemsTable(codigo){
                 UNIDAD  = $(this).find('td').eq(3).data("unidad"),
                 VERIFICA= $(this).find('td').eq(9).children().prop("checked"),
                 CODPED  = codigo;
+                PEDIDO  = pedido;
             
             item = {};
 
@@ -1044,6 +1045,7 @@ function registerItemsTable(codigo){
                 item["unidad"]   = UNIDAD;
                 item["codped"]   = CODPED;
                 item["verifica"] = VERIFICA;
+                item["pedido"]   = PEDIDO;
 
                 //una vez agregados los datos al array "item" declarado anteriormente hacemos un .push() para agregarlos a nuestro array principal "DATA".
                 DATA.push(item);

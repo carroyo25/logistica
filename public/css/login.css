@@ -1967,6 +1967,11 @@ input[type=checkbox]:checked {
   color: white;
   font-weight: 800; }
 
+.aprobacion {
+  background: darkblue;
+  color: white;
+  font-weight: 800; }
+
 .aprobado {
   background: powderblue;
   color: #000;
@@ -1986,6 +1991,20 @@ input[type=checkbox]:checked {
   background: #3BA28B;
   font-weight: 800;
   color: #fff; }
+
+.cotizacion {
+  background: darkorange !important;
+  outline: none;
+  font-weight: 800;
+  color: #000;
+  font-size: .7rem; }
+
+.adjudicacion {
+  background: #800000 !important;
+  outline: none;
+  font-weight: 800;
+  color: #fff;
+  font-size: .7rem; }
 
 .bien {
   background: darkorange; }

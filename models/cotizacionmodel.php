@@ -402,7 +402,7 @@
 
         public function changeDetailStatus($cod,$est){
             try {
-                $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoPed=:est WHERE id_regmov=:cod");
+                $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoReg=:est WHERE id_regmov=:cod");
                 $query->execute(["cod"=>$cod,"est"=>$est]);
             } catch (PDOException $e) {
                 echo $e->getMessage();

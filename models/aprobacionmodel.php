@@ -279,11 +279,11 @@
 
         public function actualizarPedido($cod,$nombre,$atendidos){
             $estado = $atendidos > 0 ? 4 : 8;
-
+            $fecha = date("Y-m-d");
             try {
                 $mensaje = "No se aprobo el pedido";
-                $query = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc =:est,ncodaproba=:apro WHERE id_regmov= :cod");
-                $query->execute(["cod"=>$cod,"apro"=>$_SESSION['iduser'],"est"=>$estado]);
+                $query = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc =:est,ncodaproba=:apro,ffechaprueba=:fechaAprueba WHERE id_regmov= :cod");
+                $query->execute(["cod"=>$cod,"apro"=>$_SESSION['iduser'],"est"=>$estado,"fechaAprueba"=>$fecha]);
                 $rowcount = $query->rowcount();
 
                 if ($rowcount > 0){

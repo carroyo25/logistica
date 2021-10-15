@@ -25,7 +25,7 @@
             <input type="hidden" name="estado" id="estado" value="2">
             <input type="hidden" name="atencion" id="atencion" value="3">
             <div class="process">
-                <div class="sides_process">
+                <div class="sides_process w85p">
                 <div class="descrip_title">
                     <span>Datos Generales</span>
                     <div>
@@ -82,7 +82,7 @@
                         <div class="process_estate">
                             <div class="input_process g2items">
                                 <label for="registro" class="w100px">Est.Doc.:</label>
-                                <input type="text" name="registro" id="registro" class="pl20 mayusculas proceso" readonly>
+                                <input type="text" name="registro" id="registro" class="pl20 mayusculas cotizacion" readonly>
                             </div>
                             <div class="input_process g2items">
                                 <label for="documento" class="w100px">Vencimiento:</label>

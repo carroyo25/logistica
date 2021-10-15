@@ -19,6 +19,7 @@
 
         if ($rowaffect > 0) {
             grabarDetalles($pdo,$detalles);
+            calificarProveedor($pdo,$datos['codped'],$datos['identi']);
 
             return true;
         }
@@ -47,6 +48,18 @@
                 echo  $th->getMessage();
                 return false;
             }
+        }
+    }
+
+    function calificarProveedor($pdo,$entidad,$pedido){
+        try {
+            $id = uniqid("cal");
+            $sql = "INSERT INTO tb_califica SET idreg=?,id_centi=?,id_pedido=?,nCalPedido=?";
+            $statement = $pdo->prepare($sql);
+            $statement->execute(array($id,$entidad,$pedido,5));
+        } catch (PDOException $th) {
+            echo $th->getMessage();
+            return false;
         }
     }
 ?>

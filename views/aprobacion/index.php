@@ -96,7 +96,7 @@
             <input type="hidden" name="estado" id="estado" value="2">
             <input type="hidden" name="atencion" id="atencion" value="3">
             <div class="process">
-                <div class="sides_process">
+                <div class="sides_process w85p">
                 <div class="descrip_title">
                     <span>Datos Generales</span>
                     <div>
@@ -159,10 +159,7 @@
                                 <label for="registro" class="w100px">Est.Doc.:</label>
                                 <input type="text" name="registro" id="registro" class="pl20 mayusculas proceso" readonly>
                             </div>
-                            <div class="input_process g2items">
-                                <label for="documento" class="w100px">Est.Registro:</label>
-                                <input type="text" name="documento" id="documento" class="pl20 mayusculas proceso" readonly>
-                            </div>
+                            
                             <div class="input_process g2items">
                                 <label for="tipo" class="w100px">Tipo</label>
                                 <input type="text" name="tipo" id="tipo" class="pl20 mayusculas" readonly>
