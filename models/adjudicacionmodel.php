@@ -116,13 +116,14 @@
                                                             INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry
                                                             INNER JOIN logistica.tb_area ON logistica.lg_pedidocab.ncodarea = logistica.tb_area.ncodarea
                                                             INNER JOIN logistica.tb_ccostos ON logistica.lg_pedidocab.ncodcos = logistica.tb_ccostos.ncodcos
-                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ncodprm2
+                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ccodprm2
                                                             INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
                                                             INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
                                                         WHERE
                                                             logistica.lg_pedidocab.id_regmov = :cod 
                                                             AND atenciones.ncodprm1 = 13 
-                                                            AND estados.ncodprm1 = 4");
+                                                            AND estados.ncodprm1 = 4 
+                                                            AND transportes.ncodprm1 = 7");
                 $query->execute(["cod"=>$cod]);
                 $rowcount = $query->rowcount();
 

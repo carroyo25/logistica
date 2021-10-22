@@ -117,8 +117,10 @@
             $area = $_POST['cod_area'];
             $costos = $_POST['cod_cos'];
             $cod_mov = $_POST['cod_mov'];
+            $calidad = $_POST['calidad'];
 
-            $result = $this->model->insertarIngreso($fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,$detalles,$series,$adjuntos,$proyecto,$area,$costos,$cod_mov);
+            $result = $this->model->insertarIngreso($fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,
+                                                    $detalles,$series,$adjuntos,$proyecto,$area,$costos,$cod_mov,$calidad);
 
             echo json_encode($result);
         }

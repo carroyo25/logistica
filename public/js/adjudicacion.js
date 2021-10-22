@@ -73,7 +73,7 @@ $(function(){
                 item["pedido"] = $(this).parent().data("pedido");
                 item['entidad'] = entidad;
                 item["detalle"] = $(this).parent().data("detalle");
-                item["unitario"] = $(this).parent().data("unitario");
+                item["unitario"] = $(this).parent().data("precio");
             
                 fila.push(item);
             }else{
@@ -143,7 +143,6 @@ $(function(){
         
         $("*").css("cursor", "wait");
 
-
         $.post(RUTA+"adjudicacion/pasaverificar", {detalles:items},
             function (data, textStatus, jqXHR) {
                 if (data){
@@ -152,6 +151,7 @@ $(function(){
             },
             "text"
         );
+
         return false;
     });
 })

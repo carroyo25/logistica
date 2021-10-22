@@ -344,53 +344,53 @@
                 $item = array();
 
                 $query = $this->db->connect()->prepare("SELECT
-                                                            logistica.lg_pedidocab.id_regmov,
-                                                            logistica.lg_pedidocab.cnumero,
-                                                            logistica.lg_pedidocab.ctipmov,
-                                                            logistica.lg_pedidocab.ncodmov,
-                                                            logistica.lg_pedidocab.ccoddoc,
-                                                            logistica.lg_pedidocab.cserie,
-                                                            logistica.lg_pedidocab.ffechadoc,
-                                                            logistica.lg_pedidocab.ncodpry,
-                                                            logistica.lg_pedidocab.ncodcos,
-                                                            logistica.lg_pedidocab.ncodarea,
-                                                            logistica.lg_pedidocab.ncodper,
-                                                            logistica.lg_pedidocab.cconcepto,
-                                                            logistica.lg_pedidocab.mdetalle,
-                                                            logistica.lg_pedidocab.ctiptransp,
-                                                            logistica.lg_pedidocab.nEstadoReg,
-                                                            logistica.lg_pedidocab.nEstadoDoc,
-                                                            logistica.lg_pedidocab.id_cuser,
-                                                            logistica.lg_pedidocab.nflgactivo,
-                                                            logistica.lg_pedidocab.nNivAten,
-                                                            logistica.lg_pedidocab.ffechaven,
-                                                            rrhh.tabla_aquarius.apellidos,
-                                                            rrhh.tabla_aquarius.nombres,
-                                                            rrhh.tabla_aquarius.dni,
-                                                            logistica.tb_proyecto1.ccodpry,
-                                                            logistica.tb_proyecto1.cdespry,
-                                                            logistica.tb_area.ccodarea,
-                                                            logistica.tb_area.cdesarea,
-                                                            logistica.tb_ccostos.ccodcos,
-                                                            logistica.tb_ccostos.cdescos,
-                                                            transportes.cdesprm2 AS transporte,
-                                                            transportes.ccodprm2 AS cod_transporte,
-                                                            atenciones.cdesprm2 AS atencion,
-                                                            estados.cdesprm2 AS estado 
-                                                        FROM
-                                                            logistica.lg_pedidocab
-                                                            INNER JOIN rrhh.tabla_aquarius ON logistica.lg_pedidocab.ncodper = rrhh.tabla_aquarius.internal
-                                                            INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry
-                                                            INNER JOIN logistica.tb_area ON logistica.lg_pedidocab.ncodarea = logistica.tb_area.ncodarea
-                                                            INNER JOIN logistica.tb_ccostos ON logistica.lg_pedidocab.ncodcos = logistica.tb_ccostos.ncodcos
-                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ncodprm2
-                                                            INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
-                                                            INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
-                                                        WHERE
-                                                            logistica.lg_pedidocab.id_regmov = :cod 
-                                                            AND atenciones.ncodprm1 = 13 
-                                                            AND estados.ncodprm1 = 4
-                                                            AND g_pedidocab.nEstadoDoc = 7");
+                logistica.lg_pedidocab.id_regmov,
+                logistica.lg_pedidocab.cnumero,
+                logistica.lg_pedidocab.ctipmov,
+                logistica.lg_pedidocab.ncodmov,
+                logistica.lg_pedidocab.ccoddoc,
+                logistica.lg_pedidocab.cserie,
+                logistica.lg_pedidocab.ffechadoc,
+                logistica.lg_pedidocab.ffechaven,
+                logistica.lg_pedidocab.ncodpry,
+                logistica.lg_pedidocab.ncodcos,
+                logistica.lg_pedidocab.ncodarea,
+                logistica.lg_pedidocab.ncodper,
+                logistica.lg_pedidocab.cconcepto,
+                logistica.lg_pedidocab.mdetalle,
+                logistica.lg_pedidocab.ctiptransp,
+                logistica.lg_pedidocab.nEstadoReg,
+                logistica.lg_pedidocab.nEstadoDoc,
+                logistica.lg_pedidocab.id_cuser,
+                logistica.lg_pedidocab.nflgactivo,
+                logistica.lg_pedidocab.nNivAten,
+                rrhh.tabla_aquarius.apellidos,
+                rrhh.tabla_aquarius.nombres,
+                rrhh.tabla_aquarius.dni,
+                logistica.tb_proyecto1.ccodpry,
+                logistica.tb_proyecto1.cdespry,
+                logistica.tb_area.ccodarea,
+                logistica.tb_area.cdesarea,
+                logistica.tb_ccostos.ccodcos,
+                logistica.tb_ccostos.cdescos,
+                transportes.cdesprm2 AS transporte,
+                transportes.ccodprm2 AS cod_transporte,
+                atenciones.cdesprm2 AS atencion,
+                estados.cdesprm2 AS estado 
+            FROM
+                logistica.lg_pedidocab
+                INNER JOIN rrhh.tabla_aquarius ON logistica.lg_pedidocab.ncodper = rrhh.tabla_aquarius.internal
+                INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry
+                INNER JOIN logistica.tb_area ON logistica.lg_pedidocab.ncodarea = logistica.tb_area.ncodarea
+                INNER JOIN logistica.tb_ccostos ON logistica.lg_pedidocab.ncodcos = logistica.tb_ccostos.ncodcos
+                INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ccodprm2
+                INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
+                INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
+            WHERE
+                logistica.lg_pedidocab.id_regmov = :cod 
+                AND atenciones.ncodprm1 = 13 
+                AND estados.ncodprm1 = 4 
+                AND transportes.ncodprm1 = 7");
                 $query->execute(["cod"=>$cod]);
                 $rowcount = $query->rowcount();
 
@@ -434,7 +434,7 @@
 
                 return $item;
             } catch (PDOException $e) {
-                $e->getMessage();
+                echo $e->getMessage();
                 return false;
             }
         }
@@ -596,130 +596,133 @@
         public function pasarDatosOrden($cabecera,$detalles,$condicion){
             require_once("public/libsrepo/repooc.php");
 
-            $fileExist = $cabecera['ordenpdf'];
-
             try {   
-                if  ( file_exists( $fileExist) ){
-                    return $cabecera['ordenpdf'];    
-                } 
-                $entidad = $this->obtenerEntidad($cabecera['id_entidad']);
-                $banco = $this->obtenerEntidadBanco($cabecera['id_entidad'],$cabecera['idmoneda']);
-                $datos = json_decode($detalles);
-                $contacto = $this->obtenerEntidadContacto($cabecera['id_entidad']);
-    
-                $nombre_contacto    = isset($contacto['nombre']) ? $contacto['nombre'] : "";
-                $telefono_contacto  =  isset($contacto['telefono']) ? $contacto['telefono'] : "";
-                $mail_contacto      = isset($contacto['mail']) ? $contacto['mail'] : "";
-    
-                $banco_entidad  = isset($banco['banco']) ? $banco['banco'] : "";
-                $modena_entidad = isset($banco['cmoneda']) ? $banco['cmoneda'] : "";
-                $cuenta_entidad = isset($banco['cta']) ? $banco['cta'] : "";
-    
-                if ($cabecera['tipoPedido'] == "B") {
-                    $titulo = "ORDEN DE COMPRA" ;
-                    $prefix = "OC";
-                }else{
-                    $titulo = "ORDEN DE SERVICIO";
-                    $prefix = "OS";
-                }
-    
-                $nOrd = $this->generarNumeroOrden();
-    
-                $titulo = $titulo . " " . $nOrd['numero'];
+
+                if ( $cabecera['ordenpdf'] == "" ){
+                    $entidad = $this->obtenerEntidad($cabecera['id_entidad']);
+                    $banco = $this->obtenerEntidadBanco($cabecera['id_entidad'],$cabecera['idmoneda']);
+                    $datos = json_decode($detalles);
+                    $contacto = $this->obtenerEntidadContacto($cabecera['id_entidad']);
+
+                    $nombre_contacto    = isset($contacto['nombre']) ? $contacto['nombre'] : "";
+                    $telefono_contacto  =  isset($contacto['telefono']) ? $contacto['telefono'] : "";
+                    $mail_contacto      = isset($contacto['mail']) ? $contacto['mail'] : "";
+        
+                    $banco_entidad  = isset($banco['banco']) ? $banco['banco'] : "";
+                    $modena_entidad = isset($banco['cmoneda']) ? $banco['cmoneda'] : "";
+                    $cuenta_entidad = isset($banco['cta']) ? $banco['cta'] : "";
+        
+                    if ($cabecera['tipoPedido'] == "B") {
+                        $titulo = "ORDEN DE COMPRA" ;
+                        $prefix = "OC";
+                    }else{
+                        $titulo = "ORDEN DE SERVICIO";
+                        $prefix = "OS";
+                    }
+        
+                    $nOrd = $this->generarNumeroOrden();
+        
+                    $titulo = $titulo . " " . $nOrd['numero'];
+                        
+                    $anio = explode("-",$cabecera['fechaOrd']);
                     
-                $anio = explode("-",$cabecera['fechaOrd']);
-                
-                $file = $prefix.$cabecera['orden'].".pdf";
-                    
-                $pdf = new PDF($titulo,$condicion,$cabecera['fechaOrd'],$cabecera['monedaOrd'],$cabecera['condentrega'],$cabecera['lugarEntrega'],$cabecera['cotizacion'],
+                    $file = $prefix.$cabecera['orden'].".pdf";
+
+                    $pdf = new PDF($titulo,$condicion,$cabecera['fechaOrd'],$cabecera['monedaOrd'],$cabecera['condentrega'],$cabecera['lugarEntrega'],$cabecera['cotizacion'],
                         $cabecera['entrega'],$cabecera['condpago'],$cabecera['precioOrd'],$cabecera['proyectoOrd'],$cabecera['detalleOrd'],$cabecera['elaborado'],
                         $cabecera['entidad'],$cabecera['ruc'],$entidad['direccion'],$entidad['telefono'],$entidad['correo'],$entidad['retencion'],
                         $nombre_contacto,$telefono_contacto,$mail_contacto );
-                $pdf->AddPage();
-                $pdf->AliasNbPages();
-                $pdf->SetWidths(array(10,15,15,10,95,17,15,15));
-                $pdf->SetFont('Arial','',5);
-                $lc = 0;
-                $rc = 0;
-    
-                $nreg = count($datos);
-    
-                for ($i=0; $i < $nreg; $i++) { 
-                    $pdf->SetAligns(array("C","C","R","C","L","C","R","R"));
-                    $pdf->Row(array($datos[$i]->item,
-                                    $datos[$i]->codigo,
-                                    $datos[$i]->cantidad,
-                                    $datos[$i]->unidad,
-                                    $datos[$i]->descripcion,
-                                    $datos[$i]->pedido,
-                                    $datos[$i]->punit,
-                                    $datos[$i]->total));
-                    $lc++;
-                    $rc++;
-                    
-                    if ($lc == 52) {
-                        $pdf->AddPage();
-                        $lc = 0;
+                    $pdf->AddPage();
+                    $pdf->AliasNbPages();
+                    $pdf->SetWidths(array(10,15,15,10,95,17,15,15));
+                    $pdf->SetFont('Arial','',5);
+                    $lc = 0;
+                    $rc = 0;
+        
+                    $nreg = count($datos);
+        
+                    for ($i=0; $i < $nreg; $i++) { 
+                        $pdf->SetAligns(array("C","C","R","C","L","C","R","R"));
+                        $pdf->Row(array($datos[$i]->item,
+                                        $datos[$i]->codigo,
+                                        $datos[$i]->cantidad,
+                                        $datos[$i]->unidad,
+                                        $datos[$i]->descripcion,
+                                        $datos[$i]->pedido,
+                                        $datos[$i]->punit,
+                                        $datos[$i]->total));
+                        $lc++;
+                        $rc++;
+                        
+                        if ($lc == 52) {
+                            $pdf->AddPage();
+                            $lc = 0;
+                        }
                     }
-                }
-    
-                $pdf->Ln(3);
-    
-                $pdf->SetFillColor(229, 229, 229);
-                $pdf->SetFont('Arial','B',10);
-                $pdf->Cell(20,6,"TOTAL :","LTB",0,"C",true);
-                $pdf->SetFont('Arial','B',8);
-                $pdf->Cell(140,6,$this->convertir($cabecera['precioOrd']),"TBR",0,"L",true); 
-                $pdf->SetFont('Arial','B',10);
-                $pdf->Cell(30,6,number_format($cabecera['precioOrd'], 2, '.', ','),"1",1,"R",true);
-                
-                $pdf->Ln(1);
-                $pdf->SetFont('Arial',"","7");
-                $pdf->Cell(40,6,"Pedidos Asociados",1,0,"C",true);
-                $pdf->Cell(5,6,"",0,0);
-                $pdf->Cell(80,6,utf8_decode("Información Bancaria del Proveedor"),1,0,"C",true);
-                $pdf->Cell(10,6,"",0,0);
-                $pdf->Cell(40,6,"Valor Venta",0,0);
-                $pdf->Cell(20,6,number_format($cabecera['precioOrd'], 2, '.', ','),0,1);
-                                    
-                $pdf->Cell(10,4,utf8_decode("Año"),1,0);
-                
-                $pdf->Cell(10,4,"Tipo",1,0);
-                $pdf->Cell(10,4,"Pedido",1,0);
-                $pdf->Cell(10,4,"Mantto",1,0);
-                $pdf->Cell(5,6,"",0,0);
-                $pdf->Cell(35,4,"Detalle del Banco",1,0);
-                $pdf->Cell(15,4,"Moneda",1,0);
-                $pdf->Cell(30,4,"Nro. Cuenta Bancaria",1,1);
-                
-                $pdf->Cell(10,4,$anio[0],1,0);
-                $pdf->Cell(10,4,$cabecera['tipoPedido'],1,0);
-                $pdf->Cell(10,4,$cabecera['nropedido'],1,0);
-                $pdf->Cell(10,4,"",1,0);
-                $pdf->Cell(5,6,"",0,0);
-                $pdf->Cell(35,4,utf8_decode($banco_entidad),1,0);
-                $pdf->Cell(15,4,$modena_entidad,1,0);
-                $pdf->Cell(30,4,$cuenta_entidad,1,0);
-                $pdf->Cell(10,4,"",0,0);
-                $pdf->SetFont('Arial',"B","8");
-                $pdf->Cell(20,4,"TOTAL",1,0,"L",true);
-                $pdf->Cell(15,4,$cabecera['mon_abrevia'],1,0,"C",true);
-                $pdf->Cell(20,4,number_format($cabecera['precioOrd'], 2, '.', ','),1,1,"R",true);
+        
+                    $pdf->Ln(3);
+        
+                    $pdf->SetFillColor(229, 229, 229);
+                    $pdf->SetFont('Arial','B',10);
+                    $pdf->Cell(20,6,"TOTAL :","LTB",0,"C",true);
+                    $pdf->SetFont('Arial','B',8);
+                    $pdf->Cell(140,6,$this->convertir($cabecera['precioOrd']),"TBR",0,"L",true); 
+                    $pdf->SetFont('Arial','B',10);
+                    $pdf->Cell(30,6,$cabecera['precioOrd'],"1",1,"R",true);
+                    
+                    $pdf->Ln(1);
+                    $pdf->SetFont('Arial',"","7");
+                    $pdf->Cell(40,6,"Pedidos Asociados",1,0,"C",true);
+                    $pdf->Cell(5,6,"",0,0);
+                    $pdf->Cell(80,6,utf8_decode("Información Bancaria del Proveedor"),1,0,"C",true);
+                    $pdf->Cell(10,6,"",0,0);
+                    $pdf->Cell(40,6,"Valor Venta",0,0);
+                    $pdf->Cell(20,6,$cabecera['precioOrd'],0,1);
+                                        
+                    $pdf->Cell(10,4,utf8_decode("Año"),1,0);
+                    
+                    $pdf->Cell(10,4,"Tipo",1,0);
+                    $pdf->Cell(10,4,"Pedido",1,0);
+                    $pdf->Cell(10,4,"Mantto",1,0);
+                    $pdf->Cell(5,6,"",0,0);
+                    $pdf->Cell(35,4,"Detalle del Banco",1,0);
+                    $pdf->Cell(15,4,"Moneda",1,0);
+                    $pdf->Cell(30,4,"Nro. Cuenta Bancaria",1,1);
+                    
+                    $pdf->Cell(10,4,$anio[0],1,0);
+                    $pdf->Cell(10,4,$cabecera['tipoPedido'],1,0);
+                    $pdf->Cell(10,4,$cabecera['nropedido'],1,0);
+                    $pdf->Cell(10,4,"",1,0);
+                    $pdf->Cell(5,6,"",0,0);
+                    $pdf->Cell(35,4,utf8_decode($banco_entidad),1,0);
+                    $pdf->Cell(15,4,$modena_entidad,1,0);
+                    $pdf->Cell(30,4,$cuenta_entidad,1,0);
+                    $pdf->Cell(10,4,"",0,0);
+                    $pdf->SetFont('Arial',"B","8");
+                    $pdf->Cell(20,4,"TOTAL",1,0,"L",true);
+                    $pdf->Cell(15,4,$cabecera['mon_abrevia'],1,0,"C",true);
+                    $pdf->Cell(20,4,$cabecera['precioOrd'],1,1,"R",true);
 
-                if ($condicion == 0){
-                    $filename = "public/ordenes/emitidas/".$file;
-                    $pdf->Output($filename,'F');
-                }   
-                else{
-                    $filename = "public/ordenes/aprobadas/".$file;
-                    $pdf->Output($filename,'F');
-                    $envio = true;
-                    $envio = $this->enviarCorreo($filename,$entidad['correo'],$nombre_contacto,$titulo); //pendiente por verificar
-                } 
-                
-                if ($envio){
-                    $this->actualizarCabeceraOrden($cabecera['orden']);
+                    if ($condicion == 0){
+                        $filename = "public/ordenes/emitidas/".$file;
+                        $pdf->Output($filename,'F');
+                    }   
+                    else{
+                        $filename = "public/ordenes/aprobadas/".$file;
+                        $pdf->Output($filename,'F');
+                        $envio = $this->enviarCorreo($filename,$entidad['correo'],$nombre_contacto,$titulo); //pendiente por verificar
+
+                        if ($envio){
+                            $this->actualizarCabeceraOrden($cabecera['orden']);
+                        }
+                    } 
+                    
+                    return $filename;
+                }else{
+                    $ruta = $condicion == 0 ? "public/ordenes/emitidas/":"public/ordenes/aprobadas/"; 
+                    return $cabecera['ordenpdf']; 
                 }
+                
 
             } catch (PDOException $th) {
                 echo $th->getMessage();
@@ -731,9 +734,9 @@
             require_once("public/PHPMailer/PHPMailerAutoload.php");
 
             try {
-                /*$origen = $_SESSION['user']."@sepcon.net";
+                $origen = $_SESSION['user']."@sepcon.net";
                 $nombre_envio = $_SESSION['nombres'];
-                $title = "Atencion de" . strtolower($titulo);
+                $title = "Atencion de " . strtolower($titulo);
 
                 $mail = new PHPMailer;
                 $mail->isSMTP();
@@ -767,7 +770,7 @@
                 $message .= "<table align='center' width='100%' border='0' cellpadding='0' cellspacing='0' style='max-width:650px; background-color:#fff; font-family:Verdana, Geneva, sans-serif;'>";
                 $message .= "<thead>
                     <tr height='80'>
-                    <th colspan='4' style='background-color:#f5f5f5; border-bottom:solid 1px #bdbdbd; font-family:Verdana, Geneva, sans-serif; color:red; font-size:34px;' >Tarjeta TOP</th>
+                    <th colspan='4' style='background-color:#f5f5f5; border-bottom:solid 1px #bdbdbd; font-family:Verdana, Geneva, sans-serif; color:red; font-size:34px;' >Atención de Orden</th>
                     </tr></thead>";
                 $message .= "<tbody><tr>
                         <td colspan='4' style='padding:15px;'>
@@ -777,8 +780,6 @@
                             <p style='font-size:25px;'>A espera de su pronta respuesta</p>
                             <p style='font-size:25px;'>Atte</p>
 
-                            <p style='font-size:15px; font-family:Verdana, Geneva, sans-serif; text-align: center; '>'.$nombre.'</p>
-
                             <img src='public/img/logo.png' style='height:auto; width:100%; max-width:100%;'/>
                         </td>
                         </tr></tbody>";
@@ -787,14 +788,14 @@
                 $message .= "</table>";
                 $message .= "</body></html>";
 
-                $mail->Body = html_entity_decode(utf8_decode($message));
+                $mail->msgHTML(utf8_decode($message));
 
                 if (!$mail->send()) {
                     echo $_SESSION['password'];
                     $mensaje = $mail->ErrorInfo;
 			    }else {
                     $mensaje = "Enviado";
-                }*/
+                }
 
                 $mensaje = true;
 

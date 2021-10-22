@@ -68,6 +68,7 @@ $(function(){
                                                     cod_pry:$("#cod_proyecto").val(),
                                                     cod_area:$("#cod_area").val(),
                                                     cod_cos:$("#cod_costos").val(),
+                                                    calidad:$("#chkCalidad").prop("checked"),
                                                     detalles:JSON.stringify(DETALLES),
                                                     series:JSON.stringify(SERIES),
                                                     adjuntos:JSON.stringify(ADJUNTOS)
@@ -256,6 +257,7 @@ $(function(){
                 $("#cod_proyecto").val(data.idproy);
                 $("#cod_area").val(data.idarea);
                 $("#cod_costos").val(data.idcost);
+                $("#entrega").val(data.ffechaent);
 
                 $.post(RUTA+"ingresos/detailsOrder", {codigo:data.codigo},
                     function (data, textStatus, jqXHR) {
@@ -353,7 +355,6 @@ $(function(){
         e.preventDefault();
 
         var maxSerial = $("#nroItemSerial").text();
-        //var itemsfila = $("#detalle_series tbody tr").length;
 
         if ( itemsfila == maxSerial ){
             getSeries();
@@ -374,9 +375,11 @@ $(function(){
             return false;
         }
 
+        let orden = "public/ordenes/aprobadas/OC"+$("#idorden").val()+".pdf";
+
         $("#modalOrderDetail .insidePreview object")
                 .attr("data","")
-                .attr("data",$("#order_file").val());
+                .attr("data",orden);
 
         $("#modalOrderDetail").fadeIn();
 
@@ -704,9 +707,9 @@ function getSeries(){
                 item['serie']   = SERIE;
                 item['observ']  = OBSERV;
                 item['codpro']  = CODPRO;
-            }
 
-            SERIES.push(item);
+                SERIES.push(item);
+            }       
     })
 
     return SERIES;

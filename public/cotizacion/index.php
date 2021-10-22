@@ -9,7 +9,7 @@
 
     //aca tiene que ver otras condiciones
 
-    $condicion = general($pdo,11);
+    $condicion = general($pdo,12);
     $moneda = monedas($pdo);
     $entidad = obtenerProveedor($pdo,$proveedor);
     $items = obtenerItems($pdo,$pedido);

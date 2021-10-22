@@ -28,9 +28,10 @@
             <input type="hidden" name="idorden" id="idorden">
             <input type="hidden" name="idpedido" id="idpedido">
             <input type="hidden" name="estado" id="estado" value= "1">
+            <input type="hidden" name="entrega" id="entrega">
 
             <div class="process">
-                <div class="sides_process">
+                <div class="sides_process w85p">
                         <div class="descrip_title">
                             <span>Datos Generales</span>
                             <div>

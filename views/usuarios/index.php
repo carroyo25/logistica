@@ -55,7 +55,7 @@
             <input type="hidden" name="cod_cargo" id="cod_cargo">
             <input type="hidden" name="old_pass" id="old_pass">
             <div class="process">
-                <div class="sides_process">
+                <div class="sides_process w85p">
                 <div class="descrip_title">
                     <span>Datos Generales</span>
                     <div>

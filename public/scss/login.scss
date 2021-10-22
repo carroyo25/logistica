@@ -2492,6 +2492,7 @@ input[type=checkbox]:checked
     outline: none;
     font-weight: 800;
     color: #000;
+    font-size: .7rem;
 }
 
 .normal{
@@ -2505,6 +2506,11 @@ input[type=checkbox]:checked
     color: #fff;
 }
 
+.verificacion {
+    background: #aaaaaa;
+    font-weight: 800;
+    color: #fff;
+}
 
 .cotizacion{
     background: darkorange !important;
@@ -2514,12 +2520,30 @@ input[type=checkbox]:checked
     font-size: .7rem;
 }
 
+.recepcion{
+    background: #605CA8 !important;
+    outline: none;
+    font-weight: 800;
+    color: #000;
+    font-size: .7rem;
+}
+
+
+
 .adjudicacion{
     background: #800000 !important;
     outline: none;
     font-weight: 800;
     color: #fff;
     font-size: .7rem;
+}
+
+.orden_aprobada{
+    background: #008B8B !important;
+    outline: none;
+    font-weight: 800;
+    color: #fff;
+    font-size: .6rem;
 }
 
 .bien{

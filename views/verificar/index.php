@@ -123,7 +123,7 @@
                         <div class="process_estate">
                             <div class="input_process g2items">
                                 <label for="registro" class="w100px">Est.Doc.:</label>
-                                <input type="text" name="registro" id="registro" class="pl20 mayusculas proceso" readonly>
+                                <input type="text" name="registro" id="registro" class="pl20 mayusculas verificacion" readonly>
                             </div>
                         </div>
                     </div>

@@ -77,6 +77,8 @@ $(function(){
 
         var result = {};
 
+        $("#ordenpdf").val("");
+
         detallesparaOrden();
         let detalles = JSON.stringify(DETALLES);
 
@@ -90,7 +92,7 @@ $(function(){
             data: {
                 cabecera:result,
                 detalles,
-                codicion:1
+                condicion:1
             },
             dataType: "text",
             success: function (response) {
@@ -389,7 +391,7 @@ $(function(){
             data: {
                 cabecera:result,
                 detalles,
-                codicion:0
+                condicion:0
             },
             dataType: "text",
             success: function (response) {

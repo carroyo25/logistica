@@ -119,7 +119,7 @@
     </div>
     <div class="modal" id="modalProcessOrden">
         <div class="process">
-            <div class="sides_process">
+            <div class="sides_process w85p">
                 <div class="descrip_title">
                     <div class="titulo_compuesto">
                         <span>Datos de la Orden</span>

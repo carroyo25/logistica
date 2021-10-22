@@ -13,7 +13,7 @@
     </div>
     <div class="modal" id="modalProcess">
         <div class="process">
-            <div class="sides_process">
+            <div class="sides_process w85p">
                 <ul class="tabs">
                     <li><a href="tab1" class="option_tab_selected">Descripción de la Orden</a></li>
                     <li><a href="tab2">Descripción del Pedido</a> </li>

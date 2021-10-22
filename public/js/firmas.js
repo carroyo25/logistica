@@ -69,7 +69,13 @@ $(function(){
                         '<td class="con_borde centro"><a href="#" id="deleteComment"><i class="far fa-trash-alt"></i></a></td>'+
                     '</tr>';
 
-        $('#table_observacion > tbody tr:eq(0)').before(row);
+        
+        if ( $("#table_observacion tbody tr").length == 0){
+            $('#table_observacion tbody').append(row);
+        }
+        else{
+            $('#table_observacion > tbody tr:eq(0)').before(row);
+        }
 
         return false;
     });

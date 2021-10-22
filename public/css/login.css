@@ -1981,7 +1981,8 @@ input[type=checkbox]:checked {
   background: yellow !important;
   outline: none;
   font-weight: 800;
-  color: #000; }
+  color: #000;
+  font-size: .7rem; }
 
 .normal {
   background: chartreuse;
@@ -1992,8 +1993,20 @@ input[type=checkbox]:checked {
   font-weight: 800;
   color: #fff; }
 
+.verificacion {
+  background: #aaaaaa;
+  font-weight: 800;
+  color: #fff; }
+
 .cotizacion {
   background: darkorange !important;
+  outline: none;
+  font-weight: 800;
+  color: #000;
+  font-size: .7rem; }
+
+.recepcion {
+  background: #605CA8 !important;
   outline: none;
   font-weight: 800;
   color: #000;
@@ -2005,6 +2018,13 @@ input[type=checkbox]:checked {
   font-weight: 800;
   color: #fff;
   font-size: .7rem; }
+
+.orden_aprobada {
+  background: #008B8B !important;
+  outline: none;
+  font-weight: 800;
+  color: #fff;
+  font-size: .6rem; }
 
 .bien {
   background: darkorange; }

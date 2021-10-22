@@ -55,7 +55,7 @@
         function enviaDatosOrden(){
             $cabecera = $_POST['cabecera'];
             $detalles = $_POST['detalles'];
-            $condicion = $_POST['codicion'];
+            $condicion = $_POST['condicion'];
 
             $result = $this->model->pasarDatosOrden($cabecera,$detalles,$condicion);
 
@@ -108,7 +108,7 @@
         function correoProveedor(){
             $cabecera = $_POST['cabecera'];
             $detalles = $_POST['detalles'];
-            $condicion = $_POST['codicion'];
+            $condicion = $_POST['condicion'];
 
             $result = $this->model->pasarDatosOrden($cabecera,$detalles,$condicion);
 

@@ -161,6 +161,7 @@
                     $contacto = $this->obtenerEntidadContacto($result[0]["id_centi"]);
 
                     $tipo = $result[0]["ctipmov"] == "B" ? "BIENES" : "SERVICIOS";
+                    $total = floatval($result[0]['ntotal']);
 
                     $salida = array("orden"=>$result[0]["id_regmov"],
                                     "pedido"=>$result[0]["id_refpedi"],
@@ -186,7 +187,7 @@
                                     "costosOrd"=>$result[0]['ccodcos'].' '.$result[0]['cdescos'],
                                     "conceptoOrd"=>$result[0]['cconcepto'],
                                     "detalleOrd"=>$result[0]['mdetalle'],
-                                    "precioOrd"=>number_format($result[0]['ntotal'], 2, '.', ','),
+                                    "precioOrd"=>$total,
                                     "entrega"=>$result[0]['ffechaent'],
                                     "condpago"=>$result[0]['pago'],
                                     "condentrega"=>$result[0]['entrega'],

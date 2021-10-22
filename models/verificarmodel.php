@@ -74,52 +74,53 @@
                 $item = array();
 
                 $query = $this->db->connect()->prepare("SELECT
-                                                            logistica.lg_pedidocab.id_regmov,
-                                                            logistica.lg_pedidocab.cnumero,
-                                                            logistica.lg_pedidocab.ctipmov,
-                                                            logistica.lg_pedidocab.ncodmov,
-                                                            logistica.lg_pedidocab.ccoddoc,
-                                                            logistica.lg_pedidocab.cserie,
-                                                            logistica.lg_pedidocab.ffechadoc,
-                                                            logistica.lg_pedidocab.ncodpry,
-                                                            logistica.lg_pedidocab.ncodcos,
-                                                            logistica.lg_pedidocab.ncodarea,
-                                                            logistica.lg_pedidocab.ncodper,
-                                                            logistica.lg_pedidocab.cconcepto,
-                                                            logistica.lg_pedidocab.mdetalle,
-                                                            logistica.lg_pedidocab.ctiptransp,
-                                                            logistica.lg_pedidocab.nEstadoReg,
-                                                            logistica.lg_pedidocab.nEstadoDoc,
-                                                            logistica.lg_pedidocab.id_cuser,
-                                                            logistica.lg_pedidocab.nflgactivo,
-                                                            logistica.lg_pedidocab.nNivAten,
-                                                            logistica.lg_pedidocab.ffechaven,
-                                                            rrhh.tabla_aquarius.apellidos,
-                                                            rrhh.tabla_aquarius.nombres,
-                                                            rrhh.tabla_aquarius.dni,
-                                                            logistica.tb_proyecto1.ccodpry,
-                                                            logistica.tb_proyecto1.cdespry,
-                                                            logistica.tb_area.ccodarea,
-                                                            logistica.tb_area.cdesarea,
-                                                            logistica.tb_ccostos.ccodcos,
-                                                            logistica.tb_ccostos.cdescos,
-                                                            transportes.cdesprm2 AS transporte,
-                                                            transportes.ccodprm2 AS cod_transporte,
-                                                            atenciones.cdesprm2 AS atencion,
-                                                            estados.cdesprm2 AS estado 
-                                                        FROM
-                                                            logistica.lg_pedidocab
-                                                            INNER JOIN rrhh.tabla_aquarius ON logistica.lg_pedidocab.ncodper = rrhh.tabla_aquarius.internal
-                                                            INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry
-                                                            INNER JOIN logistica.tb_area ON logistica.lg_pedidocab.ncodarea = logistica.tb_area.ncodarea
-                                                            INNER JOIN logistica.tb_ccostos ON logistica.lg_pedidocab.ncodcos = logistica.tb_ccostos.ncodcos
-                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ncodprm2
-                                                            INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
-                                                            INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
-                                                        WHERE
-                                                            logistica.lg_pedidocab.id_regmov = :cod 
-                                                            AND atenciones.ncodprm1 = 13 
-                                                            AND estados.ncodprm1 = 4");
+                                                        logistica.lg_pedidocab.id_regmov,
+                                                        logistica.lg_pedidocab.cnumero,
+                                                        logistica.lg_pedidocab.ctipmov,
+                                                        logistica.lg_pedidocab.ncodmov,
+                                                        logistica.lg_pedidocab.ccoddoc,
+                                                        logistica.lg_pedidocab.cserie,
+                                                        logistica.lg_pedidocab.ffechadoc,
+                                                        logistica.lg_pedidocab.ffechaven,
+                                                        logistica.lg_pedidocab.ncodpry,
+                                                        logistica.lg_pedidocab.ncodcos,
+                                                        logistica.lg_pedidocab.ncodarea,
+                                                        logistica.lg_pedidocab.ncodper,
+                                                        logistica.lg_pedidocab.cconcepto,
+                                                        logistica.lg_pedidocab.mdetalle,
+                                                        logistica.lg_pedidocab.ctiptransp,
+                                                        logistica.lg_pedidocab.nEstadoReg,
+                                                        logistica.lg_pedidocab.nEstadoDoc,
+                                                        logistica.lg_pedidocab.id_cuser,
+                                                        logistica.lg_pedidocab.nflgactivo,
+                                                        logistica.lg_pedidocab.nNivAten,
+                                                        rrhh.tabla_aquarius.apellidos,
+                                                        rrhh.tabla_aquarius.nombres,
+                                                        rrhh.tabla_aquarius.dni,
+                                                        logistica.tb_proyecto1.ccodpry,
+                                                        logistica.tb_proyecto1.cdespry,
+                                                        logistica.tb_area.ccodarea,
+                                                        logistica.tb_area.cdesarea,
+                                                        logistica.tb_ccostos.ccodcos,
+                                                        logistica.tb_ccostos.cdescos,
+                                                        transportes.cdesprm2 AS transporte,
+                                                        transportes.ccodprm2 AS cod_transporte,
+                                                        atenciones.cdesprm2 AS atencion,
+                                                        estados.cdesprm2 AS estado 
+                                                    FROM
+                                                        logistica.lg_pedidocab
+                                                        INNER JOIN rrhh.tabla_aquarius ON logistica.lg_pedidocab.ncodper = rrhh.tabla_aquarius.internal
+                                                        INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry
+                                                        INNER JOIN logistica.tb_area ON logistica.lg_pedidocab.ncodarea = logistica.tb_area.ncodarea
+                                                        INNER JOIN logistica.tb_ccostos ON logistica.lg_pedidocab.ncodcos = logistica.tb_ccostos.ncodcos
+                                                        INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ccodprm2
+                                                        INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
+                                                        INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
+                                                    WHERE
+                                                        logistica.lg_pedidocab.id_regmov = :cod 
+                                                        AND atenciones.ncodprm1 = 13 
+                                                        AND estados.ncodprm1 = 4 
+                                                        AND transportes.ncodprm1 = 7");
                 $query->execute(["cod"=>$cod]);
                 $rowcount = $query->rowcount();
 

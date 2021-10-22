@@ -343,7 +343,8 @@
                                                         logistica.cm_entidad.cnumdoc,
                                                         logistica.lg_pedidocab.cconcepto,
                                                         logistica.lg_pedidocab.mdetalle,
-                                                        logistica.lg_regabastec.cnumero AS orden
+                                                        logistica.lg_regabastec.cnumero AS orden,
+                                                        logistica.lg_regabastec.ffechaent
                                                     FROM
                                                         logistica.lg_regabastec
                                                         INNER JOIN logistica.cm_entidad ON logistica.lg_regabastec.id_centi = logistica.cm_entidad.id_centi
@@ -376,9 +377,10 @@
                         $item['idord']      = $row['id_regmov'];
                         $item['idped']      = $row['id_refpedi'];
                         $item['ident']      = $row['id_centi'];
-                        $item['idproy']      = $row['ncodpry'];
-                        $item['idarea']      = $row['ncodarea'];
-                        $item['idcost']      = $row['ncodcos'];
+                        $item['idproy']     = $row['ncodpry'];
+                        $item['idarea']     = $row['ncodarea'];
+                        $item['idcost']     = $row['ncodcos'];
+                        $item['ffechaent']  = $row['ffechaent'];
                         
                     }
                 }
@@ -501,7 +503,8 @@
             echo $filename;
         }
 
-        public function insertarIngreso($fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,$detalles,$series,$adjuntos,$proyecto,$area,$costos,$cod_mov){
+        public function insertarIngreso($fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,$detalles,
+                                        $series,$adjuntos,$proyecto,$area,$costos,$cod_mov,$calidad){
             $guia_actual = $this->genNumber($origen);
             $mensaje = "Ok";
 
@@ -515,7 +518,7 @@
                 $sql = $this->db->connect()->prepare("INSERT INTO alm_recepcab SET id_regalm=:cod,ncodmov=:cmo,cper=:anio,cmes=:mes,ncodalm1=:cma,
                                                                                     ffecdoc=:fec,ffecconta=:fco,id_centi=:idt,cnumguia=:ngi,idref_pedi=:ped,
                                                                                     id_userAprob=:apro,nEstadoDoc=:est,nflgactivo=:flag,nnromov=:nmov,nnronota=:nnot,
-                                                                                    idref_abas=:ord,ncodpry=:pry,ncodcos=:cst,ncodarea=:are,ctipmov=:tip");
+                                                                                    idref_abas=:ord,ncodpry=:pry,ncodcos=:cst,ncodarea=:are,ctipmov=:tip,nflgCalidad=:calidad");
                 $sql->execute(["cod"=>$cod,
                                 "cmo"=>$cod_mov,
                                 "anio"=>$fecha_explode[0],
@@ -535,8 +538,9 @@
                                 "pry"=>$proyecto,
                                 "are"=>$area,
                                 "cst"=>$costos,
-                                "tip"=>"I"
-                                ]);
+                                "tip"=>"I",
+                                "calidad"=>$calidad]);
+
                 $rowCount = $sql->rowcount();
                 
                 if ($rowCount == 1) {
@@ -545,6 +549,9 @@
                     $this->insertarSeries($cod,$series);
                     $this->insertarAdjuntos($cod,$adjuntos);
                     $this->saveAction("CREA",$cod,"INGRESOS ALMACEN",$_SESSION['user']);
+                    $this->actualizarPedidoCabecera($pedido,9);
+                    $this->actualizarPorcentajeEntrega($detalles,9);
+                    $this->actualizarCabeceraOrden($orden);
                 }else{
                     $mensaje = "Hubo un problema al crear el registro";
                 }
@@ -571,10 +578,10 @@
                 ]);
 
                 ///aca ira el codigo de acualizacion de detalles,adjuntos,y series
-
                 $this->actualizarDetalles($detalles);
                 $this->insertarSeries($index,$series);
                 $this->insertarAdjuntos($index,$adjuntos);
+                $this->actualizarPorcentajeEntrega($detalles,9);
                 $this->saveAction("ACTUALIZA",$index,"INGRESOS ALMACEN",$_SESSION['user']);
                 
                 $mensaje = "Registro actualizado";
@@ -609,7 +616,6 @@
                                     "flag"=>1,
                                     "sal"=>$datos[$rc]->cantpend]);
 
-                    //$this->changeDetailStatus($datos[$rc]->iddetped);
 
                     $rc++;
                 } catch (PDOException $th) {
@@ -644,20 +650,17 @@
 
         public function insertarSeries($cod,$series){
             $datos = json_decode($series);
-            
             $nreg = count($datos);
             $rc=0;
 
             for ($i=0; $i <= $nreg-1; $i++) { 
                 try {
-                    if ( $datos[$rc]->codpro !== null) {
-                        $sql=$this->db->connect()->prepare("INSERT INTO cm_prodserie SET id_cprod=:prod,cdesserie=:serie,nflgactivo=:flag,idref_movi=:cod");
-                        $sql->execute([ "prod"=>$datos[$rc]->codpro,
+                    $sql=$this->db->connect()->prepare("INSERT INTO cm_prodserie SET id_cprod=:prod,cdesserie=:serie,nflgactivo=:flag,idref_movi=:cod");
+                    $sql->execute([ "prod"=>$datos[$rc]->codpro,
                                     "serie"=>$datos[$rc]->serie,
                                     "flag"=>1,
                                     "cod"=>$cod]);
-                        $rc++;
-                    }
+                    $rc++;
                 } catch (PDOException $th) {
                     echo $th;
                     return false;
@@ -804,8 +807,7 @@
                 if ($rowCount > 0) {
                     while ($row = $sql->fetch()) {
                         $swstate =  $row['nsaldo'] == 0 ? 'desactivado': '';
-                        
-
+            
                         $cont++;
                         $salida.='<tr class="lh1_2rem pointertr '.$swstate.'" data-id="'.$row['niddeta'].'">
                                     <td class="con_borde centro"><a href="" data-action="register"><i class="fas fa-barcode"></i></a></td>
@@ -825,38 +827,6 @@
                                     <td class="con_borde"></td>
                                     <td class="con_borde"><input type="date"></td>
                                 </tr>';
-                    }
-                }
-
-                return $salida;
-
-            } catch (PDOException $th) {
-                echo $th->getMessage();
-                return false;
-            }
-        }
-
-        public function listarSeriesCodigo($index,$prod){
-            try {
-                $salida = "";
-                $sql = $this->db->connect()->prepare("SELECT
-                                                    cm_prodserie.id_cprod,
-                                                    cm_prodserie.ncodserie,
-                                                    cm_prodserie.cdesserie,
-                                                    cm_prodserie.idref_alma,
-                                                    cm_prodserie.nflgactivo 
-                                                FROM
-                                                    cm_prodserie 
-                                                WHERE
-                                                    cm_prodserie.id_cprod = :prod 
-                                                    AND cm_prodserie.idref_alma = :cod 
-                                                    AND cm_prodserie.nflgactivo = 1");
-                $sql->execute(["cod"=>$index,"prod"=>$prod]);
-                $rowCount = $sql->rowcount();
-
-                if ($rowCount > 0) {
-                    while ($rs = $sql->fetch() ) {
-                        $salida  .="<tr></tr>"; 
                     }
                 }
 
@@ -906,8 +876,6 @@
                     $sql->execute(["cod"=>$datos[$i]->iddetped,
                                    "sal"=>$datos[$i]->cantpend]);
                 }
-                
-
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
@@ -928,7 +896,7 @@
                                                     cm_prodserie 
                                                 WHERE
                                                     cm_prodserie.id_cprod =:prod 
-                                                    AND cm_prodserie.idref_alma =:cod 
+                                                    AND cm_prodserie.idref_movi =:cod 
                                                     AND cm_prodserie.nflgactivo = 1");
                 $sql->execute(["cod"=>$idx,"prod"=>$prod]);
                 $rowCount = $sql->rowcount();
@@ -968,7 +936,7 @@
                 $rowCount = $query->rowCount();
 
                 if ($rowCount > 0) {
-                    $this->actualizarPorcentajeEntrega($detalles,$cod,$est);
+                    $this->actualizarPorcentajeEntrega($detalles,$est);
                 }
 
                 return $rowCount;
@@ -978,7 +946,7 @@
             }
         }
 
-        public function actualizarPorcentajeEntrega($detalles,$cod,$estdoc){
+        public function actualizarPorcentajeEntrega($detalles,$estdoc){
             $datos = json_decode($detalles);
             $nreg = count($datos);
 
@@ -989,19 +957,52 @@
                     $porcent = ($datos[$i]->cantpend*100)/$datos[$i]->cantord;
                 }
 
-                $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoPed =:estado,nPorcenEntr=:porcentaje,id_ingreso=:cod WHERE nidpedi=:idp");
-                $query->execute(["idp"=>$datos[$i]->iddetped,"porcentaje"=>$porcent,"cod"=>$cod,"estado"=>$estdoc]);
+                $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoReg =:estado,nPorcenEntr=:porcentaje WHERE nidpedi=:idp");
+                $query->execute(["idp"=>$datos[$i]->iddetped,"porcentaje"=>$porcent,"estado"=>$estdoc]);
             }
         }
 
-        public function changeDetailStatus($codigo){ //aca se graba el porcentaje para el cargo plan añadir campo nporcent
+        public function actualizarPedidoCabecera($pedido,$estado){
             try {
-                $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoPed = 9 WHERE nidpedi=:idp");
-                $query->execute(["idp"=>$codigo]);
-            } catch (PDOException $e) {
-                echo $e->getMessage();
+                $sql = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc = :estado WHERE id_regmov = :cod");
+                $sql->execute(["cod"=>$pedido,"estado"=>$estado]);
+                $error = $sql->errorInfo();
+                
+            } catch (PDOException $th) {
+                echo $th->getMessage();
                 return false;
             }
+        }
+
+        public function actualizarPedidoDetalles($detalles,$estado){
+            $datos = json_decode($detalles);
+            $nreg = count($datos);
+
+            for ($i=0; $i < $nreg; $i++) { 
+                try {
+                    $sql = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoReg = :est WHERE nidpedi =:cod");
+                    $sql->execute([ "cod"=>$datos[$i]->item,
+                                    "est"=>$estado]);
+                } catch (PDOException $th) {
+                    echo $th->getMessage();
+                    return false;
+                }
+            }
+        }
+
+        public function actualizarCabeceraOrden($orden){
+            try {
+                $sql = $this->db->connect()->prepare("UPDATE lg_regabastec SET nEstadoDoc = 3 WHERE id_regmov = :cod");
+                $sql->execute(["cod"=>$orden]);
+                
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function calificarProveedor($entidad){
+            
         }
     }
 ?>
