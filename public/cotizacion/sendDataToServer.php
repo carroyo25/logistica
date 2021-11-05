@@ -54,7 +54,7 @@
     function calificarProveedor($pdo,$entidad,$pedido){
         try {
             $id = uniqid("cal");
-            $sql = "INSERT INTO tb_califica SET idreg=?,id_centi=?,id_pedido=?,nCalPedido=?";
+            $sql = "INSERT INTO tb_califica SET idreg=?,id_centi=?,id_pedido=?,nParticipa=?";
             $statement = $pdo->prepare($sql);
             $statement->execute(array($id,$entidad,$pedido,5));
         } catch (PDOException $th) {

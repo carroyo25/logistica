@@ -199,12 +199,21 @@ $(function(){
     $("#saveDoc").on("click", function (e) {
         e.preventDefault();
 
+        if ($('input:radio[name=califica]:checked').val() == undefined){
+            mostrarMensaje("msj_error","Debe dar una calificacion");
+            return false;
+        }
+
         getDetails();
 
         abrirVentanaEspera();
 
-        $.post(RUTA+"calidad/cambiarEstado", {ningreso:$("#id_ingreso").val(),
-                                             detalles:JSON.stringify(DETALLES)},
+        $.post(RUTA+"calidad/cambiarEstado",{ningreso:$("#id_ingreso").val(),
+                                            orden:$("#idorden").val(),
+                                            pedido:$("#idpedido").val(),
+                                            entidad:$("#id_entidad").val(),
+                                            califica:$('input:radio[name=califica]:checked').val(),
+                                            detalles:JSON.stringify(DETALLES)},
             function (data, textStatus, jqXHR) {
                 if (data){
                     mostrarMensaje("msj_correcto","Observaciones actualizadas");

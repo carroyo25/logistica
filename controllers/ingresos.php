@@ -175,8 +175,11 @@
             $cod = $_POST['cod'];
             $detalles = $_POST['details'];
             $condicion = $_POST['condicion'];
+            $pedido = $_POST['pedido'];
+            $orden = $_POST['orden'];
+            $entidad = $_POST['entidad'];
 
-            $result = $this->model->cerrarIngreso($cod,$detalles,$condicion);
+            $result = $this->model->cerrarIngreso($cod,$detalles,$condicion,$pedido,$orden,$entidad);
 
             echo $result;
         }

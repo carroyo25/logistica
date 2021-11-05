@@ -93,6 +93,7 @@
                                                         logistica.lg_docusunat.cnumero AS guia,
                                                         logistica.lg_docusunat.nbultos,
                                                         logistica.lg_docusunat.npesotot,
+                                                        logistica.alm_despachocab.id_centi,
                                                         logistica.alm_despachocab.cnumguia,
                                                         logistica.tb_proyecto1.ccodpry,
                                                         logistica.tb_proyecto1.cdespry,
@@ -157,6 +158,7 @@
                                                         alm_despachodet.ncantidad,
                                                         alm_despachodet.nfactor,
                                                         alm_despachodet.ncoduni,
+                                                        alm_despachodet.cSerie,
                                                         alm_despachodet.nflgactivo,
                                                         cm_producto.ccodprod,
                                                         cm_producto.cdesprod,
@@ -177,19 +179,16 @@
                     while ($rs = $query->fetch()) {
                         $salida .= '<tr>
                                         <td class="con_borde centro"><input type="checkbox"></td>
-                                        <td class="con_borde centro">
-                                            <a href="'.$rs['niddetaPed'].'" data-idprod="'.$rs['id_cprod'].'" 
-                                                                            data-factor="'.$rs['nfactor'].'"
-                                                                            data-unidad="'.$rs['ncoduni'].'">
-                                                <i class="fas fa-barcode"></i>
-                                            </a>
-                                        </td>
-                                        <td class="con_borde centro">'.str_pad($item++,3,0,STR_PAD_LEFT ).'</td>
+                                        <td class="con_borde centro" data-niddeta="'.$rs['niddetaPed'].'"
+                                                                     data-idprod="'.$rs['id_cprod'].'" 
+                                                                     data-factor="'.$rs['nfactor'].'"
+                                                                     data-unidad="'.$rs['ncoduni'].'">'.str_pad($item++,3,0,STR_PAD_LEFT ).'</td>
                                         <td class="con_borde pl10">'.$rs['ccodprod'].'</td>
                                         <td class="con_borde pl10">'.$rs['cdesprod'].'</td>
                                         <td class="con_borde centro">'.$rs['cabrevia'].'</td>
                                         <td class="con_borde drch pr10">'.number_format($rs['ncantidad'], 2, '.', ',').'</td>
                                         <td class="con_borde"><input type="text" class="pl20"></td>
+                                        <td class="con_borde centro">'.$rs['cSerie'].'</td>
                                         <td class="con_borde"></td>
                                     </tr>';
                     }
@@ -235,20 +234,22 @@
             }
         }
 
-        public function actualizarAlmacen($idx,$detalles,$almacen,$guia,$pedido){
+        public function actualizarAlmacen($idx,$detalles,$almacen,$guia,$pedido,$entidad,$puntaje){
             $data = json_decode($detalles);
             $nreg = count($data);
 
             for ($i=0; $i < $nreg; $i++) { 
                 try {
                     $id = uniqid("alm");
-                    $query = $this->db->connect()->prepare("INSERT INTO alm_movimdet SET niddeta=:iddet,id_cprod=:idprod,ncantidad=:cantidad,
-                                                                                        ncoduni=:cunid,nfactor=:factor,ncodalm2=:almacen,id_regalm=:id");
+                    $query = $this->db->connect()->prepare("INSERT INTO alm_movimdet SET niddetaPed=:iddet,id_cprod=:idprod,ncantidad=:cantidad,
+                                                                                        ncoduni=:cunid,nfactor=:factor,cSerie=:serie,
+                                                                                        ncodalm2=:almacen,id_regalm=:id");
                     $query->execute(["iddet"=>$data[$i]->niddeta,
                                     "idprod"=>$data[$i]->idprod,
                                     "cantidad"=>$data[$i]->cantidad,
                                     "cunid"=>$data[$i]->unid,
                                     "factor"=>$data[$i]->factor,
+                                    "serie"=>$data[$i]->serie,
                                     "almacen"=>$almacen,
                                     "id"=>$id]);
 
@@ -263,7 +264,7 @@
             $this->actualizarDespacho($guia);
             $this->actualizarPedido($pedido);
             $this->actualizarDetallesPedido($detalles);
-            
+            $this->calificarProveedor($entidad,$pedido,$puntaje);
         }
 
 
@@ -312,5 +313,19 @@
             }
         }
 
+        public function calificarProveedor($entidad,$pedido,$puntaje){
+            try {
+                $sql = $this->db->connect()->prepare("UPDATE tb_califica SET nAlmacen=:puntaje
+                                                        WHERE id_centi=:entidad AND
+                                                        id_pedido =:pedido");
+                $sql->execute(["entidad"=>$entidad,"pedido"=>$pedido,"puntaje"=>$puntaje]);
+
+                return $puntaje;
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }   
+        }
     }
 ?>

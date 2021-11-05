@@ -58,7 +58,6 @@
                 }else{
                     $salida = '<tr><td colspan="12" class="centro">No hay registros que mostrar</td></tr>';
                 }
-
                 return $salida;
             } catch (PDOException $th) {
                 echo $th->getMessage();
@@ -175,6 +174,7 @@
                 $sql= $this->db->connect()->query("SELECT
                                                         tb_paramete2.ncodprm1,
                                                         tb_paramete2.ncodprm2,
+                                                        tb_paramete2.ccodprm2,
                                                         tb_paramete2.cdesprm2 
                                                     FROM
                                                         tb_paramete2 
@@ -275,7 +275,7 @@
                                                     cm_prodserie 
                                                 WHERE
                                                     cm_prodserie.id_cprod =:prod 
-                                                    AND cm_prodserie.idref_alma =:cod 
+                                                    AND cm_prodserie.idref_movi =:cod 
                                                     AND cm_prodserie.nflgactivo = 1");
                 $sql->execute(["cod"=>$idx,"prod"=>$prod]);
                 $rowCount = $sql->rowcount();
@@ -341,38 +341,76 @@
                                    "est"=>$datos[$i]->nestado,
                                    "obs"=>$datos[$i]->observ,
                                    "flg"=>1]);
-
-                    
                 }
-
-                
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
             }
         }
 
-        public function actualizarEstadoNota($idx,$detalles){
+        public function actualizarEstadoNota($idx,$detalles,$pedido,$orden,$entidad,$puntaje){
             try {
                 $sql = $this->db->connect()->prepare("UPDATE alm_recepcab SET nEstadoDoc=:est WHERE id_regalm=:cod");
                 $sql->execute(["cod"=>$idx,"est"=>11]);
 
                 $rowCount = $sql->rowcount();
 
-                if ($rowCount > 0) {
+                if ( $rowCount > 0 ) {
+                    $this->changeStatusHeader($pedido,11);
                     $this->actualizarDetallesNota($detalles);
+                    $this->actualizaDetalle($detalles,11);
+                    $this->calificarProveedor($entidad,$pedido,$puntaje);
                     $this->saveAction("REVISA",$idx,"CONTROL DE CALIDAD",$_SESSION['user']);
                     return true;
                 }else {
                     return false;
                 }
-
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
             }
         }
 
-        
+        public function changeStatusHeader($codigo,$cest){
+            try {
+                $query = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc=:cest WHERE id_regmov=:idx");
+                $query->execute(["cest"=>$cest,"idx"=>$codigo]);
+
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+        }
+
+        public function actualizaDetalle($detalles,$est){
+            $datos = json_decode($detalles);
+            $nreg = count($datos);
+            
+            for ($i=0; $i < $nreg; $i++) { 
+                try {
+                    $sql = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoReg = :est WHERE nidpedi =:cod");
+                    $sql->execute([ "cod"=>$datos[$i]->niddeta,
+                                    "est"=>$est]);
+                } catch (PDOException $th) {
+                    echo $th->getMessage();
+                    return false;
+                }
+            }
+        }
+
+        public function calificarProveedor($entidad,$pedido,$puntaje){
+            try {
+                $sql = $this->db->connect()->prepare("UPDATE tb_califica SET nCalidad=:puntaje
+                                                        WHERE id_centi=:entidad AND
+                                                        id_pedido =:pedido");
+                $sql->execute(["entidad"=>$entidad,"pedido"=>$pedido,"puntaje"=>$puntaje]);
+
+                return $puntaje;
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }   
+        }
     }
 ?>

@@ -117,9 +117,10 @@
             <input type="hidden" id="alm_destino">
             <input type="hidden" id="cod_guia">
             <input type="hidden" id="cod_pedido">
+            <input type="hidden" id="cod_entidad">
 
             <div class="process">
-                <div class="sides_process">
+                <div class="sides_process w85p">
                         <div class="descrip_title">
                             <span>Datos Generales</span>
                             <div>
@@ -153,7 +154,7 @@
                             </div>
                             <div class="process_right">
                                 <div class="input_process g2items">
-                                    <label for="almacen" class="w100px">Almacen Orig.:</label>
+                                    <label for="almacen" class="w100px">Almacen Dest.:</label>
                                     <input type="text" name="almacen" id="almacen" class="pl10" readonly>
                                 </div>
                                 <div class="input_process g4items">
@@ -178,17 +179,20 @@
                                     <label for="estadoc" class="w100px">Est.Doc.:</label>
                                     <input type="text" name="estadoc" id="estadoc" class="pl20 mayusculas proceso" readonly>
                                 </div>
-                                <div class="input_process g2items">
-                                    <label for="items" class="w100px">Nro. Items:</label>
-                                    <input type="text" name="items" id="items" class="pl20 drch pr20" readonly>
-                                </div>
-                                <div class="input_process g2items">
-                                    <label for="items" class="w100px">Total Bultos:</label>
-                                    <input type="text" name="bultos" id="bultos" class="pr20 drch " readonly>
-                                </div>
-                                <div class="input_process g2items">
-                                    <label for="items" class="w100px">Peso:</label>
-                                    <input type="text" name="peso" id="peso" class="pr20 drch " readonly>
+                                <div class="input_process columna con_borde paall_10px lh1_5rem">
+                                    <label for="califica">Calificación</label>
+                                    <div>
+                                        <input type="radio" name="califica" id="bueno" value="10">
+                                        <label for="bueno">Bueno</label>
+                                    </div>
+                                    <div>
+                                        <input type="radio" name="califica" id="regular" value="5">
+                                        <label for="regular">Regular</label>
+                                    </div>
+                                    <div>
+                                        <input type="radio" name="califica" id="malo" value="00">
+                                        <label for="malo">Malo</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -212,13 +216,13 @@
                                 <thead>
                                     <tr>
                                         <th class="con_borde w2p">...</th>
-                                        <th class="con_borde w2p">...</th>
                                         <th class="con_borde w3p">Item</th>
                                         <th class="con_borde w10p">Codigo</th>
                                         <th class="con_borde w30p">Descripcion</th>
                                         <th class="con_borde w5p">Unidad</th>
                                         <th class="con_borde w5p">Cantidad</th>
-                                        <th class="con_borde w20p">Observaciones</th>
+                                        <th class="con_borde w10p">Observaciones</th>
+                                        <th class="con_borde w10p">Serie</th>
                                         <th class="con_borde w10p">Fecha </br> Vencimiento</th>
                                     </tr>
                                 </thead>
@@ -234,39 +238,33 @@
     </div>
     <div class="modal zindex5" id="waitmodalCursorOffline">
     </div>
-    <div class="modal zindex3" id="modalSerie">
+    <div class="modal" id="dialogConfirm">
         <div class="dialogContainer w35p">
             <div class="dialogTitle">
-                <h4>Verificar Series</h4>
+                <h4>Pregunta</h4>
             </div>
             <hr>
             <div class="dialogBody">
-                <div class="titulos f7rem">
-                    <h4 id="descripProducto"></h4>
-                    <h4 id="codigoProducto" class="oculto"></h4>
-                    <h4 id="nroItemSerial" class="oculto"></h4>
-                    <a href="#" id="checkAll"><i class="far fa-check-square"></i></a>
-                </div>
-                <form>
+                <h1>Calificar la nota</h1> <!--alt 168-->
+                <div class="input_process columna con_borde paall_10px">
                     <div>
-                        <table id="detalle_series" class="w100p con_border espacio_tabla_0 f7rem">
-                            <thead>
-                                <tr>
-                                    <th class="con_borde">...</th>
-                                    <th class="con_borde">Item</th>
-                                    <th class="con_borde">Nro. Serie</th>
-                                    <th class="con_borde">Observaciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+                        <input type="radio" name="califica" id="bueno" value="10">
+                        <label for="bueno">Bueno</label>
                     </div>
-                    <div class="options">
-                        <button id="btnConfirmSerial" class="botones" type="button">Aceptar</button>
-                        <button id="btnCancelSerial" class="botones" type="button">Cancelar</button>
+                    <div>
+                        <input type="radio" name="califica" id="regular" value="5">
+                        <label for="regular">Regular</label>
                     </div>
-                </form>   
+                    <div>
+                        <input type="radio" name="califica" id="malo" value="00">
+                        <label for="malo">Malo</label>
+                    </div>
+                    <label for="califica">Calificación</label>
+                </div>  
+                <div class="options">
+                    <button id="btnYes" class="botones">Si</button>
+                    <button id="btnNo" class="botones">No</button>
+                </div>
             </div>
         </div>
     </div>

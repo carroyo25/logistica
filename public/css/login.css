@@ -1539,6 +1539,9 @@ hr {
 .mt10px {
   margin-top: 10px; }
 
+.mt20px {
+  margin-top: 20px; }
+
 .tabs {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1853,6 +1856,9 @@ hr {
 .paall_5px {
   padding: 5px; }
 
+.paall_10px {
+  padding: 5px; }
+
 .over_auto {
   overflow: auto; }
 
@@ -1931,6 +1937,9 @@ input[type=checkbox]:checked {
 .lh1_2rem {
   line-height: 1.2rem; }
 
+.lh1_5rem {
+  line-height: 1.5rem; }
+
 .lh2rem {
   line-height: 2rem; }
 
@@ -1980,8 +1989,12 @@ input[type=checkbox]:checked {
 .proceso {
   background: yellow !important;
   outline: none;
-  font-weight: 800;
   color: #000;
+  font-size: .7rem; }
+
+.destino {
+  background: #605CA8;
+  color: #fff;
   font-size: .7rem; }
 
 .normal {
@@ -1990,6 +2003,11 @@ input[type=checkbox]:checked {
 
 .revisado, .consulta {
   background: #3BA28B;
+  font-weight: 800;
+  color: #fff; }
+
+.transito {
+  background: #5D8F64;
   font-weight: 800;
   color: #fff; }
 
@@ -2010,6 +2028,20 @@ input[type=checkbox]:checked {
   outline: none;
   font-weight: 800;
   color: #000;
+  font-size: .7rem; }
+
+.despacho {
+  background: #FFD764 !important;
+  outline: none;
+  font-weight: 800;
+  color: #000;
+  font-size: .7rem; }
+
+.calidad {
+  background: #17BFDE !important;
+  outline: none;
+  font-weight: 800;
+  color: #fff;
   font-size: .7rem; }
 
 .adjudicacion {

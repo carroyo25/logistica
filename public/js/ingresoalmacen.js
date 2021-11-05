@@ -40,6 +40,7 @@ $(function(){
                 $("#alm_destino").val(data[0].ncodalm2);
                 $("#cod_guia").val(data[0].id_refmov);
                 $("#cod_pedido").val(data[0].idref_pedi);
+                $("#cod_entidad").val(data[0].id_centi);
                 
                 $.post(RUTA+"ingresoalmacen/detallesDepacho", {idx: data[0].id_regalm},
                     function (data, textStatus, jqXHR) {
@@ -96,6 +97,11 @@ $(function(){
     $("#grabarDoc").click(function (e) { 
         e.preventDefault();
 
+        if ($('input:radio[name=califica]:checked').val() == undefined){
+            mostrarMensaje("msj_error","Debe dar una calificacion");
+            return false;
+        }
+
         $("#cod_ingreso").val();
 
         let details = JSON.stringify(detallesTabla());
@@ -104,7 +110,9 @@ $(function(){
                                                 detalles:details,
                                                 almacen:$("#alm_destino").val(),
                                                 guia:$("#cod_guia").val(),
-                                                pedido:$("#cod_pedido").val()},
+                                                pedido:$("#cod_pedido").val(),
+                                                entidad:$("#cod_entidad").val(),
+                                                califica:$('input:radio[name=califica]:checked').val(),},
             function (data, textStatus, jqXHR) {
                 
             },
@@ -138,12 +146,13 @@ function detallesTabla() {
     var TABLA = $("#detalle_despacho tbody > tr");
 
     TABLA.each(function(){
-        var NIDDETA     = $(this).find('td').eq(1).children().attr("href"),
-            IDPROD      = $(this).find('td').eq(1).children().data("idprod"),
-            FACTOR      = $(this).find('td').eq(1).children().data("factor"),
-            UNID        = $(this).find('td').eq(1).children().data("unidad"),
-            CANTIDAD    = $(this).find('td').eq(6).text(),
-            OBSERVAC    = $(this).find('td').eq(7).children().val(),
+        var NIDDETA     = $(this).find('td').eq(1).data("niddeta"),
+            IDPROD      = $(this).find('td').eq(1).data("idprod"),
+            FACTOR      = $(this).find('td').eq(1).data("factor"),
+            UNID        = $(this).find('td').eq(1).data("unidad"),
+            CANTIDAD    = $(this).find('td').eq(5).text(),
+            OBSERVAC    = $(this).find('td').eq(6).children().val(),
+            SERIE       = $(this).find('td').eq(7).text(),
 
             item = {};
 
@@ -154,6 +163,7 @@ function detallesTabla() {
                 item["unid"]        = UNID;
                 item["cantidad"]    = CANTIDAD;
                 item["observ"]      = OBSERVAC;
+                item["serie"]       = SERIE;
             }
 
             DETALLES.push(item);

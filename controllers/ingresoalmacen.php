@@ -43,8 +43,10 @@
             $almacen = $_POST['almacen'];
             $guia = $_POST['guia'];
             $pedido = $_POST['pedido'];
+            $entidad = $_POST['entidad'];
+            $puntaje = $_POST['califica'];
 
-            $result = $this->model->actualizarAlmacen($idx,$detalles,$almacen,$guia,$pedido);
+            $result = $this->model->actualizarAlmacen($idx,$detalles,$almacen,$guia,$pedido,$entidad,$puntaje);
 
             echo $result;
         }

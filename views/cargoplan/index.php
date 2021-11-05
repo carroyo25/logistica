@@ -88,28 +88,26 @@
                         <thead>
                             <tr>
                                 <th class="con_borde w55px">Items</th>
-                                <th class="con_borde w100px">Estado</br>Actual</th>
+                                <th class="con_borde w70px">Estado</br>Actual</th>
                                 <th class="con_borde w60px">Código</br>Proyecto</th>
-                                <th class="con_borde">Area</br>Solicita</th>
-                                <th class="con_borde">Prioridad</th>
-                                <th class="con_borde w60px">Tipo</th>
-                                <th class="con_borde w60px">Año</th>
-                                <th class="con_borde w100px">Nro. Pedido</th>
+                                <th class="con_borde">Area Solicitante</th>
+                                <th class="con_borde w70px">Prioridad</th>
+                                <th class="con_borde w40px">Tipo</th>
+                                <th class="con_borde w40px">Año</th>
+                                <th class="con_borde w50px">Nro. </br> Pedido</th>
                                 <th class="con_borde w80px">Creación </br> Pedido</th>
                                 <th class="con_borde w150px">Aprobacion </br>Pedido</th>
-                                <th class="con_borde w60px">Código</th>
-                                <th class="con_borde w60px">UND</th>
-                                <th class="con_borde w60px">Descripción</th>
-                                <th class="con_borde w60px">Cantidad</th>
+                                <th class="con_borde w100px">Código</th>
+                                <th class="con_borde w40px">UND</th>
+                                <th class="con_borde">Descripción</th>
+                                <th class="con_borde w90px">Cantidad</th>
                                 <th class="con_borde w60px">Orden</th>
-                                <th class="con_borde w60px">Fecha</br>Orden</th>
-                                <th class="con_borde w60px">Cantidad</br>Recibida</th>
-                                <th class="con_borde w60px">Saldo</th>
+                                <th class="con_borde w80px">Fecha</br>Orden</th>
                                 <th class="con_borde w60px">...</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- <?php echo $this->registros?> -->
+                            <?php echo $this->registros?>
                         </tbody>
                     </table>
                 </div>

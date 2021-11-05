@@ -43,6 +43,7 @@
                                                         INNER JOIN alm_recepcab ON alm_despachocab.idref_abas = alm_recepcab.id_regalm
                                                         INNER JOIN tb_paramete2 ON alm_despachocab.nEstadoDoc = tb_paramete2.ccodprm2 
                                                     WHERE
+                                                        alm_despachocab.nEstadoDoc = 1 AND
                                                         tb_paramete2.ncodprm1 = 4 
                                                     LIMIT 30");
                 $sql->execute();
@@ -371,15 +372,17 @@
                                                     tb_unimed.cabrevia,
                                                     tb_paramete2.cdesprm2,
                                                     alm_recepdet.nfactor,
-                                                    lg_pedidodet.ncantapro 
+                                                    lg_pedidodet.ncantapro,
+                                                    cm_prodserie.cdesserie 
                                                 FROM
                                                     alm_recepdet
                                                     INNER JOIN cm_producto ON alm_recepdet.id_cprod = cm_producto.id_cprod
                                                     INNER JOIN tb_unimed ON alm_recepdet.ncoduni = tb_unimed.ncodmed
                                                     INNER JOIN tb_paramete2 ON alm_recepdet.nestadoreg = tb_paramete2.ccodprm2
-                                                    INNER JOIN lg_pedidodet ON alm_recepdet.niddetaPed = lg_pedidodet.nidpedi 
+                                                    INNER JOIN lg_pedidodet ON alm_recepdet.niddetaPed = lg_pedidodet.nidpedi
+                                                    INNER JOIN cm_prodserie ON alm_recepdet.id_cprod = cm_prodserie.id_cprod 
                                                 WHERE
-                                                    alm_recepdet.id_regalm =:cod
+                                                    alm_recepdet.id_regalm = :cod 
                                                     AND tb_paramete2.ncodprm1 = 21 
                                                     AND cm_producto.nflgactivo = 1");
                 $sql->execute(["cod"=>$idx]);
@@ -388,6 +391,7 @@
                 $item = 1;
                 if ($rowCount > 0) {
                     while ($rs = $sql->fetch()) {
+                        $cantidad = $rs['cdesserie'] !== " " ? 1:$rs['ncantapro'];
                         $salida .='<tr>
                                         <td class="con_borde centro"><a href="'.$rs['niddeta'].'" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
                                         <td class="centro con_borde" data-iddetpedido ="'.$rs['niddetaPed'].'"
@@ -400,10 +404,9 @@
                                         <td class="con_borde centro">'.$rs['ccodprod'].'</td>
                                         <td class="con_borde pl20">'.$rs['cdesprod'].'</td>
                                         <td class="con_borde centro">'.$rs['cabrevia'].'</td>
-                                        <td class="con_borde drch pr10">'.number_format($rs['ncantapro'], 2, '.', ',').'</td>
-                                        <td class="con_borde drch pr10"><input type="number" value="'.number_format($rs['ncantidad'], 2, '.', ',').'" class="drch pr10px"></td>
+                                        <td class="con_borde drch pr10">'.number_format($cantidad, 2, '.', ',').'</td>
                                         <td class="con_borde centro">'.$rs['cdesprm2'].'</td>
-                                        <td class="con_borde centro"></td>
+                                        <td class="con_borde centro">'.$rs['cdesserie'].'</td>
                                         <td class="con_borde centro"></td>
                                    </tr>';
                         $item++;
@@ -488,7 +491,6 @@
             }
         }
 
-        
         public function grabarGuiaRemision($cabecera,$detalles,$salida){
             try {
                 $id = uniqid("GR");
@@ -561,12 +563,10 @@
                 unlink($filename);
 
             try {
-                // Creación del objeto de la clase heredada
-                
                 $datos = json_decode($detalles);
                 $nreg = count($datos);
 
-                $pdf = new PDF($cabecera['cnumero'],$cabecera['fecemin'],$cabecera['ruc'],$cabecera['razondest'],$cabecera['direccdest'],$cabecera['raztransp'],$cabecera['ructransp'],
+                $pdf = new PDF($cabecera['nroguia'],$cabecera['fecemin'],$cabecera['ruc'],$cabecera['razondest'],$cabecera['direccdest'],$cabecera['raztransp'],$cabecera['ructransp'],
                                 $cabecera['dirtransp'],$cabecera['vianomorg'],$cabecera['nroorg'],$cabecera['distorg'],$cabecera['zonaorg'],$cabecera['feenttrans'],
                                 $cabecera['modtras'],$cabecera['vianomodest'],$cabecera['nrodest'],$cabecera['zondest'],$cabecera['depdest'],$cabecera['marca'],
                                 $cabecera['placa'],$cabecera['detcond'],$cabecera['licencia']);
@@ -587,7 +587,7 @@
                     $pdf->Row(array(str_pad($i,3,"0",STR_PAD_LEFT),
                                     $datos[$rc]->cantidad,
                                     $datos[$rc]->unidad,
-                                    $datos[$rc]->coditem .' '. $datos[$rc]->descripcion));
+                                    $datos[$rc]->coditem .' '. $datos[$rc]->descripcion .' '. $datos[$rc]->serie ));
                     $lc++;
                     $rc++;
 
@@ -599,12 +599,12 @@
 
                 $pdf->Ln(1);
                 $pdf->SetX(13);
-                $pdf->MultiCell(190,2,utf8_decode($observaciones));
+                $pdf->MultiCell(190,2,utf8_decode($cabecera["observaciones"]));
                 $pdf->Ln(2);
                 $pdf->SetX(13);
-                $pdf->Cell(190,4,"Bultos :". $bultos,0,1);
+                $pdf->Cell(190,4,"Bultos : ".$cabecera["bultos"],0,1);
                 $pdf->SetX(13);
-                $pdf->Cell(190,4,"Peso   :". $peso. "Kgs",0,1);
+                $pdf->Cell(190,4,"Peso   : ".$cabecera["peso"]. "Kgs",0,1);
                 $pdf->Output($filename,'F');
                 return $filename;
             } catch (PDOException $th) {
@@ -785,16 +785,19 @@
             for ($i=0; $i < $nreg; $i++) { 
                 try {
                     $sql=$this->db->connect()->prepare("INSERT INTO alm_despachodet SET id_regalm=:cod,ncodalm1=:ori,id_cprod=:cpro,ncantidad=:cant,ncoduni=:uni,
-                                                                                    nfactor=:fac,niddetaPed=:ped,niddetaOrd=:ord,nflgactivo=:flag");
+                                                                                    cSerie=:ser,nfactor=:fac,niddetaPed=:ped,niddetaOrd=:ord,nflgactivo=:flag,
+                                                                                    nestadoreg=:est");
                      $sql->execute(["cod"=>$cod,
                                     "ori"=>$almacen,
                                     "cpro"=>$datos[$rc]->idprod,
                                     "cant"=>$datos[$rc]->cantidad,
                                     "uni"=>$datos[$rc]->coduni,
+                                    "ser"=>$datos[$rc]->serie,
                                     "fac"=>$datos[$rc]->factor,
                                     "ped"=>$datos[$rc]->iddetped,
                                     "ord"=>$datos[$rc]->iddetord,
-                                    "flag"=>1]);
+                                    "flag"=>1,
+                                    "est"=>$datos[$rc]->estado]);
 
                     //$this->changeDetailStatus($datos[$rc]->iddetped);
                     $rc++;
@@ -832,19 +835,7 @@
                 }
             }
         }
-
-        /*public function changeDetailStatus($codigo){
-            try {
-                $query = $this->db->connect()->prepare("UPDATE lg_detapedido SET nEstadoPed = 9 WHERE nidpedi=:idp");
-                $query->execute(["idp"=>$codigo]);
-            } catch (PDOException $e) {
-                echo $e->getMessage();
-                return false;
-            }
-        }*/
-
-        
-
+    
         public function cambiarEstadoSalida($codigo,$idguia){
             try {
                 $sql = $this->db->connect()->prepare("");
@@ -971,6 +962,7 @@
                                                             alm_despachodet.niddetaPed,
                                                             alm_despachodet.nestadoreg,
                                                             alm_despachodet.ncoduni,
+                                                            alm_despachodet.cSerie,
                                                             cm_producto.ccodprod,
                                                             cm_producto.cdesprod,
                                                             tb_unimed.cabrevia,
@@ -1004,9 +996,8 @@
                                         <td class="con_borde pl20">'.$rs['cdesprod'].'</td>
                                         <td class="con_borde centro">'.$rs['cabrevia'].'</td>
                                         <td class="con_borde drch pr10">'.number_format($rs['ncantidad'], 2, '.', ',').'</td>
-                                        <td class="con_borde drch pr10">'.number_format($rs['ncantidad'], 2, '.', ',').'</td>
                                         <td class="con_borde centro">'.$rs['cdesprm2'].'</td>
-                                        <td class="con_borde centro"></td>
+                                        <td class="con_borde centro">'.$rs['cSerie'].'</td>
                                         <td class="con_borde centro"></td>
                                    </tr>';
                         $item++;
@@ -1015,6 +1006,60 @@
 
                 return $salida;
 
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function cerrarSalida($ingreso,$salida,$pedido,$detalles){
+            try {
+                $sql = $this->db->connect()->prepare("UPDATE alm_despachocab SET nEstadoDoc=2 WHERE id_regalm=:salida");
+                $sql->execute(["salida"=>$salida]);
+                $rowCount = $sql->rowcount();
+
+                if ($rowCount){
+                    $this->actualizarIngreso($ingreso);
+                    $this->actualizarCabeceraPedido($pedido);
+                    $this->actualizarDetallePedido($detalles);
+
+                    return true;
+                }
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function actualizarCabeceraPedido($pedido){
+            try {
+                $sql = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc=12 WHERE id_regmov=:pedido");
+                $sql->execute(["pedido"=>$pedido]);
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function actualizarIngreso($ingreso){
+            try {
+                $sql = $this->db->connect()->prepare("UPDATE alm_recepcab SET nEstadoDoc=90 WHERE id_regalm=:ingreso");
+                $sql->execute(["ingreso"=>$ingreso]);
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function actualizarDetallePedido($detalles){
+            try {
+                $datos = json_decode($detalles);
+                $nreg = count($datos);
+
+                for ($i=0; $i < $nreg; $i++) { 
+                    $sql = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoReg=12 WHERE nidpedi=:detalle");
+                    $sql->execute(["detalle"=>$datos[$i]->iddetped]);
+                }
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;

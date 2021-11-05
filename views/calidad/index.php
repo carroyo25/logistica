@@ -28,14 +28,13 @@
             <input type="hidden" name="idorden" id="idorden">
             <input type="hidden" name="idpedido" id="idpedido">
             <input type="hidden" name="estado" id="estado" value= "2">
-
             <div class="process">
-                <div class="sides_process">
+                <div class="sides_process w85p">
                         <div class="descrip_title">
                             <span>Datos Generales</span>
                             <div>
                                 <button type="button" id="saveDoc" title="Aceptar Ingreso" class="boton1">
-                                    <i class="far fa-save"></i> Aceptar Ingreso
+                                    <i class="far fa-save"></i> Confirmar Ingreso
                                 </button>
                                 <button type="button" id="bannDoc" title="Observar Ingreso" class="boton1">
                                     <i class="far fa-save"></i> Observar Ingreso
@@ -125,6 +124,21 @@
                                     <label for="items" class="w100px">Nro. Items</label>
                                     <input type="text" name="items" id="items" class="pl20 mayusculas" readonly>
                                 </div>
+                                <div class="input_process columna con_borde paall_10px">
+                                    <label for="califica">Calificación</label>
+                                    <div>
+                                        <input type="radio" name="califica" id="bueno" value="10">
+                                        <label for="bueno">Bueno</label>
+                                    </div>
+                                    <div>
+                                        <input type="radio" name="califica" id="regular" value="5">
+                                        <label for="regular">Regular</label>
+                                    </div>
+                                    <div>
+                                        <input type="radio" name="califica" id="malo" value="00">
+                                        <label for="malo">Malo</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="descrip_title">
@@ -148,7 +162,7 @@
                                         <th class="con_borde w10p">Codigo</th>
                                         <th class="con_borde w30p">Descripcion</th>
                                         <th class="con_borde w5p">Unidad</th>
-                                        <th class="con_borde w5p">Cantidad Ingresada</th>
+                                        <th class="con_borde w5p">Cantidad</th>
                                         <th class="con_borde w10p">Estado</th>
                                         <th class="con_borde w10p">Observaciones</th>
                                     </tr>
@@ -220,7 +234,7 @@
         <?php require 'views/acordeon.php'; ?>
         <div class="workOneForm">
             <div class="tilewindow">
-                <p class="workTitle">Ingresos Almacen</p>
+                <p class="workTitle">Control de Calidad</p>
             </div>       
             <div class="formulario">
                 <div class="banner">

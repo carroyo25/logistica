@@ -209,6 +209,7 @@
                             lg_regabastec.cmes,
                             lg_regabastec.cnumero,
                             lg_regabastec.ffechadoc,
+                            lg_regabastec.ffechaent,
                             lg_regabastec.id_regmov,
                             tb_area.cdesarea,
                             tb_proyecto1.ccodpry,
@@ -921,25 +922,23 @@
                 return false;
             }
         }
-
-        public function cerrarIngreso($cod,$detalles,$condicion){
+        
+        public function cerrarIngreso($cod,$detalles,$condicion,$pedido,$orden,$entidad){
             try {
-                $est = 11;
-                
-                if ( $condicion == "true") {
-                    $est = 10; //aca debe ir 10
-                }
+                $estadoIngreso = 10;
+                $est = $condicion == "true" ? 10:11;
 
                 $query = $this->db->connect()->prepare("UPDATE alm_recepcab SET nEstadoDoc =:est WHERE id_regalm=:cod LIMIT 1");
-                $query->execute(["cod"=>$cod,"est"=>$est]);
+                $query->execute(["cod"=>$cod,"est"=>$estadoIngreso]);
                 
                 $rowCount = $query->rowCount();
 
                 if ($rowCount > 0) {
+                    $this->actualizarPedidoCabecera($pedido,$est);
                     $this->actualizarPorcentajeEntrega($detalles,$est);
+                    $this->calificarProveedor($entidad,$orden,$pedido);
                 }
 
-                return $rowCount;
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
@@ -967,6 +966,7 @@
                 $sql = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc = :estado WHERE id_regmov = :cod");
                 $sql->execute(["cod"=>$pedido,"estado"=>$estado]);
                 $error = $sql->errorInfo();
+                var_dump($error);
                 
             } catch (PDOException $th) {
                 echo $th->getMessage();
@@ -1001,8 +1001,47 @@
             }
         }
 
-        public function calificarProveedor($entidad){
-            
+        public function calificarProveedor($entidad,$orden,$pedido){
+            try {
+                $dias = $this->calcularDiasEntrega($orden);
+
+                if ($dias > 20){
+                    $puntaje = 0;
+                }elseif ($dias > 10){
+                    $puntaje = 5;
+                }elseif ($dias <= 1){
+                    $puntaje = 10;
+                }
+
+                $sql = $this->db->connect()->prepare("UPDATE tb_califica SET id_orden=:orden,nEntrega=:puntaje
+                                                        WHERE id_centi=:entidad AND
+                                                        id_pedido =:pedido");
+                $sql->execute(["entidad"=>$entidad,"pedido"=>$pedido,"orden"=>$orden,"puntaje"=>$puntaje]);
+
+                return $puntaje;
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }   
+        }
+
+        public function calcularDiasEntrega($orden) {
+            try {
+                $sql = $this->db->connect()->prepare("SELECT
+                                                        DATEDIFF( NOW(), lg_regabastec.ffechaent ) AS dias 
+                                                    FROM
+                                                        lg_regabastec 
+                                                    WHERE
+                                                        lg_regabastec.id_regmov =:id");
+                $sql->execute(["id"=>$orden]);
+                $result = $sql->fetchAll();
+
+                return $result[0]['dias'];
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
         }
     }
 ?>

@@ -11,6 +11,8 @@
     <div class="mensaje msj_error">
         <span></span>
     </div>
+    <div class="modal zindex5" id="waitmodalCursorOffline">
+    </div>
     <div class="modal zindex3" id="modalNotas">
         <div class="lists">
             <div class="barra_busqueda_interna">
@@ -57,9 +59,8 @@
             <input type="hidden" name="estado" id="estado" value= "1">
             <input type="hidden" name="docguia" id="docguia">
             <input type="hidden" name="docpdf" id="docpdf">
-
             <div class="process">
-                <div class="sides_process">
+                <div class="sides_process w85p">
                         <div class="descrip_title">
                             <span>Datos Generales</span>
                             <div>
@@ -176,10 +177,9 @@
                                         <th class="con_borde w10p">Codigo</th>
                                         <th class="con_borde w30p">Descripcion</th>
                                         <th class="con_borde w5p">Unidad</th>
-                                        <th class="con_borde w5p">Cantidad </br> Requerida</th>
-                                        <th class="con_borde w5p">Cant. a</br>Despachar</th>
+                                        <th class="con_borde w5p">Cant</th>
                                         <th class="con_borde w10p">Estado </br> Bien</th>
-                                        <th class="con_borde w10p">Ubicación </br> Física</th>
+                                        <th class="con_borde w10p">Serie</th>
                                         <th class="con_borde w10p">Fecha </br> Vencimiento</th>
                                     </tr>
                                 </thead>

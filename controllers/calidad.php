@@ -48,8 +48,12 @@
         function cambiarEstado(){
             $index = $_POST['ningreso'];
             $detalles = $_POST['detalles'];
+            $orden = $_POST['detalles'];
+            $pedido = $_POST['pedido'];
+            $entidad = $_POST['entidad'];
+            $puntaje = $_POST['califica'];
 
-            $result = $this->model->actualizarEstadoNota($index,$detalles);
+            $result = $this->model->actualizarEstadoNota($index,$detalles,$pedido,$orden,$entidad,$puntaje);
 
             echo $result;
         }

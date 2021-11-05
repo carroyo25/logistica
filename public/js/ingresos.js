@@ -670,17 +670,19 @@ $(function(){
             mostrarMensaje("msj_error","Verifique la cantidad Ingresada");
             return false;
         }
-
-
         return false
     });
+    
+
+    //tienes que ver que grabe los almacenes en series y la calificacion de proveedores
     
     $("#closeDoc").click(function (e) { 
         e.preventDefault();
         getDetails();
 
         let details = JSON.stringify(getDetails());
-        $.post("ingresos/cierreIngreso", {cod:$("#id_ingreso").val(),details,condicion:$("#chkCalidad").prop("checked")},
+        $.post("ingresos/cierreIngreso", {cod:$("#id_ingreso").val(),details,condicion:$("#chkCalidad").prop("checked"),
+                                            pedido:$("#idpedido").val(),orden:$("#idorden").val(),entidad:$("#id_entidad").val()},
             function (data, textStatus, jqXHR) {
                 if (data){
                     mostrarMensaje("msj_info","Ingreso actualizado");

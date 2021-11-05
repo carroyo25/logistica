@@ -2,10 +2,17 @@ var accion      = "n";
 
 $(function(){
     activar_opcion();
+    abrirVentanaEspera();
+
+    $(document).ready(function(){
+        activar_opcion();
+
+        cerrarVentanaEspera();
+    });
 
     $("#newreg").on("click", function (e) {
         e.preventDefault();
-
+        
         $("#modalProcess").fadeIn();
         $(".process_header, .details_item").removeClass("desactivado");
         $(".sides_process div").removeClass("no_modificar");
@@ -35,6 +42,7 @@ $(function(){
 
     $("#tabla_guias tbody").on("click","a", function (e) {
         e.preventDefault();
+        abrirVentanaEspera();
 
         $.post(RUTA+"despacho/salidaId", {idx:$(this).attr("href")},
             function (data, textStatus, jqXHR) {
@@ -76,7 +84,9 @@ $(function(){
                         $("#detalle_despacho tbody")
                             .empty()
                             .append(data);
-
+                            
+                            cerrarVentanaEspera();
+                            
                             $("#modalProcess").fadeIn();
 
                             $(".process_header").addClass("no_modificar");
@@ -196,7 +206,6 @@ $(function(){
             mostrarMensaje("msj_error","Seleccione el tipo de movimiento");
             return false;
         }
-
 
         $.post(RUTA+"despacho/nuevoNroGuia",
             function (data, textStatus, jqXHR) {
@@ -635,7 +644,8 @@ $(function(){
             data: {
                 cabecera:result,
                 detalles,
-                salida:$("#id_salida").val()
+                salida:$("#id_salida").val(),
+                ingreso:$("#id_ingreso").val()
             },
             dataType: "text",
             beforeSend: function(){
@@ -647,6 +657,35 @@ $(function(){
         });
         
         return false
+    });
+
+    $("#cerrarDoc").click(function (e) { 
+        e.preventDefault();
+        
+        abrirVentanaEspera();
+
+        $.post("despacho/terminaSalida",{salida:$("#id_salida").val(),ingreso:$("#id_ingreso").val()
+                                                ,pedido:$("#idpedido").val(),detalles:JSON.stringify(getDetails())},
+            function (data, textStatus, jqXHR) {
+                if (data){
+                    $("#modalProcess").fadeOut();
+
+                    $.post(RUTA+"despacho/actualizaPrincipal",
+                        function (data, textStatus, jqXHR) {
+                            $("#tabla_guias tbody")
+                                .empty()
+                                .append(data);
+
+                            cerrarVentanaEspera();
+                        },
+                        "text"
+                    );
+                }
+            },
+            "text"
+        );
+
+        return false;
     });
 })
 
@@ -666,8 +705,9 @@ function getDetails(){
             IDPROD      = $(this).find('td').eq(1).data('idprod'),
             IDDETPED    = $(this).find('td').eq(1).data('iddetpedido'),
             IDDERORD    = $(this).find('td').eq(1).data('iddetorden'),
-            CESTADO     = $(this).find('td').eq(7).text(),
-            UBICACION   = $(this).find('td').eq(8).text()
+            UBICACION   = $(this).find('td').eq(8).text(),
+            SERIE       = $(this).find('td').eq(7).text(),
+            ESTADO      = $(this).find('td').eq(1).data('nestado')
 
 
             item = {};
@@ -683,8 +723,9 @@ function getDetails(){
                 item["idprod"]      = IDPROD;
                 item["iddetped"]    = IDDETPED;
                 item["iddetord"]    = IDDERORD;
-                item['cestado']     = CESTADO;
+                item['serie']       = SERIE;
                 item['ubicacion']   = UBICACION;
+                item['estado']      = ESTADO;
             }
 
             DETALLES.push(item);
