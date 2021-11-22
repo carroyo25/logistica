@@ -352,6 +352,7 @@
             return $movimientos;
         }
 
+        //aca hay que chequear las series
         public function llamarDetalleIngresoPorID($idx){
             $salida = "";
             try {
@@ -380,7 +381,7 @@
                                                     INNER JOIN tb_unimed ON alm_recepdet.ncoduni = tb_unimed.ncodmed
                                                     INNER JOIN tb_paramete2 ON alm_recepdet.nestadoreg = tb_paramete2.ccodprm2
                                                     INNER JOIN lg_pedidodet ON alm_recepdet.niddetaPed = lg_pedidodet.nidpedi
-                                                    INNER JOIN cm_prodserie ON alm_recepdet.id_cprod = cm_prodserie.id_cprod 
+                                                    LEFT JOIN cm_prodserie ON alm_recepdet.id_cprod = cm_prodserie.id_cprod 
                                                 WHERE
                                                     alm_recepdet.id_regalm = :cod 
                                                     AND tb_paramete2.ncodprm1 = 21 

@@ -9,6 +9,7 @@
             $this->view->menu = $this->model->acordeon($_SESSION['id_user']);
             $this->view->actives    = $this->model->getTotals(1);
             $this->view->inactives  = $this->model->getTotals(0);
+            $this->view->proyectos  = $this->model->listarProyectos();
             $this->view->render('costos/index');
         }
 
@@ -27,8 +28,9 @@
             $cod = $_POST['codigo_centro'];
             $des = $_POST['descripcion_centro'];
             $est = $_POST['estado'];
+            $proy = $_POST['cod_proy'];
 
-            $datos = compact("cod","des","est");
+            $datos = compact("cod","des","est","proy");
 
             $salida = $this->model->insert($datos);
 

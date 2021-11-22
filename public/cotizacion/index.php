@@ -9,7 +9,8 @@
 
     //aca tiene que ver otras condiciones
 
-    $condicion = general($pdo,12);
+    $condicion = general($pdo,11);
+    $plazo = general($pdo,12);
     $moneda = monedas($pdo);
     $entidad = obtenerProveedor($pdo,$proveedor);
     $items = obtenerItems($pdo,$pedido);
@@ -113,7 +114,9 @@
                         <?php echo $condicion?>
                     </select>
                     <label for="plazo" class="derecha">Plazo Entrega:</label>
-                    <input type="text" name="plazo" id="plazo">
+                    <select name="plazo" id="plazo">
+                        <?php echo $plazo?>
+                    </select>
                 </div>
                 <div class="datos grid4">
                     <label for="inclIgv"  class="derecha">Incluye IGV :</label>

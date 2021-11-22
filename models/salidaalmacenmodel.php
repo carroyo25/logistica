@@ -16,6 +16,7 @@
                                                     logistica.alm_salidacab.fentrega,
                                                     CONCAT( rrhh.tabla_aquarius.apellidos, ' ', rrhh.tabla_aquarius.nombres ) AS nombres,
                                                     rrhh.tabla_aquarius.dcargo,
+                                                    rrhh.tabla_aquarius.dni,
                                                     logistica.tb_almacen.cdesalm,
                                                     logistica.alm_salidacab.n_salida,
                                                     logistica.alm_salidacab.idreg
@@ -35,8 +36,8 @@
                         $salida .='<tr>
                                         <td class="con_borde centro">'.str_pad($rs['n_salida'],3,0,STR_PAD_LEFT).'</td>
                                         <td class="con_borde centro">'.date("d/m/Y", strtotime($rs['femic'])).'</td>
-                                        <td class="con_borde centro">'.date("d/m/Y", strtotime($rs['fentrega'])).'</td>
                                         <td class="con_borde pl20">'.strtoupper($rs['cdesalm']).'</td>
+                                        <td class="con_borde centro">'.$rs['dni'].'</td>
                                         <td class="con_borde pl20">'.strtoupper($rs['nombres']).'</td>
                                         <td class="con_borde centro"><a href="'.$rs['idreg'].'"><i class="far fa-edit"></i></a></td>
                                     </tr>';
@@ -118,7 +119,7 @@
                 if ($rowCount > 0){
                     while ($rs = $query->fetch()) {
                         $salida .='<tr>
-                                        <td class="con_borde"></td>
+                                        <td class="con_borde" data-grabado="1"></td>
                                         <td class="con_borde centro">'.str_pad($fila++,3,0,STR_PAD_LEFT).'</td>
                                         <td class="con_borde pl20">'.$rs['ccodprod'].'</td>
                                         <td class="con_borde pl20">'.$rs['cdesprod'].'</td>
@@ -187,9 +188,14 @@
                     while($row=$query->fetch(PDO::FETCH_ASSOC)){
                         $docData[] = $row;
                     }
+
+                    return $docData;
+
+                }else {
+                    return false;
                 }
 
-                return $docData;
+                
                 
             } catch (PDOException $th) {
                 echo $th->getMessage();
@@ -209,27 +215,25 @@
                                                         alm_movimdet.nfactor,
                                                         cm_producto.ccodprod,
                                                         cm_producto.cdesprod,
-                                                        cm_prodserie.cdesserie,
-                                                        cm_prodserie.nEntregado,
+                                                        alm_movimdet.cSerie,
                                                         cm_producto.cmarca,
                                                         cm_producto.cmodelo,
                                                         tb_unimed.cabrevia 
                                                     FROM
                                                         alm_movimdet
                                                         INNER JOIN cm_producto ON alm_movimdet.id_cprod = cm_producto.id_cprod
-                                                        INNER JOIN cm_prodserie ON alm_movimdet.id_cprod = cm_prodserie.id_cprod
                                                         INNER JOIN tb_unimed ON cm_producto.ncodmed = tb_unimed.ncodmed 
                                                     WHERE
                                                         alm_movimdet.ncodalm2 = :almacen
+                                                        AND ncantidad > 0
                                                     LIMIT 20");
                 $query->execute(["almacen"=>$almacen]);
                 $rowCount = $query->rowcount();
 
                 if ($rowCount) {
                     while ($rs = $query->fetch()) {
-                        $estado = $rs['nEntregado'] == 1 ? "desactivado" : ""; 
                         
-                        $salida .= '<tr class="pointertr '.$estado.'" data-idprod="'.$rs['id_cprod'].'" 
+                        $salida .= '<tr class="pointertr" data-idprod="'.$rs['id_cprod'].'" 
                                                 data-niddeta="'.$rs['niddeta'].'"
                                                 data-factor="'.$rs['nfactor'].'"
                                                 data-unidad="'.$rs['ncoduni'].'"
@@ -238,9 +242,9 @@
                                         <td class="con_borde">'.$rs['cdesprod'].'</td>
                                         <td class="con_borde"></td>
                                         <td class="con_borde"></td>
-                                        <td class="con_borde">'.$rs['cdesserie'].'</td>
+                                        <td class="con_borde">'.$rs['cSerie'].'</td>
                                         <td class="con_borde">'.$rs['cabrevia'].'</td>
-                                        <td class="con_borde"><a href="'.$rs['cdesserie'].'"><i class="fas fa-exchange-alt"></i></a></td>
+                                        <td class="con_borde"><a href="'.$rs['cSerie'].'"><i class="fas fa-exchange-alt"></i></a></td>
                                     </tr>';
                     }
                     
@@ -259,19 +263,18 @@
                 $id = uniqid();
                 $salida = $this->numeroSalida($cabecera['cod_almacen']) + 1;
                 $query=$this->db->connect()->prepare("INSERT INTO alm_salidacab SET idreg=:id,n_salida=:salida,id_alm=:almacen,
-                                                                                    id_solic=:solicita,femic=:emision,fentrega=:entrega");
+                                                                                    id_solic=:solicita,femic=:emision");
                 $query->execute(["id"=>$id,
                                 "salida"=>$salida,
                                 "almacen"=>$cabecera['cod_almacen'],
                                 "solicita"=>$cabecera['cod_personal'],
-                                "emision"=>$cabecera['fechadoc'],
-                                "entrega"=>$cabecera['fechaEntrega']]);
+                                "emision"=>$cabecera['fechaEntrega']]);
                 $rowCount = $query->rowcount();
 
                 if ($rowCount > 0) {
                     $this->grabarDetalles($detalles,$id);
-                    $this->actualizarStock($detalles);
-                    $this->actualizarSerie($detalles);
+                    //$this->actualizarStock($detalles);
+                    //$this->actualizarSerie($detalles);
                     return true;
                 }
 
@@ -304,7 +307,11 @@
                     return false;
                 }
             }
+
+            $this->actualizarStock($detalles);
+            $this->actualizarSerie($detalles);
         }
+
         
         public function numeroSalida($almacen){
             try {

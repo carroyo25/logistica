@@ -239,16 +239,11 @@
 .process{
     >div{
         position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        min-height: 75%;
-        max-height: 75%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 2px 3px 5px #000;
         background: #fff;
-        border: 2px solid black;
-        margin: auto;
-        overflow: auto;
     }
 
     .descrip_title {
@@ -395,6 +390,177 @@
             padding-left: 10px;
         }
     }
+
+    .processBody{
+        >div{
+            display: grid;
+            padding: 5px 20px;
+            gap: 10px;
+
+            font-size: .8rem;
+
+            label {
+                display: block;
+                font-weight: bold;
+            }
+
+            input {
+                margin-top: 5px;
+                height: 30px;
+                width: 100%;
+                border: 1px solid #c2c2c2;
+            }
+
+            textarea{
+                width: 100%;
+                height: 3rem;
+                border: 1px solid #c2c2c2;
+            }
+
+            a {
+                margin-right: 20px;
+
+                &:hover{
+                    color: crimson;
+                    text-shadow: 3px 2px 5px #c2c2c2;
+                    transition: .3s;
+                }
+            }
+        }
+
+        div:nth-child(1){
+            grid-template-columns: .5fr 2fr .1fr .1fr .5fr;
+
+            label{
+                height: 2rem;
+            }
+        }
+
+        div:nth-child(2){
+            grid-template-columns: .5fr .1fr .5fr .5fr 2fr 1fr;
+            
+            label{
+                height: 2rem;
+            }
+
+            div:nth-child(6){
+                display: flex;
+                justify-content: end;
+                align-items: center;
+                font-size: 2rem;
+            }
+        }
+
+        div:nth-child(3){
+            grid-template-columns: .5fr .1fr .5fr .5fr 1fr;
+
+            div:nth-child(5){
+                display: flex;
+                justify-content: end;
+                align-items: center;
+                font-size: 2rem;
+            }
+        }
+
+        div:nth-child(4), div:nth-child(5){
+            grid-template-columns: .2fr .2fr 1fr;
+
+            div:nth-child(3){
+                display: flex;
+                justify-content: end;
+                align-items: center;
+                font-size: 2rem;
+            }
+        }
+
+        div:nth-child(7){
+            grid-template-columns: 1fr .2fr;
+        }
+
+        div:nth-child(8){
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    .vistapuntaje {
+        h3 {
+            margin-left: 20px;
+        }
+
+        >div{
+            display: grid;
+            padding: 5px 20px;
+            gap: 10px;
+
+            font-size: .8rem;
+
+            label {
+                display: block;
+                font-weight: bold;
+            }
+
+            input {
+                margin-top: 5px;
+                height: 30px;
+                border: 1px solid #c2c2c2;
+            }
+        }
+
+        div:nth-child(1){
+            grid-template-columns: .5fr 2fr ;
+
+            label{
+                height: 2rem;
+            }
+        }
+
+        div:nth-child(2){
+            grid-template-columns: 1fr 1fr 1fr;
+
+            label{
+                height: 2rem;
+            }
+        }
+
+        div:nth-child(4){
+            grid-template-columns: 1fr 1fr;
+
+            div:nth-child(1){
+                span{
+                    height: 2rem;
+                    width: 100px;
+                    display: inline-block;
+                }
+            }
+            
+            .valor{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                span{
+                    font-size: 3rem;
+                    background-color: green;
+                    background: radial-gradient(at top left, #0F0 20%, #040);
+                    font-weight: bolder;
+                    padding: 20px 25px;
+                    border-radius: 50%;
+                    text-shadow: 3px 5px 2px #fff;
+                }
+            }
+        }
+
+        div:nth-child(6){
+            background: antiquewhite;
+
+            span{
+                height: 2rem;
+                width: 150px;
+                display: inline-block;
+            }
+        }
+    }
 }
 
 .dialogMany{
@@ -403,8 +569,6 @@
         left: 32%;
         top: 20%;
         width: 43%;
-        //height: 62vh;
-        //max-height: 64vh;
         background: #c2c2c2;
         padding: 20px;
         border-radius: 20px;
@@ -2315,6 +2479,10 @@ hr{
     height: 30px;
 }
 
+.h15rem {
+    height: 15rem;
+}
+
 //alto en lineas
 .h40vh{
     height: 40vh;
@@ -2326,6 +2494,10 @@ hr{
 
 .h60vh{
     height: 60vh;
+}
+
+.h85vh{
+    height: 85vh;
 }
 
 //margen top
@@ -2426,6 +2598,16 @@ input[type=checkbox]:checked
     grid-template-columns: 100px 1fr .5fr 1fr;
 }
 
+.g4items100{
+    column-gap: 10px;
+    grid-template-columns: 100px 1fr 100px 1fr;
+}
+
+.g4items1001{
+    column-gap: 10px;
+    grid-template-columns: 100px 2fr 50px .5fr;
+}
+
 .g3items{
     column-gap: 10px;
     grid-template-columns: 1fr 1fr .5fr;
@@ -2473,31 +2655,34 @@ input[type=checkbox]:checked
 .emitido,.activo,.recepcionado {
     background: dodgerblue !important;
     color: white;
-    font-weight: 800;
+    //font-weight: 800;
 }
 
 .rechazado, .inactivo {
     background: orange !important;
     color: white;
-    font-weight: 800;
+    //font-weight: 800;
 }
 
-.urgente{
+.urgente,.malo{
     background: red;
     color: white;
-    font-weight: 800;
+    font-size: .7rem;
+    //font-weight: 800;
 }
 
 .aprobacion{
     background:darkblue;
     color: white;
-    font-weight: 800;
+    font-size: .7rem;
+    //font-weight: 800;
 }
 
-.aprobado {
+.aprobado,.regular {
     background: powderblue;
     color: #000;
-    font-weight: 700;
+    font-size: .7rem;
+    //font-weight: 700;
 }
 
 .proceso {
@@ -2513,7 +2698,7 @@ input[type=checkbox]:checked
     font-size: .7rem;
 }
 
-.normal{
+.normal,.maximo{
     background: chartreuse;
     font-weight: 800;
 }
@@ -2532,7 +2717,6 @@ input[type=checkbox]:checked
 
 .verificacion {
     background: #aaaaaa;
-    font-weight: 800;
     color: #fff;
 }
 
@@ -2563,7 +2747,6 @@ input[type=checkbox]:checked
 .calidad{
     background: #17BFDE !important;
     outline: none;
-    font-weight: 800;
     color: #fff;
     font-size: .7rem;
 }
@@ -2571,7 +2754,6 @@ input[type=checkbox]:checked
 .adjudicacion{
     background: #800000 !important;
     outline: none;
-    font-weight: 800;
     color: #fff;
     font-size: .7rem;
 }

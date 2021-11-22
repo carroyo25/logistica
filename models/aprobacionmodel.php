@@ -6,38 +6,42 @@
             parent::__construct();
         }
 
-        public function getAllUserRecords(){
+        public function getAllUserRecords($user){
             try {
                 $salida = "";
-                $query = $this->db->connect()->query("SELECT
-                                                logistica.lg_pedidocab.id_regmov,
-                                                logistica.lg_pedidocab.ffechadoc,
-                                                logistica.lg_pedidocab.cconcepto,
-                                                logistica.lg_pedidocab.nEstadoDoc,
-                                                logistica.lg_pedidocab.id_cuser,
-                                                logistica.lg_pedidocab.ncodmov,
-                                                logistica.lg_pedidocab.cnumero,
-                                                logistica.lg_pedidocab.nNivAten,
-                                                logistica.tb_proyecto1.cdespry,
-                                                logistica.tb_proyecto1.ccodpry,
-                                                logistica.tb_area.ccodarea,
-                                                logistica.tb_area.cdesarea,
-                                                rrhh.tabla_aquarius.apellidos,
-                                                rrhh.tabla_aquarius.nombres,
-                                                atenciones.cdesprm2 AS atencion,
-                                                estados.cdesprm2 AS estado 
-                                            FROM
-                                                logistica.lg_pedidocab
-                                                INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry
-                                                INNER JOIN logistica.tb_area ON logistica.lg_pedidocab.ncodarea = logistica.tb_area.ncodarea
-                                                INNER JOIN rrhh.tabla_aquarius ON logistica.lg_pedidocab.ncodper = rrhh.tabla_aquarius.internal
-                                                INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
-                                                INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
-                                            WHERE
-                                                atenciones.ncodprm1 = 13 
-                                                AND estados.ncodprm1 = 4
-                                                AND lg_pedidocab.nEstadoDoc = 3");
-                $query->execute();
+                $query = $this->db->connect()->prepare("SELECT
+                                                        logistica.lg_pedidocab.id_regmov,
+                                                        logistica.lg_pedidocab.cnumero,
+                                                        logistica.lg_pedidocab.ffechadoc,
+                                                        logistica.lg_pedidocab.cconcepto,
+                                                        logistica.lg_pedidocab.ffechaven,
+                                                        logistica.lg_pedidocab.nEstadoDoc,
+                                                        logistica.lg_pedidocab.id_cuser,
+                                                        logistica.lg_pedidocab.ncodmov,
+                                                        logistica.lg_pedidocab.nNivAten,
+                                                        logistica.tb_area.ccodarea,
+                                                        logistica.tb_area.cdesarea,
+                                                        logistica.tb_proyecto1.ccodpry,
+                                                        logistica.tb_proyecto1.cdespry,
+                                                        rrhh.tabla_aquarius.apellidos,
+                                                        rrhh.tabla_aquarius.nombres,
+                                                        atenciones.cdesprm2 AS atencion,
+                                                        estados.cdesprm2 AS estado 
+                                                    FROM
+                                                        logistica.tb_proyusu
+                                                        INNER JOIN logistica.lg_pedidocab ON tb_proyusu.ncodproy = lg_pedidocab.ncodpry
+                                                        INNER JOIN logistica.tb_area ON lg_pedidocab.ncodarea = tb_area.ncodarea
+                                                        INNER JOIN logistica.tb_proyecto1 ON lg_pedidocab.ncodpry = tb_proyecto1.ncodpry
+                                                        INNER JOIN rrhh.tabla_aquarius ON logistica.lg_pedidocab.ncodper = rrhh.tabla_aquarius.internal
+                                                        INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
+                                                        INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
+                                                    WHERE
+                                                        tb_proyusu.id_cuser = :user 
+                                                        AND tb_proyusu.nflgactivo = 1 
+                                                        AND atenciones.ncodprm1 = 13 
+                                                        AND estados.ncodprm1 = 4 
+                                                        AND logistica.lg_pedidocab.nEstadoDoc = 3");
+                $query->execute(["user"=>$user]);
                 $rowcount = $query->rowcount();
 
                 if ($rowcount > 0 ){
@@ -107,13 +111,14 @@
                                                             INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry
                                                             INNER JOIN logistica.tb_area ON logistica.lg_pedidocab.ncodarea = logistica.tb_area.ncodarea
                                                             INNER JOIN logistica.tb_ccostos ON logistica.lg_pedidocab.ncodcos = logistica.tb_ccostos.ncodcos
-                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ncodprm2
+                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ccodprm2
                                                             INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
                                                             INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
                                                         WHERE
                                                             logistica.lg_pedidocab.id_regmov = :cod 
                                                             AND atenciones.ncodprm1 = 13 
-                                                            AND estados.ncodprm1 = 4");
+                                                            AND estados.ncodprm1 = 4
+                                                            AND transportes.ncodprm1 = 7");
                 $query->execute(["cod"=>$cod]);
                 $rowcount = $query->rowcount();
 
@@ -297,7 +302,6 @@
                 return false;
             }
         }
-
 
         public function sendmails($datos){
             require_once("public/PHPMailer/PHPMailerAutoload.php");

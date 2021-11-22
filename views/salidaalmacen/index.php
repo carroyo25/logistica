@@ -24,21 +24,12 @@
             <div class="formulario">
                 <div class="banner">
                     <div>
-                        <label for="tipo">Tipo</label>
-                        <select name="tipo" id="tipo">
-                            <option value="-1" class="oculto">Seleccione opcion</option>
-                            <option value="1">Bienes</option>
-                            <option value="2">Servicios</option>
-                        </select>
+                        <label for="nrodoc">DNI/CE</label>
+                        <input type="text" name="nrodoc" id="nrodoc">
                     </div>
                     <div>
-                        <label for="ccostos">Proyecto/Sede</label>
-                        <select name="ccostos" id="ccostos">
-                            <option value="-1" class="oculto">Seleccione opcion</option>
-                            <option value="1">200 - Sede Lima</option>
-                            <option value="1">200.1 - Almacen Pucallpa</option>
-                            <option value="2">2800 - WHCP21 Compresión</option>
-                        </select>
+                        <label for="nomsol">Solicitante</label>
+                        <input type="text" name="nomsol" id="nomsol">
                     </div>
                     <div>
                         <label for="mes">Mes</label>
@@ -62,9 +53,9 @@
                         <thead>
                             <tr>
                                 <th class="con_borde w55px">Num. Salida</th>
-                                <th class="con_borde">F.Emisión</th>
-                                <th class="con_borde ">F.Entrega</th>
+                                <th class="con_borde">F.Entrega</th>
                                 <th class="con_borde">Almacen</th>
+                                <th class="con_borde ">Nro.Documento</th>
                                 <th class="con_borde">Solicitante</th>
                                 <th class="con_borde">...</th>
                             </tr>
@@ -111,10 +102,10 @@
         <form action="#" autocomplete="off" id="formProcess">
             <input type="hidden" id="cod_almacen" name="cod_almacen">
             <input type="hidden" id="cod_personal" name="cod_personal">
-            <input type="hidden" name="cod_salida" name="cod_salida">
+            <input type="hidden" id="cod_salida" name="cod_salida">
 
             <div class="process">
-                <div class="two_sides_process w50p">
+                <div class="two_sides_process w55p h85vh">
                         <div class="descrip_title">
                             <span>Datos Generales</span>
                             <div>
@@ -125,19 +116,7 @@
                         </div>
                         <div class="process_header1ec">
                             <div class="process_left">
-                                <div class="input_process g4items">
-                                    <label for="nrosalida" class="w100px">Nro. Salida :</label>
-                                    <input type="text" name="nrosalida" id="nrosalida" class="pl10" readonly>
-                                    <label for="movalma" class="w100px">Nro.Documento:</label>
-                                    <input type="text" name="nrodocumento" id="nrodocumento" class="pl10">
-                                </div>
-                                <div class="input_process g4items">
-                                    <label for="fechadoc" class="w100px">Fec. Emisión. :</label>
-                                    <input type="date" name="fechadoc" id="fechadoc" readonly value="<?php echo date("Y-m-d");?>" class="pl20" >
-                                    <label for="fechaEntrega" class="w100px">Fecha Entrega :</label>
-                                    <input type="date" name="fechaEntrega" id="fechaEntrega" class="pl20" value="<?php echo date("Y-m-d");?>" class="pl20">
-                                </div>
-                                <div class="input_process g2items desplegable">
+                                <div class="input_process g4items1001 desplegable">
                                     <label for="almacen" class="w100px">Almacen :</label>
                                     <input type="text" name="almacen" id="almacen" class="pl20 mayusculas">
                                     <div class="seleccion seleccion_pedido">
@@ -145,10 +124,14 @@
                                             <?php echo $this->almacenes?>
                                         </ul>
                                     </div>
+                                    <label for="fecha">Fecha :</label>
+                                    <input type="date" name="fechaEntrega" id="fechaEntrega" value="<?=date("Y-m-d")?>">
                                 </div>
-                                <div class="input_process g2items desplegable">
-                                    <label for="solicitante" class="w100px">Solicitante :</label>
-                                    <input type="text" name="solicitante" id="solicitante" class="pl20 mayusculas" readonly>
+                                <div class="input_process g4items100 desplegable">
+                                    <label for="movalma" class="w100px">DNI/CE:</label>
+                                    <input type="text" name="nrodocumento" id="nrodocumento" class="pl10">
+                                    <label for="solicitante">Solicitante :</label>
+                                    <input type="text" name="solic" id="solicitante" class="pl20 mayusculas" readonly>
                                 </div>
                                 <div class="input_process g2items desplegable">
                                     <label for="cargo" class="w100px">Cargo :</label>
@@ -166,7 +149,7 @@
                         </div>
                         <div class="process_items">
                         <div>
-                            <table class="con_borde w100p" id="detalle_despacho">
+                            <table class="con_borde w100p f8rem" id="detalle_despacho">
                                 <thead>
                                     <tr>
                                         <th class="con_borde w2p">...</th>

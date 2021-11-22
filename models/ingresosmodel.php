@@ -511,11 +511,9 @@
 
             try {
                 $cod = uniqid("NI");
-
                 $guia_actual = $this->genNumber($origen);
-
                 $fecha_explode = explode("-",$fecha); 
-                
+
                 $sql = $this->db->connect()->prepare("INSERT INTO alm_recepcab SET id_regalm=:cod,ncodmov=:cmo,cper=:anio,cmes=:mes,ncodalm1=:cma,
                                                                                     ffecdoc=:fec,ffecconta=:fco,id_centi=:idt,cnumguia=:ngi,idref_pedi=:ped,
                                                                                     id_userAprob=:apro,nEstadoDoc=:est,nflgactivo=:flag,nnromov=:nmov,nnronota=:nnot,
@@ -925,20 +923,21 @@
         
         public function cerrarIngreso($cod,$detalles,$condicion,$pedido,$orden,$entidad){
             try {
-                $estadoIngreso = 10;
-                $est = $condicion == "true" ? 10:11;
-
                 $query = $this->db->connect()->prepare("UPDATE alm_recepcab SET nEstadoDoc =:est WHERE id_regalm=:cod LIMIT 1");
-                $query->execute(["cod"=>$cod,"est"=>$estadoIngreso]);
+                $query->execute(["cod"=>$cod,"est"=>$condicion]);
                 
                 $rowCount = $query->rowCount();
 
                 if ($rowCount > 0) {
-                    $this->actualizarPedidoCabecera($pedido,$est);
-                    $this->actualizarPorcentajeEntrega($detalles,$est);
+                    $this->actualizarPedidoCabecera($pedido,$condicion);
+                    $this->actualizarPorcentajeEntrega($detalles,$condicion);
                     $this->calificarProveedor($entidad,$orden,$pedido);
-                }
 
+                    //verificar la calificacion del proveedor de los pedidos que no pasan a calidad
+                    if ($condicion = 11) {
+                        $this->calificarSinCalidad($entidad,$orden,$pedido);
+                    }
+                }
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
@@ -1024,6 +1023,18 @@
                 echo $th->getMessage();
                 return false;
             }   
+        }
+
+        public function calificarSinCalidad($entidad,$orden,$pedido) {
+            try {
+                $sql = $this->db->connect()->prepare("UPDATE tb_califica SET id_orden=:orden,nCalidad=:puntaje
+                                                        WHERE id_centi=:entidad AND
+                                                        id_pedido =:pedido");
+                $sql->execute(["entidad"=>$entidad,"pedido"=>$pedido,"orden"=>$orden,"puntaje"=>10]);
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
         }
 
         public function calcularDiasEntrega($orden) {

@@ -680,8 +680,10 @@ $(function(){
         e.preventDefault();
         getDetails();
 
+        let sw = $("#chkCalidad").prop("checked") == true ? 10:11;
         let details = JSON.stringify(getDetails());
-        $.post("ingresos/cierreIngreso", {cod:$("#id_ingreso").val(),details,condicion:$("#chkCalidad").prop("checked"),
+
+        $.post("ingresos/cierreIngreso", {cod:$("#id_ingreso").val(),details,condicion:sw,
                                             pedido:$("#idpedido").val(),orden:$("#idorden").val(),entidad:$("#id_entidad").val()},
             function (data, textStatus, jqXHR) {
                 if (data){

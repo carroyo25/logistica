@@ -7,7 +7,7 @@
 
         function render(){
             $this->view->menu = $this->model->acordeon($_SESSION['id_user']);
-            $this->view->registros    = $this->model->getAllUserRecords();
+            $this->view->registros    = $this->model->getAllUserRecords($_SESSION['id_user']);
             $this->view->render('aprobacion/index');
         }
         

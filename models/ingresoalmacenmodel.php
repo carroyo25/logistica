@@ -125,7 +125,7 @@
                                                         INNER JOIN logistica.lg_pedidocab ON alm_despachocab.idref_pedi = lg_pedidocab.id_regmov
                                                         INNER JOIN rrhh.tabla_aquarius ON logistica.lg_pedidocab.ncodper = rrhh.tabla_aquarius.internal
                                                         INNER JOIN logistica.lg_regabastec ON logistica.alm_despachocab.idref_ord = logistica.lg_regabastec.id_regmov
-                                                        INNER JOIN logistica.tb_almacen ON logistica.lg_docusunat.ncodalm1 = logistica.tb_almacen.ncodalm
+                                                        INNER JOIN logistica.tb_almacen ON logistica.lg_docusunat.ncodalm2 = logistica.tb_almacen.ncodalm
                                                         INNER JOIN logistica.tb_paramete2 ON logistica.alm_despachocab.nEstadoDoc = logistica.tb_paramete2.ccodprm2 
                                                     WHERE
                                                         lg_docusunat.id_refmov = :idx 

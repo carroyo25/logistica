@@ -62,6 +62,7 @@
                 <form action="#" method="POST" id="formItem">
                     <input type="hidden" name="index_costos" id="index_costos">
                     <input type="hidden" name="estado" id="estado" value="1">
+                    <input type="hidden" name="cod_proy" id="cod_proy">
                     <div class="banner">
                         <p id="descrip"></p>
                     </div>
@@ -72,21 +73,30 @@
                             </ul>
                         </div>
                         <div class="datos" id="form1">
-                            <div class="datainputs">
-                                <div class="inputfield">
-                                    <label for="codigo_centro" class="w250px">* Código</label>
-                                    <input type="text" name="codigo_centro" id="codigo_centro">
-                                </div>
-                                <div class="inputfield">
-                                    <label for="descripcion_centro" class="w250px">* Descripción :</label>
-                                    <input type="text" name="descripcion_centro" id="descripcion_centro" class="w40p mayusculas">
-                                </div>
-                                <div class="inputfield">
-                                    <label for="descripcion_centro" class="w250px">Requiere consulta almacen :</label>
-                                    <input type="checkbox" name="checkAlmacen" id="checkAlmacen" class="w40p mayusculas">
-                                </div>
+                                <div class="datainputs">
+                                    <div class="inputfield">
+                                        <label for="proyecto" class="w250px">* Proyecto</label>
+                                        <input type="text" name="proyecto" id="proyecto" class="w40p mayusculas">
+                                        <div class="seleccion seleccion_proyecto">
+                                            <ul id="listaProyectos" class="h15rem">
+                                                <?php echo $this->proyectos?>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="inputfield">
+                                        <label for="codigo_centro" class="w250px">* Código</label>
+                                        <input type="text" name="codigo_centro" id="codigo_centro">
+                                    </div>
+                                    <div class="inputfield">
+                                        <label for="descripcion_centro" class="w250px">* Descripción :</label>
+                                        <input type="text" name="descripcion_centro" id="descripcion_centro" class="w40p mayusculas">
+                                    </div>
+                                    <div class="inputfield">
+                                        <label for="descripcion_centro" class="w250px">Requiere consulta almacen :</label>
+                                        <input type="checkbox" name="checkAlmacen" id="checkAlmacen" class="w40p mayusculas">
+                                    </div>
                                 <hr>
-                            </div>
+                                </div>
                            <?php 
                                 $activos = $this->actives;
                                 $inactivos = $this->inactives;

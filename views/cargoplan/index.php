@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/png" href="<?php echo constant('URL')?>public/img/logo.png" />
@@ -11,12 +11,6 @@
         <span></span>
     </div>
     <div class="modal zindex5" id="waitmodalCursorOffline">
-    </div>
-    <div class="modal zindex3" id="modalOrderDetail">
-        <div class="insidePreview">
-            <iframe src=""></iframe>
-        </div>
-        <a href="#" id="closeModalOrderDetail" class="buttonClose"><i class="fas fa-reply-all"></i></a>
     </div>
     <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>
@@ -144,9 +138,136 @@
             </div>
         </div>
     </div>
+    <div class="modal zindex5" id="modalProcess">
+        <div class="process">
+            <div class="sides_process w50p">
+                <div class="descrip_title">
+                    <span>Detalles Cargo Plan</span>
+                    <div>
+                        <button type="button" id="btnCerrarDetalle" title="Cerrar" class="boton1">
+                            <span><i class="far fa-save"></i> Cerrar </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="processBody">
+                    <div id="data_item">
+                        <div>
+                            <label for="codigo">Código</label>
+                            <input type="text" name="codigo" id="codigo" readonly>
+                        </div>
+                        <div>
+                            <label for="descripcion">Descripción</label>
+                            <input type="text" name="descripcion" id="descripcion" readonly>
+                        </div>
+                        <div>
+                            <label for="cantsolicitada">Cant. </br> Solicitada</label>
+                            <input type="text" name="cantsolicitada" id="cantsolicitada" readonly>
+                        </div>
+                        <div>
+                            <label for="cantaprobada">Cant.</br>Aprobada</label>
+                            <input type="text" name="cantaprobada" id="cantaprobada" readonly>
+                        </div>
+                        <div>
+                            <label for="estado">Estado:</label>
+                            <input type="text" name="estado" id="estado" readonly>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <label for="pedido">N° Pedido:</label>
+                            <input type="text" name="pedido" id="pedido" readonly>
+                        </div>
+                        <div>
+                            <label for="tipo_pedido">Tipo</label>
+                            <input type="text" name="tipo_pedido" id="tipo_pedido" readonly>
+                        </div>
+                        <div>
+                            <label for="emsion_pedido">Fecha</br>Emisión</label>
+                            <input type="text" name="emsion_pedido" id="emsion_pedido" readonly>
+                        </div>
+                        <div>
+                            <label for="aprobacion_pedido">Fecha</br>Aprobación</label>
+                            <input type="text" name="aprobacion_pedido" id="aprobacion_pedido" readonly>
+                        </div>
+                        <div>
+                            <label for="aprobacion_pedido">Aprobado por:</label>
+                            <input type="text" name="aprobacion_pedido" id="aprobacion_pedido" readonly>
+                        </div>
+                        <div>
+                            <a href="#"><i class="far fa-file-pdf"></i></a>
+                        </div>
+                    </div>
+                    <div id="data_orden">
+                        <div>
+                            <label for="orden">N° Orden:</label>
+                            <input type="text" name="orden" id="orden" readonly>
+                        </div>
+                        <div>
+                            <label for="tipo_orden">Tipo</label>
+                            <input type="text" name="tipo_orden" id="tipo_orden" readonly>
+                        </div>
+                        <div>
+                            <label for="emision_orden">Fecha</br>Emisión</label>
+                            <input type="text" name="emision_orden" id="emision_orden" readonly>
+                        </div>
+                        <div>
+                            <label for="aprobacion_orden">Fecha</br>Aprobación</label>
+                            <input type="text" name="aprobacion_orden" id="aprobacion_orden" readonly>
+                        </div>
+                        <div>
+                            <a href="#"><i class="far fa-file-pdf"></i></a>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <label for="ingreso">N° Ingreso:</label>
+                            <input type="text" name="ingreso" id="ingreso" readonly>
+                        </div>
+                        <div>
+                            <label for="fecha_ingreso">Fecha Ingreso</label>
+                            <input type="text" name="fecha_ingreso" id="fecha_ingreson" readonly>
+                        </div>
+                        <div>
+                            <a href="#"><i class="far fa-file-pdf"></i></a>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <label for="salida">N°. Salida:</label>
+                            <input type="text" name="ingreso" id="ingreso" readonly>
+                        </div>
+                        <div>
+                            <label for="fecha_salida">Fecha Salida</label>
+                            <input type="text" name="fecha_ingreso" id="fecha_ingreson" readonly>
+                        </div>
+                        <div>
+                            <a href="#"><i class="far fa-file-pdf"></i></a>
+                        </div>
+                    </div>
+                    <hr>
+                    <div>
+                        <div>
+                            <label for="proveedor">Nombre Proveedor:</label>
+                            <input type="text" name="proveedor" id="proveedor" readonly>
+                        </div>
+                        <div>
+                            <label for="ruc">R.UC</label>
+                            <input type="text" name="ruc" id="ruc" readonly>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <label for="observaciones">Observaciones:</label>
+                            <textarea name="observaciones" id="observaciones"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="<?php echo constant('URL');?>public/js/jquery.js"></script>
     <script src="<?php echo constant('URL');?>public/js/funciones.js?<?php echo constant('VERSION')?>"></script>
-    <script src="<?php echo constant('URL');?>public/js/ingresos.js?<?php echo constant('VERSION')?>"></script>
+    <script src="<?php echo constant('URL');?>public/js/cargoplan.js?<?php echo constant('VERSION')?>"></script>
     <script src="<?php echo constant('URL');?>public/js/panel.js?<?php echo constant('VERSION')?>"></script>
 </body>
 </html>

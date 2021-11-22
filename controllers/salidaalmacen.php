@@ -75,5 +75,12 @@
 
             echo $result;
         }
+
+        function actualizaSalida(){
+            $id = $_POST["idreg"];
+            $detalles = $_POST["detalles"];
+
+            $result = $this->model->grabarDetalles($detalles,$id);
+        }
     }
 ?>

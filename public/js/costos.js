@@ -186,6 +186,32 @@ $(function(){
         return false;
     });
 
+    //listar Proyectos
+    $("#proyecto").focus(function (e) { 
+        e.preventDefault();
+        
+        $("#cod_proy").val("");
+        $(this).select();
+        $(".seleccion").fadeOut();
+
+        $(this).next(".seleccion").slideDown();
+
+        return false;
+    });
+
+    //seleccion de las lista proyectos
+    $("#listaProyectos").on("click","a", function (e) {
+        e.preventDefault();
+
+        $("#cod_proy").val($(this).attr("href"));
+        $("#proyecto").val($(this).text());
+
+        $(this).parent().parent().parent().slideUp();
+        $("#saveItem span").addClass('parpadea');
+
+        return false;
+    });
+
 })
 
 function desactivar_controles(){

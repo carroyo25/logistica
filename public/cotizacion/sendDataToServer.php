@@ -51,7 +51,7 @@
         }
     }
 
-    function calificarProveedor($pdo,$entidad,$pedido){
+    function calificarProveedor($pdo,$pedido,$entidad){
         try {
             $id = uniqid("cal");
             $sql = "INSERT INTO tb_califica SET idreg=?,id_centi=?,id_pedido=?,nParticipa=?";

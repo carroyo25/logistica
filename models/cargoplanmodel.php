@@ -59,7 +59,7 @@
                         $fechaOrden = is_null($rs['fechaorden']) ? " ":date("d/m/Y", strtotime($rs['fechaorden']));
                         $salida.='<tr>
                                     <td class="con_borde centro">'.str_pad($item++,4,0,STR_PAD_LEFT).'</td>
-                                    <td class="con_borde '.strtolower($rs['estado']).' pl10">'.$rs['estado'].'</td>
+                                    <td class="con_borde '.strtolower($rs['estado']).' centro">'.$rs['estado'].'</td>
                                     <td class="con_borde pl10">'.$rs['ccodpry'].'</td>
                                     <td class="con_borde pl10">'.strtoupper($rs['cdesarea']).'</td>
                                     <td class="con_borde '.strtolower($rs['atencion']).' pl10">'.$rs['atencion'].'</td>
@@ -79,6 +79,15 @@
                     }
                 }
                 return $salida;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function buscarId($id){
+            try {
+                return true;
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;

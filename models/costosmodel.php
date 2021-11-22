@@ -25,10 +25,11 @@
 
         public function insert($datos){
             try {
-                $query= $this->db->connect()->prepare("INSERT INTO tb_ccostos SET ccodcos=:cod,cdescos=:dsc,nflgactivo=:est");
+                $query= $this->db->connect()->prepare("INSERT INTO tb_ccostos SET ccodcos=:cod,cdescos=:dsc,nflgactivo=:est,ncodpry=:proy");
                 $query->execute(["cod"=>$datos['cod'],
                                  "dsc"=>$datos['des'],
-                                 "est"=>$datos['est']]);
+                                 "est"=>$datos['est'],
+                                 "proy"=>$datos['proy']]);
                 $rowcount = $query->rowcount();
 
                 if ($rowcount > 0) {
@@ -139,6 +140,26 @@
                 $rowcount = $query->rowcount();
 
                 return $rowcount;
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+        }
+
+        public function listarProyectos(){
+            try {
+                $salida = "";
+                $query = $this->db->connect()->query("SELECT ncodpry,ccodpry,cdespry FROM tb_proyecto1 WHERE nflgactivo = 1");
+                $query->execute();
+                $rowcount = $query->rowcount();
+
+                if ($rowcount > 0) {
+                    while ($row = $query->fetch()) {
+                        $salida.='<li><a href="'.$row['ncodpry'].'">'.$row['ccodpry'].' '.strtoupper($row['cdespry']).'</a></li>';
+                    }
+                }
+
+                return $salida;
             } catch (PDOException $e) {
                 echo $e->getMessage();
                 return false;
