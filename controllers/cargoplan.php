@@ -16,7 +16,7 @@
 
             $result = $this->model->buscarId($id);
 
-            echo json_decode($result);
+            echo json_encode($result);
         }
         
     }

@@ -794,6 +794,8 @@
                     echo $_SESSION['password'];
                     $mensaje = $mail->ErrorInfo;
 			    }else {
+                    $this->actualizarCabeceraPedido($cabecera['pedido'],8);
+                    $this->actualizarDetallesPedido($detalles,8);
                     $mensaje = "Enviado";
                 }
 
@@ -961,8 +963,8 @@
 
                 if ($rowCount > 0) {
                     $this->grabarDetalles($detalles,$cabecera['orden']);
-                    $this->actualizarCabeceraPedido($cabecera['pedido']);
-                    $this->actualizarDetallesPedido($detalles);
+                    $this->actualizarCabeceraPedido($cabecera['pedido'],7);
+                    $this->actualizarDetallesPedido($detalles,7);
                     $ret = true;
                 }
 
@@ -998,20 +1000,19 @@
             }
         }
 
-        public function actualizarCabeceraPedido($cod){
+        public function actualizarCabeceraPedido($cod,$estado){
             try {
-                $sql = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc = 8 WHERE id_regmov = :cod LIMIT 1");
-                $sql->execute(["cod"=>$cod]);
+                $sql = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc = :est WHERE id_regmov = :cod LIMIT 1");
+                $sql->execute(["cod"=>$cod,"est"=>$estado]);
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;
             }
         }
 
-        public function actualizarDetallesPedido($detalles){
+        public function actualizarDetallesPedido($detalles,$estado){
             $datos = json_decode($detalles);
             $nreg= count($datos);
-            $estado = 8;
 
             for ($i=0; $i < $nreg; $i++) { 
                 try {

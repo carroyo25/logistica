@@ -15,6 +15,7 @@
     $entidad = obtenerProveedor($pdo,$proveedor);
     $items = obtenerItems($pdo,$pedido);
     $verificar = verificaParticipa($pdo,$pedido,$proveedor);
+    $atencion = datosproveedor($pdo,$proveedor);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -87,14 +88,14 @@
                     <label for="ruc" class="derecha">RUC:</label>
                     <input type="text" name="ruc" id="ruc" readonly value="<?php echo $entidad["ruc"]?>">
                     <label for="atencion" class="derecha">Atencion:</label>
-                    <input type="text" name="atencion" id="atencion" class="mayusculas">
+                    <input type="text" name="atencion" id="atencion" class="mayusculas" value="<?php echo $atencion?>">
                 </div>
             </div>
             <hr>
             <div class="datosCotizacion">
                 <div class="datos grid6">
                     <label for="fechaDoc" class="derecha">Fecha Emisión :</label>
-                    <input type="date" name="fechaDoc" id="fechaDoc"">
+                    <input type="date" name="fechaDoc" id="fechaDoc" value="<?php echo date("Y-m-d")?>">
                     <label for="fechaVig" class="derecha">Fecha Vigencia :</label>
                     <input type="date" name="fechaVig" id="fechaVig">
                     <label for="cotizacion" class="derecha">Nro.Cotizacion:</label>

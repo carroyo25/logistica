@@ -87,7 +87,63 @@
 
         public function buscarId($id){
             try {
-                return true;
+                $sql = $this->db->connect()->prepare("SELECT
+                                                        lg_pedidodet.id_cprod,
+                                                        lg_pedidodet.id_regmov AS idpedido,
+                                                        lg_pedidodet.nidpedi,
+                                                        lg_pedidodet.id_centi,
+                                                        lg_pedidodet.ncodmed,
+                                                        ROUND( lg_pedidodet.ncantpedi, 2 ) AS pedida,
+                                                        ROUND( lg_pedidodet.ncantaten, 2 ) AS atendida,
+                                                        ROUND( lg_pedidodet.ncantapro, 2 ) AS aprobada,
+                                                        lg_pedidodet.nEstadoReg,
+                                                        lg_pedidodet.pedido,
+                                                        cm_producto.ccodprod,
+                                                        cm_producto.cdesprod,
+                                                        tb_paramete2.cdesprm2 AS estado,
+                                                        lg_pedidocab.ctipmov,
+                                                        lg_pedidocab.ffechaprueba,
+                                                        UPPER( tb_sysusuario.cnombres ) AS aprueba,
+                                                        lg_regabastec.cnumero AS orden,
+                                                        lg_regabastec.ffechadoc AS fechaorden,
+                                                        lg_pedidocab.ffechadoc AS fechapedido,
+                                                        alm_recepcab.ncodmov,
+                                                        alm_recepcab.nnromov AS ingreso,
+                                                        alm_recepcab.ffecdoc AS fechaingreso,
+                                                        alm_despachocab.ffecdoc AS fechasalida,
+                                                        alm_despachocab.nnromov AS salida,
+                                                        cm_entidad.crazonsoc,
+                                                        cm_entidad.cnumdoc,
+                                                        lg_pedidocab.mdetalle,
+                                                        lg_pedidocab.mobserva,
+                                                        lg_regabastec.id_regmov AS idorden,
+                                                        alm_recepcab.id_regalm AS idingreso,
+                                                        alm_despachocab.id_regalm AS idsalida 
+                                                    FROM
+                                                        lg_pedidodet
+                                                        INNER JOIN cm_producto ON lg_pedidodet.id_cprod = cm_producto.id_cprod
+                                                        INNER JOIN tb_paramete2 ON lg_pedidodet.nEstadoReg = tb_paramete2.ccodprm2
+                                                        INNER JOIN lg_pedidocab ON lg_pedidodet.id_regmov = lg_pedidocab.id_regmov
+                                                        INNER JOIN tb_sysusuario ON lg_pedidocab.ncodaproba = tb_sysusuario.id_cuser
+                                                        INNER JOIN lg_regabastec ON lg_pedidocab.id_regmov = lg_regabastec.id_refpedi
+                                                        INNER JOIN alm_recepcab ON lg_pedidodet.id_regmov = alm_recepcab.idref_pedi
+                                                        INNER JOIN alm_despachocab ON lg_pedidodet.id_regmov = alm_despachocab.idref_pedi
+                                                        INNER JOIN cm_entidad ON lg_pedidodet.id_centi = cm_entidad.id_centi 
+                                                    WHERE
+                                                        lg_pedidodet.nidpedi = :item 
+                                                        AND tb_paramete2.ncodprm1 = 4 
+                                                        LIMIT 1");
+                $sql->execute(["item"=>$id]);
+                $rowCount = $sql->rowCount();
+                
+                if ($rowCount > 0) {
+                    $docData = array();
+                    while($row=$sql->fetch(PDO::FETCH_ASSOC)){
+                        $docData[] = $row;
+                    }
+                }
+
+                return $docData;
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;

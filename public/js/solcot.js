@@ -1,7 +1,7 @@
 $(function(){
     var origen = 0;
     if ($("#verifica").val() == 1){
-        $("#btnEnviar").css("display","none");
+        $("#btnEnviar,#btnAdjuntar").css("display","none");
     }
 
     $("#btnEnviar").on("click", function (e) {

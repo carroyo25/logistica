@@ -57,4 +57,26 @@
             return false;
         }
     }
+
+    function datosProveedor($pdo,$proveedor){
+        try {
+            $sql = "SELECT
+                    cm_entidadcon.cnombres 
+                FROM
+                    cm_entidadcon 
+                WHERE
+                    cm_entidadcon.id_centi = ?";
+            $statement = $pdo->prepare($sql);
+            $statement -> execute(array($proveedor));
+            $result = $statement ->fetchAll();
+            
+            $contacto = $result[0]['cnombres'] != null ? $result[0]['cnombres'] : ""; 
+            
+            return $contacto;
+
+        }  catch (PDOException $th) {
+            echo $th->getMessage();
+            return false;
+        }
+    }
 ?>

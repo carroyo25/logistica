@@ -370,6 +370,7 @@
                                                     cm_producto.ccodprod,
                                                     cm_producto.cdesprod,
                                                     cm_producto.ncodmed,
+                                                    cm_producto.nserieprod,
                                                     tb_unimed.cabrevia,
                                                     tb_paramete2.cdesprm2,
                                                     alm_recepdet.nfactor,
@@ -392,7 +393,7 @@
                 $item = 1;
                 if ($rowCount > 0) {
                     while ($rs = $sql->fetch()) {
-                        $cantidad = $rs['cdesserie'] !== " " ? 1:$rs['ncantapro'];
+                        $cantidad = $rs['nserieprod'] == NULL ? $rs['ncantapro'] : 1;
                         $salida .='<tr>
                                         <td class="con_borde centro"><a href="'.$rs['niddeta'].'" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
                                         <td class="centro con_borde" data-iddetpedido ="'.$rs['niddetaPed'].'"
@@ -614,7 +615,7 @@
             }
         }
 
-        public function genPreview($ingreso,$condicion,$fecha,$proyecto,$origen,$movimiento,$orden,$pedido,$nguia,$nombre,$cargo,$entidad,$details,$tipo){
+        public function genPreview($ingreso,$condicion,$fecha,$proyecto,$origen,$movimiento,$orden,$pedido,$nguia,$nombre,$cargo,$entidad,$details,$tipo,$ruta){
             require_once("public/libsrepo/repoingreso.php");
             try {
                 $datos = json_decode($details);
@@ -626,7 +627,7 @@
                 $mes = $fecha_explode[1];
                 $anio = $fecha_explode[0];
 
-                $filename = "public/temp/".uniqid("NS").".pdf";
+                $filename = $ruta.uniqid("NS").".pdf";
 
                 if(file_exists($filename))
                     unlink($filename);
@@ -647,7 +648,7 @@
                                                 $datos[$rc]->coditem,
                                                 utf8_decode($datos[$rc]->descripcion),
                                                 $datos[$rc]->unidad,
-                                                $datos[$rc]->cantdes,
+                                                $datos[$rc]->cantidad,
                                                 "",
                                                 utf8_decode($entidad),
                                                 $datos[$rc]->cestado,

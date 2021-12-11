@@ -539,7 +539,8 @@ $(function(){
                     condicion: 0,
                     ndoc:$("#nro_ingreso").val(),
                     tipo:"I",
-                    details:JSON.stringify(DETALLES)},
+                    details:JSON.stringify(DETALLES),
+                    ruta:"public/temp/"},
             dataType: "text",
             success: function (response) {
                 
@@ -688,6 +689,30 @@ $(function(){
             function (data, textStatus, jqXHR) {
                 if (data){
                     mostrarMensaje("msj_info","Ingreso actualizado");
+
+                    $.ajax({
+                        type: "POST",
+                        url: RUTA+"ingresos/preview",
+                        data:{  proyecto: $("#proyecto").val(),
+                                origen: $("#almacen").val(),
+                                movimiento: $("#tipomov").val(),
+                                fecha: $("#fechadoc").val(),
+                                orden: $("#nrord").val(),
+                                pedido: $("#nroped").val(),
+                                entidad: $("#entidad").val(),
+                                guia: $("#nroguia").val(),
+                                autoriza: $("#aprueba").val(),
+                                cargo:$("#cargo_almacen").val(),
+                                condicion: 1,
+                                ndoc:$("#nro_ingreso").val(),
+                                tipo:"I",
+                                details:JSON.stringify(DETALLES),
+                                ruta:"public/ingresos/"},
+                        dataType: "text",
+                        success: function (response) {
+                            console.log("Se crea el pdf en la carpeta ingresos");                
+                        }
+                    });
                 }
             },
             "text"

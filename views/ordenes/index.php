@@ -48,22 +48,22 @@
             <div class="display_grid g3items f8rem cabPed">
                 <div>
                     <div class="display_grid g4items mb5px">
-                        <label class="negrita">Número :</label>
+                        <label class="negrita">Número:</label>
                         <label class="con_borde pl20 h25px datoCabecera" id="numero"></label>
                         <label class="negrita">Emisión :</label>
                         <label class="con_borde pl20 h25px datoCabecera" id="fecha"></label>    
                     </div>
                     <div class="display_grid g2items mb5px">
                         <label class="negrita">Proyecto :</label> 
-                        <label class="con_borde pl20 h25px datoCabecera" id="proyecto"></label>    
+                        <label class="con_borde pl20 h25px datoCabecera over_hidden" id="proyecto"></label>    
                     </div>
                     <div class="display_grid g2items mb5px">
                         <label class="negrita">Area :</label>
                         <label class="con_borde pl20 h25px datoCabecera" id="area"></label>    
                     </div>
-                    <div class="display_grid g2items mb5px datoCabecera">
+                    <div class="display_grid g2items">
                         <label class="negrita">C.Costos :</label>
-                        <label class="con_borde pl20 h25px" id="costos"></label>    
+                        <label class="con_borde pl20 h25px over_hidden" id="costos"></label>    
                     </div>
                 </div>
                 <div>
@@ -81,7 +81,7 @@
                     </div>
                     <div class="display_grid g2items mb5px">
                         <label  class="negrita">Detalles :</label>
-                        <label class="con_borde pl20 h25px datoCabecera" id="espec_items"></label>    
+                        <label class="con_borde pl20 h25px datoCabecera over_hidden" id="espec_items"></label>    
                     </div>
                 </div>
                 <div>

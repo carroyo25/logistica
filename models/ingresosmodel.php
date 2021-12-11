@@ -453,7 +453,7 @@
             }
         }
 
-        public function genPreview($ingreso,$condicion,$fecha,$proyecto,$origen,$movimiento,$orden,$pedido,$nguia,$nombre,$cargo,$entidad,$details,$tipo){
+        public function genPreview($ingreso,$condicion,$fecha,$proyecto,$origen,$movimiento,$orden,$pedido,$nguia,$nombre,$cargo,$entidad,$details,$tipo,$ruta){
             require_once("public/libsrepo/repoingreso.php");
             
             $datos = json_decode($details);
@@ -465,7 +465,7 @@
             $mes = $fecha_explode[1];
             $anio = $fecha_explode[0];
 
-            $filename = "public/temp/".uniqid("RI").".pdf";
+            $filename = $ruta.uniqid("NI").".pdf";
 
             if(file_exists($filename))
                 unlink($filename);

@@ -391,6 +391,12 @@
         }
     }
 
+    .unstyled::-webkit-inner-spin-button,
+    .unstyled::-webkit-calendar-picker-indicator {
+        display: none;
+        -webkit-appearance: none;
+    }
+
     .processBody{
         >div{
             display: grid;
@@ -452,9 +458,9 @@
         }
 
         div:nth-child(3){
-            grid-template-columns: .5fr .1fr .5fr .5fr 1fr;
+            grid-template-columns: .5fr .1fr .1fr .1fr .1fr  1fr;
 
-            div:nth-child(5){
+            div:nth-child(6){
                 display: flex;
                 justify-content: end;
                 align-items: center;
@@ -1800,6 +1806,8 @@
     }
 }
 
+
+
 .banners {
     bottom: -10%;
 }
@@ -2144,7 +2152,7 @@ hr{
     }
 }
 
-.firmas, .firmasTitulo{
+.firmasProcess,.firmasTitulo{
     border: 1px solid;
     margin-top: 19px;
     display: flex;
@@ -2530,6 +2538,11 @@ hr{
     overflow: auto;
 }
 
+.over_hidden{
+    overflow: hidden;
+}
+
+
 /*checkbox*/ 
 input[type=checkbox]:focus
 {
@@ -2634,6 +2647,11 @@ input[type=checkbox]:checked
 .zindex5{
     z-index: 5 !important;
 }
+
+.zindex7{
+    z-index: 7 !important;
+}
+
 
 //margenes
 .mr4px{
@@ -2746,6 +2764,13 @@ input[type=checkbox]:checked
 
 .calidad{
     background: #17BFDE !important;
+    outline: none;
+    color: #fff;
+    font-size: .7rem;
+}
+
+.firmas{
+    background: #FF8C00 !important;
     outline: none;
     color: #fff;
     font-size: .7rem;

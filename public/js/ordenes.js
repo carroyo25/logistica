@@ -110,7 +110,7 @@ $(function(){
     $("#btnNo").click(function (e) { 
         e.preventDefault();
         
-        $(this).parent().parent().parent().fadeOut();
+        $("#dialogConfirm").fadeOut();
 
         return false;
     });

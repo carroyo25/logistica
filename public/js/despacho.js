@@ -534,6 +534,7 @@ $(function(){
                     condicion: 0,
                     tipo:"S",
                     ndoc:$("#nrosalida").val(),
+                    ruta:'public/temp/',
                     details:JSON.stringify(DETALLES)},
             dataType: "text",
             success: function (response) {
@@ -546,7 +547,6 @@ $(function(){
             }
         });
 
-        
         return false;
     });
 
@@ -614,7 +614,6 @@ $(function(){
             details:JSON.stringify(DETALLES)
         },
             function (data, textStatus, jqXHR) {
-                console.log("No cierra")
                 if (data){
                     mostrarMensaje("msj_correcto","Registro insertado...");
                     $("#modalProcess").fadeOut();
@@ -670,7 +669,7 @@ $(function(){
                 if (data){
                     $("#modalProcess").fadeOut();
 
-                    $.post(RUTA+"despacho/actualizaPrincipal",
+                    /*$.post(RUTA+"despacho/actualizaPrincipal",
                         function (data, textStatus, jqXHR) {
                             $("#tabla_guias tbody")
                                 .empty()
@@ -679,7 +678,36 @@ $(function(){
                             cerrarVentanaEspera();
                         },
                         "text"
-                    );
+                    );*/
+
+                    $.ajax({
+                        type: "POST",
+                        url: RUTA+"despacho/preview",
+                        data:{  proyecto: $("#proyecto").val(),
+                                origen: $("#almacen").val(),
+                                movimiento: $("#tipomov").val(),
+                                fecha: $("#fechadoc").val(),
+                                orden: $("#nrord").val(),
+                                pedido: $("#nroped").val(),
+                                entidad: $("#entidad").val(),
+                                guia: $("#guia").val(),
+                                autoriza: $("#aprueba").val(),
+                                cargo:$("#cargo_almacen").val(),
+                                condicion: 1,
+                                tipo:"S",
+                                ndoc:$("#nrosalida").val(),
+                                ruta:'public/salidas/',
+                                details:JSON.stringify(getDetails())},
+                        dataType: "text",
+                        success: function (response) {
+                            
+                            $("#modalVistaNotaSalida .insidePreview iframe")
+                                .attr("src","")
+                                .attr("src",response);
+            
+                                $("#modalVistaNotaSalida").fadeIn();                
+                        }
+                    });
                 }
             },
             "text"
@@ -707,7 +735,8 @@ function getDetails(){
             IDDERORD    = $(this).find('td').eq(1).data('iddetorden'),
             UBICACION   = $(this).find('td').eq(8).text(),
             SERIE       = $(this).find('td').eq(7).text(),
-            ESTADO      = $(this).find('td').eq(1).data('nestado')
+            ESTADO      = $(this).find('td').eq(1).data('nestado'),
+            CESTADO     = $(this).find('td').eq(6).text()
 
 
             item = {};
@@ -726,6 +755,7 @@ function getDetails(){
                 item['serie']       = SERIE;
                 item['ubicacion']   = UBICACION;
                 item['estado']      = ESTADO;
+                item['cestado']     = CESTADO;
             }
 
             DETALLES.push(item);

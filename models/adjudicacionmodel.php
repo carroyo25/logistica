@@ -274,21 +274,28 @@
                                                         lg_proformadet.ffechaent,
                                                         lg_proformadet.precunit,
                                                         lg_proformadet.cantcoti * lg_proformadet.precunit AS total,
-                                                        CONCAT(lg_proformadet.id_regmov,'_',lg_proformadet.id_centi,'_',lg_proformadet.niddet,'.pdf') AS archivo,
-                                                        DATE_FORMAT(lg_proformadet.fregsys,'%Y-%m-%d') AS emitido1,
-                                                        DATEDIFF(lg_proformadet.ffechaent,DATE_FORMAT(lg_proformadet.fregsys,'%Y-%m-%d')) AS dias
+                                                        CONCAT( lg_proformadet.id_regmov, '_', lg_proformadet.id_centi, '_', lg_proformadet.niddet, '.pdf' ) AS archivo,
+                                                        DATE_FORMAT( lg_proformadet.fregsys, '%Y-%m-%d' ) AS emitido1,
+                                                        DATEDIFF(
+                                                            lg_proformadet.ffechaent,
+                                                        DATE_FORMAT( lg_proformadet.fregsys, '%Y-%m-%d' )) AS dias,
+                                                        tb_moneda.cabrevia, 
+	                                                    lg_proformacab.nafecIgv 
                                                     FROM
-                                                        lg_proformadet 
+                                                        lg_proformadet
+                                                        INNER JOIN lg_proformacab ON lg_proformadet.id_centi = lg_proformacab.id_centi 
+                                                        AND lg_proformadet.id_regmov = lg_proformacab.id_regmov
+                                                        INNER JOIN tb_moneda ON lg_proformacab.ncodmon = tb_moneda.ncodmon 
                                                     WHERE
-                                                        lg_proformadet.id_regmov =:cod
-                                                        AND lg_proformadet.id_centi =:ent 
-                                                        AND lg_proformadet.niddet =:nid");
+                                                        lg_proformadet.id_regmov = :cod
+                                                        AND lg_proformadet.id_centi = :ent  
+                                                        AND lg_proformadet.niddet = :nid");
 
                 $query->execute(["cod"=>$cod,"ent"=>$enti[$i],"nid"=>$nid]);
                 $rs = $query->fetchAll();
                 $adjunto =  constant("URL")."/public/manuales/".$rs[0]['archivo'];
 
-                $proformas.= '<td class="con_borde drch pr10">'.number_format($rs[0]['total'], 2, '.', ',').'</td>
+                $proformas.= '<td class="con_borde drch pr10">'.$rs[0]['cabrevia']." ".number_format($rs[0]['total'], 2, '.', ',').'</td>
                             <td class="con_borde centro">'.date("d/m/Y", strtotime($rs[0]['ffechaent'])).'</td>
                             <td class="con_borde drch pr10">'.$rs[0]['dias'].'</td>
                             <td class="con_borde centro"><a href="'.$adjunto.'"><i class="far fa-sticky-note"></i></a></td>

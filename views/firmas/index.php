@@ -89,7 +89,7 @@
                                     <label for="atencion" class="w100px">Atención:</label>
                                     <input type="text" name="atencion" id="atencion" class="pl10 mayusculas" readonly>
                                 </div>
-                                <div class="firmas">
+                                <div class="firmasProcess">
                                     <div class="firma" id="firma_log"></div>
                                     <div class="firma" id="firma_ope"></div>
                                     <div class="firma" id="firma_fin"></div>

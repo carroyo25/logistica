@@ -322,7 +322,7 @@
                         </div>
                         <div class="mb5px">
                             <label for="fecemin" class="mr5px">Fecha Emisión</label>
-                            <input type="date" name="fecemin" id="fecemin">
+                            <input type="date" name="fecemin" id="fecemin" value="<?php echo date("Y-m-d")?>">
                             <label for="feenttrans" class="mr5px">Fecha Ent.Transpor.</label>
                             <input type="date" name="feenttrans" id="feenttrans">
                         </div>
