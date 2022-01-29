@@ -258,7 +258,7 @@
                         $salida.='<tr class="lh1_2rem">
                             <td class="con_borde centro"><a href="'.$row['id_cprod'].'" data-topcion="stock" data-iddet="'.$row['nidpedi'].'"><i class="fas fa-boxes"></i></a></td>
                             <td class="con_borde drch pr20">'. str_pad($line,3,"0",STR_PAD_LEFT) .'</td>
-                            <td class="con_borde centro" data-indice="'.$row['id_cprod'].'">'. $row['ccodprod'] .'</td>
+                            <td class="con_borde centro" data-indice="'.$row['id_cprod'].'">'. $row['id_cprod'] .'</td>
                             <td class="con_borde pl10">'. $row['cdesprod'] .'</td>
                             <td class="con_borde centro">'. $row['cabrevia'] .'</td>
                             <td class="con_borde drch pr10">'.$row['cantidad'] .'</td>
@@ -278,22 +278,26 @@
             }
         }
 
-        public function actualizaDetalle($idx,$detalles){
+        public function actualizaDetalle($idx,$detalles,$est){
             $datos = json_decode($detalles);
             $nreg = count($datos);
             
             for ($i=0; $i < $nreg; $i++) { 
                 try {
-                    if ( $datos[$i]->alm == $datos[$i]->cant ) {
-                        $est = 8;
+
+                    if ($est == 3 ){
+                        $estado = $datos[$i]->alm == $datos[$i]->cant  ? 14:3;
+                        $cant = $datos[$i]->alm; 
                     }else {
-                        $est = 3;
+                        $cant = $datos[$i]->cant;
+                        $estado = 14;
                     }
-                    $sql = $this->db->connect()->prepare("UPDATE lg_pedidodet SET ncantaten=:cant,comentaAlm=:obs,nEstadoReg = :est WHERE nidpedi =:cod");
+                    
+                    $sql = $this->db->connect()->prepare("UPDATE lg_pedidodet SET ncantaten=:cant,comentaAlm=:obs,nEstadoReg=:est WHERE nidpedi =:cod");
                     $sql->execute([ "cod"=>$datos[$i]->item,
-                                    "cant"=>$datos[$i]->alm,
+                                    "cant"=>$cant,
                                     "obs"=>$datos[$i]->obs,
-                                    "est"=>$est]);
+                                    "est"=>$estado]);
                     
 
                 } catch (PDOException $th) {
@@ -302,21 +306,42 @@
                 }
             }
 
-            $salida = $this->cambiarStatus($idx);
+            $salida = $this->cambiarStatus($idx,$est);
 
             return $salida;
         }
 
-        public function cambiarStatus($idx){
+        public function cambiarStatus($idx,$est){
             $salida = "";
             try {
-                $sql = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc = 3 WHERE id_regmov = :cod LIMIT 1");
-                $sql->execute(["cod"=>$idx]);
+                $sql = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc =:est WHERE id_regmov = :cod LIMIT 1");
+                $sql->execute(["cod"=>$idx,"est"=>$est]);
                 $rowCount = $sql->rowcount();
                 if ($rowCount > 1)
                     $salida = true;
 
                 return $salida;
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
+        }
+
+        public function resumen($user,$estado) {
+            try {
+                $sql = $this->db->connect()->prepare("SELECT
+                                                        COUNT( lg_pedidocab.cnumero ) AS respuesta 
+                                                        FROM
+                                                            tb_proyusu
+                                                            INNER JOIN lg_pedidocab ON tb_proyusu.ncodproy = lg_pedidocab.ncodpry 
+                                                        WHERE
+                                                            tb_proyusu.nflgactivo = 1 
+                                                            AND tb_proyusu.id_cuser = :usr 
+                                                            AND lg_pedidocab.nEstadoDoc = :est");
+                $sql->execute(["usr"=>$user,"est"=>$estado]);
+                $result = $sql->fetchAll();
+                return $result[0]['respuesta'];
+
             } catch (PDOException $th) {
                 echo $th->getMessage();
                 return false;

@@ -97,6 +97,8 @@
             }
         }
 
+        
+        //llama los nombres para responsables
         public function getAllNames() {
             try {
                 $salida = "";
@@ -152,7 +154,8 @@
 
                     $query = $this->db->connect()->prepare("INSERT INTO tb_sysusuario SET id_cuser=:id,ccodper=:cre,nnivuser=:cni,nestado=:ces,
                                                                                         ccoduser=:cod,cnombres=:nom,cpasword=:cla,fvigdesde=:fde,
-                                                                                        fvighasta=:has,cnameuser=:usr,ncodcarg=:cca,nflgactivo=:act");
+                                                                                        fvighasta=:has,cnameuser=:usr,ncodcarg=:cca,nflgactivo=:act,
+                                                                                        cemail=:cor");
                     $query->execute(["id"=> $id,
                                     "cre"=>$datos['cre'],
                                     "cni"=>$datos['cni'],
@@ -164,7 +167,8 @@
                                     "fde"=>$datos['des'],
                                     "has"=>$datos['has'],
                                     "act"=>1,
-                                    "cca"=>$datos["cca"]]);
+                                    "cca"=>$datos["cca"],
+                                    "cor"=>$datos["cor"]]);
                     $rowcount = $query->rowcount();
 
                     if ($rowcount >= 1) {
@@ -202,7 +206,7 @@
 
                 $query = $this->db->connect()->prepare("UPDATE tb_sysusuario 
                                                         SET ccodper=:cre,nnivuser=:cni,nestado=:ces,cnombres=:nom,cpasword=:cla,fvigdesde=:fde,
-                                                            fvighasta=:has,cnameuser=:usr,nflgactivo=:act,ncodcarg=:cca
+                                                            fvighasta=:has,cnameuser=:usr,nflgactivo=:act,ncodcarg=:cca,cemail=:cor
                                                         WHERE id_cuser=:id");
 
                 $query->execute(["id"=> $datos['id'],
@@ -215,7 +219,8 @@
                                  "fde"=>$datos['des'],
                                  "has"=>$datos['has'],
                                  "act"=>1,
-                                 "cca"=>$datos["cca"]]);
+                                 "cca"=>$datos["cca"],
+                                 "cor"=>$datos["cor"]]);
 
                 $this->deleteModules($datos['id']);
                 $this->deleteProyects($datos['id']);
@@ -274,6 +279,7 @@
                                                         logistica.tb_sysusuario.ccodper,
                                                         logistica.tb_sysusuario.nnivuser,
                                                         logistica.tb_sysusuario.nestado,
+                                                        logistica.tb_sysusuario.cemail,
                                                         logistica.tb_sysusuario.fvigdesde,
                                                         logistica.tb_sysusuario.fvighasta,
                                                         logistica.tb_sysusuario.nflgactivo,
@@ -335,6 +341,7 @@
                                                         logistica.tb_sysusuario.ccodper,
                                                         logistica.tb_sysusuario.nnivuser,
                                                         logistica.tb_sysusuario.nestado,
+                                                        logistica.tb_sysusuario.cemail,
                                                         logistica.tb_sysusuario.fvigdesde,
                                                         logistica.tb_sysusuario.fvighasta,
                                                         logistica.tb_sysusuario.nflgactivo,
@@ -342,6 +349,7 @@
                                                         rrhh.tabla_aquarius.dni,
                                                         rrhh.tabla_aquarius.apellidos,
                                                         rrhh.tabla_aquarius.nombres,
+                                                        rrhh.tabla_aquarius.dcargo,
                                                         niveles.cdesprm2 AS nivel,
                                                         estados.cdesprm2 AS estado 
                                                     FROM
@@ -370,7 +378,9 @@
                         $item['nivel']          = $row['nivel'];
                         $item['estado']         = $row['estado'];
                         $item['responsable']    = $row['dni'].' '.$row['apellidos'].' '.$row['nombres'];
-                        $item['cpasword']         = $row['cpasword'];
+                        $item['cpasword']       = $row['cpasword'];
+                        $item['cemail']         = $row['cemail'];
+                        $item['dcargo']         = $row['dcargo'];
                     }
                 }
 

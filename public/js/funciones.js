@@ -20,6 +20,17 @@ $.strPad = function(i,l,s) {
     return o;
 };
 
+
+function diferenciadefechas(fechaInicio,fechaFinal){
+
+    var entrega = new Date(fechaInicio).getTime();
+    var actual  = new Date(fechaFinal).getTime();
+
+    diff = (entrega - actual)/(1000*60*60*24);
+
+    return diff;
+}
+
 function leftPad(value, length) { 
     return ('0'.repeat(length) + value).slice(-length); 
 }
@@ -104,7 +115,7 @@ function checkExistTable(table,item,indice){
     var itenExist = false;
 
     table.each(function(){
-        var itemTable = $(this).find('td').eq(indice).text();
+        let itemTable = $(this).find('td').eq(indice).text();
 
         if (itemTable == item) {
             itenExist = true;
@@ -113,6 +124,18 @@ function checkExistTable(table,item,indice){
     })
 
     return itenExist;
+}
+
+function checkCantTables(table,idx){
+    let sw = false;
+
+    table.each(function(){
+        if ($(this).find('td').eq(idx).children().val() == 0){
+            sw = true;
+        }
+    })
+
+    return sw;
 }
 
 function fillTables(table,idx){

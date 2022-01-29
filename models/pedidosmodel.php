@@ -14,7 +14,6 @@
                                                 logistica.lg_pedidocab.ffechadoc,
                                                 logistica.lg_pedidocab.cconcepto,
                                                 logistica.lg_pedidocab.ffechaven,
-                                                logistica.lg_pedidocab.cconcepto,
                                                 logistica.lg_pedidocab.nEstadoDoc,
                                                 logistica.lg_pedidocab.id_cuser,
                                                 logistica.lg_pedidocab.ncodmov,
@@ -83,6 +82,7 @@
                                                             logistica.lg_pedidocab.ccoddoc,
                                                             logistica.lg_pedidocab.cserie,
                                                             logistica.lg_pedidocab.ffechadoc,
+                                                            logistica.lg_pedidocab.ffechaven,
                                                             logistica.lg_pedidocab.ncodpry,
                                                             logistica.lg_pedidocab.ncodcos,
                                                             logistica.lg_pedidocab.ncodarea,
@@ -105,6 +105,7 @@
                                                             logistica.tb_area.cdesarea,
                                                             logistica.tb_ccostos.ccodcos,
                                                             logistica.tb_ccostos.cdescos,
+                                                            logistica.tb_ccostos.nflgVeryAlm,
                                                             transportes.cdesprm2 AS transporte,
                                                             transportes.ccodprm2 AS cod_transporte,
                                                             atenciones.cdesprm2 AS atencion,
@@ -135,6 +136,7 @@
                                         $item['cserie']         = $row['cserie'];
                                         $item['cnumero']        = $row['cnumero'];
                                         $item['ffechadoc']      = $row['ffechadoc'];
+                                        $item['ffechaven']      = $row['ffechaven'];
                                         $item['ncodpry']        = $row['ncodpry'];
                                         $item['ncodcos']        = $row['ncodcos'];
                                         $item['ncodarea']       = $row['ncodarea'];
@@ -160,7 +162,7 @@
                                         $item['transporte']     = $row['transporte'];
                                         $item['estado']         = $row['estado'];
                                         $item['atencion']       = $row['atencion'];
-                                        $item['ffechaven']       = $row['ffechaven'];
+                                        $item['nflgVeryAlm']    = $row['nflgVeryAlm'];
                     }
                 }
 
@@ -182,6 +184,7 @@
                                                         ROUND( lg_pedidodet.ncantpedi, 2 ) AS cantidad,
                                                         lg_pedidodet.nEstadoPed,
                                                         lg_pedidodet.nFlgCalidad,
+                                                        lg_pedidodet.ncodmed,
                                                         tb_unimed.nfactor,
                                                         tb_unimed.cabrevia,
                                                         cm_producto.ccodprod,
@@ -206,15 +209,14 @@
                             <td class="con_borde centro"><a href="#" data-topcion="edit"><i class="far fa-edit"></i></a></td>
                             <td class="con_borde centro"><a href="#" data-topcion="delete"><i class="fas fa-eraser"></i></a></td>
                             <td class="con_borde drch pr20">'. str_pad($line,3,"0",STR_PAD_LEFT) .'</td>
-                            <td class="con_borde centro" data-indice="'.$row['id_cprod'].'">'. $row['ccodprod'] .'</td>
+                            <td class="con_borde centro" data-indice="'.$row['nidpedi'].'" data-unidad="'.$row['ncodmed'].'">'. $row['id_cprod'] .'</td>
                             <td class="con_borde pl10">'. $row['cdesprod'] .'</td>
-                            <td class="con_borde centro">'. $row['cabrevia'] .'</td>
+                            <td class="con_borde centro" data-factor="'. $row['nfactor'] .'">'. $row['cabrevia'] .'</td>
                             <td class="con_borde" contenteditable="true"><input type="number" class="drch" value="'.$row['cantidad'] .'"></td>
                             <td class="con_borde"></td>
                             <td class="con_borde"></td>
-                            <td class="con_borde centro">'. $swcalidad .'</td>
+                            <td class="con_borde centro"><input type="checkbox" class="drch"></td>
                             <td class="con_borde centro">'. $t .'</td>
-                            <td class="con_borde oculto">'. $row['nfactor'] .'</td>
                         </tr>';
                     }
                 }
@@ -226,16 +228,17 @@
             }
         }
         
-        public function getAllCosts(){
+        //listar los centros de costos
+        public function getAllCosts($cod){
             try {
                 $salida = "";
-                $query = $this->db->connect()->query("SELECT ncodcos,ccodcos,cdescos FROM tb_ccostos WHERE nflgactivo = 1");
-                $query->execute();
+                $query = $this->db->connect()->prepare("SELECT ncodcos,ccodcos,cdescos,nflgVeryAlm FROM tb_ccostos WHERE nflgactivo = 1 AND ncodpry = :cod");
+                $query->execute(array("cod"=>$cod));
                 $rowcount = $query->rowcount();
 
                 if ($rowcount > 0) {
                     while ($row = $query->fetch()) {
-                        $salida.='<li><a href="'.$row['ncodcos'].'">'.$row['ccodcos'].' '.strtoupper($row['cdescos']).'</a></li>';
+                        $salida.='<li><a href="'.$row['ncodcos'].'" data-verifica="'.$row['nflgVeryAlm'].'">'.$row['ccodcos'].' '.strtoupper($row['cdescos']).'</a></li>';
                     }
                 }
 
@@ -387,7 +390,7 @@
                 if ($rowcount > 0) {
                     while($row = $query->fetch()){
                         $salida.='<tr class="pointertr">
-                                    <td data-idprod = "'.$row['id_cprod'].'" data-unidad="'.$row['ncodmed'].'">'.$row['ccodprod'].'</td>
+                                    <td data-idprod = "'.$row['id_cprod'].'" data-unidad="'.$row['ncodmed'].'">'.$row['id_cprod'].'</td>
                                     <td>'.strtoupper($row['cdesprod']).'</td>
                                     <td>'.strtoupper($row['cmarca']).'</td>
                                     <td>'.strtoupper($row['cmodelo']).'</td>
@@ -441,7 +444,7 @@
                 if ($rowcount > 0) {
                     while($row = $query->fetch()){
                         $salida.='<tr class="pointertr">
-                                    <td data-idprod = "'.$row['id_cprod'].'" data-unidad="'.$row['ncodmed'].'">'.$row['ccodprod'].'</td>
+                                    <td data-idprod = "'.$row['id_cprod'].'" data-unidad="'.$row['ncodmed'].'">'.$row['id_cprod'].'</td>
                                     <td>'.strtoupper($row['cdesprod']).'</td>
                                     <td>'.strtoupper($row['cmarca']).'</td>
                                     <td>'.strtoupper($row['cmodelo']).'</td>
@@ -610,11 +613,23 @@
             }
         }
 
-        public function getAllProys(){
+        public function getAllProys($iduser){
             try {
                 $salida = "";
-                $query = $this->db->connect()->query("SELECT ncodpry,ccodpry,cdespry FROM tb_proyecto1 WHERE nflgactivo = 1");
-                $query->execute();
+                $query = $this->db->connect()->prepare("SELECT
+                                        tb_proyecto1.ccodpry, 
+                                        tb_proyecto1.cdespry, 
+                                        tb_proyecto1.ncodpry
+                                    FROM
+                                        tb_proyusu
+                                        INNER JOIN
+                                        tb_proyecto1
+                                        ON 
+                                            tb_proyusu.ncodproy = tb_proyecto1.ncodpry
+                                    WHERE
+                                        tb_proyusu.id_cuser = :usr AND
+                                        tb_proyusu.nflgactivo = 1");
+                $query->execute(array("usr"=>$iduser));
                 $rowcount = $query->rowcount();
 
                 if ($rowcount > 0) {
@@ -734,124 +749,169 @@
             }
         }
 
-        //grabar cabecera del producto
-        public function insertRequest($datos){
-            try {
-                $cmes = date("m",strtotime($datos['fecr']));
-                $cper = date("Y",strtotime($datos['fecr']));
-                $nmov = 1;
-                $serie = "0001";
-                $codd = "PD";
-                $accion = "crear";
+        //inserta cabecera del pedido del pedido 
+        public function insertarPedido($cabecera,$detalles){
+            $nmov = 1;
+            $serie = "0001";
+            $codd = "PD";
+            $cmes = date("m",strtotime($cabecera['fecha']));
+            $cper = date("Y",strtotime($cabecera['fecha']));
+            $accion = "crear";
+            $atencion = abs(strtotime($cabecera['fechaven'] ) - strtotime( $cabecera['fecha']));
 
+            //calculo de diferencia de dias
+            $years  = floor($atencion / (365 * 60 * 60 * 24));
+            $months = floor(($atencion - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+            $days   = floor(($atencion - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 *24) / (60 * 60 * 24));
+
+            $tipoAtencion = $days >= 5 ? 2 : 3;
+
+            try {
                 $query = $this->db->connect()->prepare("INSERT INTO lg_pedidocab SET id_regmov=:idx,cper=:cper,cmes=:cmes,ctipmov=:tmov,ncodmov=:nmov,
                                                                                  ccoddoc=:codd,cserie=:ser,cnumero=:num,ffechadoc=:fecr,ncodpry=:cpry,
                                                                                  ncodcos=:ccos,ncodarea=:care,ncodper=:csol,cconcepto=:conc,mdetalle=:espe,
                                                                                  ctiptransp=:ctra,nEstadoReg=:creg,nEstadoDoc=:cest,id_cuser=:usr,nflgactivo=:est,
                                                                                  nNivAten=:aten,ffechaven=:fven");
-                $query->execute(["idx"  => $datos['codp'],
-                                 "cpry" => $datos['cpry'],
-                                 "ccos" => $datos['ccos'],
-                                 "care" => $datos['care'],
-                                 "ctra" => $datos['ctra'],
-                                 "cest" => $datos['cest'],
-                                 "creg" => $datos['creg'],
-                                 "csol" => $datos['csol'],
-                                 "num"  => $datos['num'],
-                                 "fecr" => $datos['fecr'],
-                                 "usr"  => $datos['usr'],
-                                 "conc" => $datos['conc'],
-                                 "espe" => $datos['espe'],
-                                 "est"  => 1,
-                                 "aten" => $datos['aten'],
-                                 "cper" => $cper,
-                                 "cmes" => $cmes,
-                                 "tmov" => $datos['ctip'],
-                                 "nmov" => $nmov,
-                                 "ser"  => $serie,
-                                 "codd" => $codd,
-                                 "fven" => $datos['fven']]);
-                
+            
+                $query->execute(["idx"  => $cabecera['cod_pedido'],
+                                "cpry" => $cabecera['cod_proy'],
+                                "ccos" => $cabecera['cod_cost'],
+                                "care" => $cabecera['cod_area'],
+                                "ctra" => $cabecera['cod_transporte'],
+                                "cest" => $cabecera['cod_estdoc'],
+                                "creg" => $cabecera['cod_registro'],
+                                "csol" => $cabecera['cod_solicitante'],
+                                "num"  => $cabecera['numero'],
+                                "fecr" => $cabecera['fecha'],
+                                "usr"  => $cabecera['usuario'],
+                                "conc" => $cabecera['concepto'],
+                                "espe" => $cabecera['espec_items'],
+                                "est"  => 1,
+                                "aten" => $tipoAtencion,
+                                "cper" => $cper,
+                                "cmes" => $cmes,
+                                "tmov" => $cabecera['cod_tipo'],
+                                "nmov" => $nmov,
+                                "ser"  => $serie,
+                                "codd" => $codd,
+                                "fven" => $cabecera['fechaven']]);
+
+                $this->grabarDetalles($detalles,$cabecera['cod_pedido'],$cabecera['numero'],$tipoAtencion);
+                $this->saveAction($accion,$cabecera['cod_pedido'],"PEDIDOS",$cabecera['usuario']);
+            
                 $rowcount = $query->rowcount();
-
-                $this->saveAction($accion,$datos['codp'],"PEDIDOS",$datos['usr']);
-
                 return $rowcount;
-
             } catch (PDOException $e) {
-                $e->getMessage();
-                return false;
-            }            
-        }
-
-        public function updateRequest($datos){
-            try {
-                $cmes = date("m",strtotime($datos['fecr']));
-                $cper = date("Y",strtotime($datos['fecr']));
-                $nmov = 1;
-                $serie = "0001";
-                $codd = "PD";
-                $accion = "modificar";
-
-                $query = $this->db->connect()->prepare("UPDATE lg_pedidocab SET cper=:cper,cmes=:cmes,ctipmov=:tmov,ncodmov=:nmov,
-                                                                                 ccoddoc=:codd,cserie=:ser,cnumero=:num,ffechadoc=:fecr,ncodpry=:cpry,
-                                                                                 ncodcos=:ccos,ncodarea=:care,ncodper=:csol,cconcepto=:conc,mdetalle=:espe,
-                                                                                 ctiptransp=:ctra,nEstadoReg=:creg,nEstadoDoc=:cest,id_cuser=:usr,nflgactivo=:est,
-                                                                                 nNivAten=:aten WHERE id_regmov=:idx");
-                $query->execute(["idx"  => $datos['codp'],
-                                 "cpry" => $datos['cpry'],
-                                 "ccos" => $datos['ccos'],
-                                 "care" => $datos['care'],
-                                 "ctra" => $datos['ctra'],
-                                 "cest" => $datos['cest'],
-                                 "creg" => $datos['creg'],
-                                 "csol" => $datos['csol'],
-                                 "num"  => $datos['num'],
-                                 "fecr" => $datos['fecr'],
-                                 "usr"  => $datos['usr'],
-                                 "conc" => $datos['conc'],
-                                 "espe" => $datos['espe'],
-                                 "est"  => $datos['est'],
-                                 "aten" => $datos['aten'],
-                                 "cper" => $cper,
-                                 "cmes" => $cmes,
-                                 "tmov" => $datos['ctip'],
-                                 "nmov" => $nmov,
-                                 "ser"  => $serie,
-                                 "codd" => $codd]);
-                
-                $rowcount = $query->rowcount();
-
-                $this->deleteDetails($datos['codp']);
-                $this->saveAction($accion,$datos['codp'],"PEDIDOS",$datos['usr']);
-
-                return true;
-
-            } catch (PDOException $e) {
-                $e->getMessage();
+                echo $e->getMessage();
                 return false;
             }
         }
 
-        public function insertItemsTable($datos){
+        //actualizar cabecera del pedido
+        public function actualizarPedido($cabecera,$detalles){
+            $nmov = 1;
+            $serie = "0001";
+            $codd = "PD";
+            $cmes = date("m",strtotime($cabecera['fecha']));
+            $cper = date("Y",strtotime($cabecera['fecha']));
+            $accion = "modificar";
+            $atencion = abs(strtotime($cabecera['fechaven'] ) - strtotime( $cabecera['fecha']));
+
+            //calculo de diferencia de dias
+            $years  = floor($atencion / (365 * 60 * 60 * 24));
+            $months = floor(($atencion - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+            $days   = floor(($atencion - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 *24) / (60 * 60 * 24));
+
+            $tipoAtencion = $days >= 5 ? 2 : 3;
+
             try {
-                $data = json_decode($datos);
+                $query = $this->db->connect()->prepare("UPDATE  lg_pedidocab SET cper=:cper,cmes=:cmes,ctipmov=:tmov,ncodmov=:nmov,
+                                                                                 ccoddoc=:codd,cserie=:ser,cnumero=:num,ffechadoc=:fecr,ncodpry=:cpry,
+                                                                                 ncodcos=:ccos,ncodarea=:care,ncodper=:csol,cconcepto=:conc,mdetalle=:espe,
+                                                                                 ctiptransp=:ctra,nEstadoReg=:creg,nEstadoDoc=:cest,id_cuser=:usr,nflgactivo=:est,
+                                                                                 nNivAten=:aten,ffechaven=:fven WHERE id_regmov=:idx");
+            
+                $query->execute(["idx"  => $cabecera['cod_pedido'],
+                                "cpry" => $cabecera['cod_proy'],
+                                "ccos" => $cabecera['cod_cost'],
+                                "care" => $cabecera['cod_area'],
+                                "ctra" => $cabecera['cod_transporte'],
+                                "cest" => $cabecera['cod_estdoc'],
+                                "creg" => $cabecera['cod_registro'],
+                                "csol" => $cabecera['cod_solicitante'],
+                                "num"  => $cabecera['numero'],
+                                "fecr" => $cabecera['fecha'],
+                                "usr"  => $cabecera['usuario'],
+                                "conc" => $cabecera['concepto'],
+                                "espe" => $cabecera['espec_items'],
+                                "est"  => 1,
+                                "aten" => $tipoAtencion,
+                                "cper" => $cper,
+                                "cmes" => $cmes,
+                                "tmov" => $cabecera['cod_tipo'],
+                                "nmov" => $nmov,
+                                "ser"  => $serie,
+                                "codd" => $codd,
+                                "fven" => $cabecera['fechaven']]);
+
+                $this->grabarDetalles($detalles,$cabecera['cod_pedido'],$cabecera['numero'],$tipoAtencion);
+                $this->saveAction($accion,$cabecera['cod_pedido'],"PEDIDOS",$cabecera['usuario']);
+            
+                $rowcount = $query->rowcount();
+                return $rowcount;
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+                return false;
+            }
+        }
+        //insertar o actualizar items
+        public function grabarDetalles($detalles,$idpedido,$pedido,$dias){
+            try {
+                $data = json_decode($detalles);
                 for ($i=0; $i < count($data); $i++) {
-                   $id   = $data[$i]->indice; 
-                   $cant = $data[$i]->cantidad;
-                   $esta = 1;
-                   $unid = $data[$i]->unidad;
-                   $codp = $data[$i]->codped;
-                   $veri = $data[$i]->verifica;
-                   $aten = 3;
-                   $flag = 1;
-                   $pedido = $data[$i]->pedido;
-
-                   $query = $this->db->connect()->prepare("INSERT INTO lg_pedidodet (id_regmov,id_cprod,ncodmed,nEstadoReg,ncantpedi,nTipoAten,nFlgCalidad,nflgactivo,pedido) 
-                                                            VALUES (:codp,:id,:unid,:esta,:cant,:aten,:veri,:flag,:pedido)");
-                   $query->execute(["codp"=>$codp,"cant"=>$cant,"esta"=>$esta,"unid"=>$unid,"aten"=>$aten,"flag"=>$flag,"id"=>$id,"veri"=>$veri,"pedido"=>$pedido]);
+                    
+                    if ($data[$i]->indice == 0){
+                        $query = $this->db->connect()->prepare("INSERT INTO lg_pedidodet SET id_regmov=:idped,
+                                                                                             id_cprod=:idprod,
+                                                                                             ncodmed=:unidad,
+                                                                                             nEstadoReg=:estado,
+                                                                                             ncantpedi=:cantidad,
+                                                                                             nTipoAten=:atencion,
+                                                                                             nFlgCalidad=:swcalidad,
+                                                                                             nflgactivo=:swactivo,
+                                                                                             pedido=:numero");
+                        $query->execute(["idped"=>$idpedido,
+                                        "idprod"=>$data[$i]->coditem,
+                                        "unidad"=>$data[$i]->unidad,
+                                        "estado"=>1,
+                                        "cantidad"=>$data[$i]->cantidad,
+                                        "atencion"=>$dias,
+                                        "swactivo"=>1,
+                                        "swcalidad"=>$data[$i]->verifica,
+                                        "numero"=>$pedido]);
+                    }else{
+                        $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET id_regmov=:idped,
+                                                                                        id_cprod=:idprod,
+                                                                                        ncodmed=:unidad,
+                                                                                        nEstadoReg=:estado,
+                                                                                        ncantpedi=:cantidad,
+                                                                                        nTipoAten=:atencion,
+                                                                                        nFlgCalidad=:swcalidad,
+                                                                                        nflgactivo=:swactivo,
+                                                                                        pedido=:numeropedido
+                                                                                    WHERE nidpedi=:indice");
+                        $query->execute(["idped"=>$idpedido,
+                                         "idprod"=>$data[$i]->coditem,
+                                         "unidad"=>$data[$i]->unidad,
+                                         "estado"=>1,
+                                         "cantidad"=>$data[$i]->cantidad,
+                                         "atencion"=>$dias,
+                                         "swactivo"=>1,
+                                         "swcalidad"=>$data[$i]->verifica,
+                                         "numeropedido"=>$pedido,
+                                         "indice"=>$data[$i]->indice]);
+                    }   
                 }
-
             } catch (PDOException $e) {
                 echo $e->getMessage();
                 return false;
@@ -861,16 +921,15 @@
         public function insertAtachs($datos){
             try {
                 $data = json_decode($datos);
+
                 for ($i=0; $i < count($data); $i++) { 
-                    $ref = explode("~",$data[$i]->nombre);
 
-                    $nomb = $ref[1];
-                    $cref = $ref[0];
-
-                    $codp = $data[$i]->codped;
+                    $nomb = $data[$i]->nombre;
+                    $cref = $data[$i]->archivo;
+                    $codp = $data[$i]->pedido;
                     $cmod = "PEDIDO";
 
-                    $query = $this->db->connect()->prepare("INSERT INTO lg_regdocumento (id_regmov,nidrefer,cmodulo,cdocumento) 
+                    $query = $this->db->connect()->prepare("INSERT INTO lg_regdocumento (id_regmov,creferencia,cmodulo,cdocumento) 
                                                              VALUES (:codp,:cref,:cmod,:nomb)");
                     $query->execute(["codp"=>$codp,"cref"=>$cref,"cmod"=>$cmod,"nomb"=>$nomb]);
                 }
@@ -880,35 +939,18 @@
                 return false;
             }
         }
-
-        public function deleteDetails($codigo) {
-            try {
-                $query= $this->db->connect()->prepare("UPDATE lg_pedidodet SET nflgactivo=:flag WHERE id_regmov=:cod");
-                $query->execute(["flag"=>0,"cod"=>$codigo]);
-
-            } catch (PDOException $e) {
-                echo $e->getMessage();
-                return false;
-            }
-        }
-
-        public function sendmails($datos){
+        
+        public function sendmails($msg,$correos,$pedido,$titulo,$estado){
             require_once("public/PHPMailer/PHPMailerAutoload.php");
 
             try {
-                $data = json_decode($datos);
-                $existe = false;
+                $data = json_decode($correos);
 
-                if ( $data[0]->tipo == "B"){
-                    $this->genOc($data[0]->codped);
-                }else {
-                    //ver para cambiar segun el formato de orden de servicio
-                    $this->genOc($data[0]->codped);
-                }
+                $this->genOc($pedido);
                 
-                $mensaje = $data[0]->msg;
+                $mensaje = $msg;
                 $mails = count($data);
-                $title = utf8_decode("Aprobación de Pedido");
+                $title = utf8_decode($titulo);
 
                 $origen = $_SESSION['user']."@sepcon.net";
                 $nombre_envio = $_SESSION['nombres'];
@@ -939,19 +981,18 @@
                 $mail->Subject = $title;
                 $mail->Body = html_entity_decode(utf8_decode($mensaje));
 
-                $filename = "public/pedidos/emitidos/".$data[0]->codped.".pdf";
+                $filename = "public/pedidos/emitidos/".$pedido.".pdf";
 
                 if (file_exists( $filename )) {
                     $mail->AddAttachment($filename);
-                    $existe = true;	
                 }
                 
                 if (!$mail->send()) {
                     $mensaje = $mail->ErrorInfo;
 			    }else {
                     $mensaje = true;
-                    $this->changeStatusHeader($data[0]->codped);
-                    $this->changeStatusDetails($data[0]->codped);
+                    $this->changeStatusHeader($pedido,$estado);
+                    $this->changeStatusDetails($pedido,$estado);
                 }
                 
                 return $mensaje;
@@ -963,11 +1004,10 @@
         }
 
         //cambia el estado del pedido
-        public function changeStatusHeader($codigo){
+        public function changeStatusHeader($codigo,$estado){
             try {
-                $cest = 2;
                 $query = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc=:cest WHERE id_regmov=:idx");
-                $query->execute(["cest"=>$cest,"idx"=>$codigo]);
+                $query->execute(["cest"=>$estado,"idx"=>$codigo]);
 
             } catch (PDOException $e) {
                 echo $e->getMessage();
@@ -976,13 +1016,12 @@
         }
 
         //cambia el estado de los detalles
-        // el estado es 2 para verificar las existencias en almacen
-        public function changeStatusDetails($codigo){
+        // el estado 2 para verificar las existencias en almacen
+        // el estado 3 para aprobacion de pedidos
+        public function changeStatusDetails($codigo,$estado){
             try {
-                
-                $cest = 2;
                 $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nEstadoReg=:cest WHERE id_regmov=:idx AND nflgactivo = 1");
-                $query->execute(["cest"=>$cest,"idx"=>$codigo]);
+                $query->execute(["cest"=>$estado,"idx"=>$codigo]);
 
             } catch (PDOException $e) {
                 echo $e->getMessage();
@@ -1001,6 +1040,7 @@
                                                             logistica.lg_pedidocab.cconcepto,
                                                             logistica.lg_pedidocab.mdetalle,
                                                             logistica.lg_pedidocab.id_cuser,
+                                                            logistica.lg_pedidocab.ctipmov,
                                                             rrhh.tabla_aquarius.apellidos,
                                                             rrhh.tabla_aquarius.nombres,
                                                             rrhh.tabla_aquarius.dni,
@@ -1043,7 +1083,7 @@
                                     $are = $row['ccodarea']." ".$row['cdesarea'];
                                     $cos = $row['ccodcos']." ".$row['cdescos'];
                                     $tra = $row['cod_transporte']." ".$row['transporte'];
-                                    $dti = "";
+                                    $dti = $row['ctipmov'];
                                     $mmt = "";
                                     $cla = "NORMAL";
                                     $msj = "EMITIDO";
@@ -1106,7 +1146,6 @@
                         $pdf->AddPage();
                         $lc = 0;
                     }
-
                 }
             }
 
@@ -1115,6 +1154,73 @@
 
         public function getAtachs($cod){
             
+        }
+
+        public function listarCorreos($cod,$accion){
+            try {
+                $salida = "";
+
+                $sql = $this->db->connect()->prepare("SELECT
+                                                        tb_proyusu.ncodproy,
+                                                        tb_proyusu.id_cuser,
+                                                        tb_sysusuario.cnameuser,
+                                                        tb_sysusuario.cemail,
+                                                        tb_sysusuario.cnombres 
+                                                    FROM
+                                                        tb_proyusu
+                                                        INNER JOIN tb_sysusuario ON tb_proyusu.id_cuser = tb_sysusuario.id_cuser 
+                                                    WHERE
+                                                        tb_proyusu.nflgactivo = 1 
+                                                        AND tb_sysusuario.nnivuser = :acc 
+                                                        AND tb_proyusu.ncodproy = :cod");
+                $sql->execute(["cod"=>$cod,"acc"=>$accion]);
+                $rowcount = $sql->rowcount();
+
+                if ($rowcount > 0) {
+                    while ($rs = $sql->fetch()) {
+                        $salida .= '<tr>
+                                        <td class="con_borde centro" ><input type="checkbox" checked></td>
+                                        <td class="con_borde pl20">'.strtoupper($rs['cnombres']).'</td>
+                                        <td class="con_borde pl20">'.$rs['cemail'].'</td>
+                                    </tr>';
+
+                    }    
+                }else {
+                    $salida = '<tr colspan="3"><td>No se encontro registros</td></tr>';
+                }
+
+                return $salida;
+
+            } catch (PDOException $th) {
+                echo $th;
+                return false;
+            }
+        }
+
+        public function getTotals($user,$condicion){
+            try {
+                if ($condicion == 1){
+                    $sql= $this->db->connect()->prepare("SELECT count(*) AS respuesta FROM lg_pedidocab 
+                                                        WHERE nEstadoDoc = 1 
+                                                        AND id_cuser =:user");
+                    $sql->execute(["user"=>$user]);
+                }
+                    
+                else{
+                    $sql= $this->db->connect()->prepare("SELECT count(*) AS respuesta FROM lg_pedidocab 
+                                                        WHERE nEstadoDoc != 1 
+                                                        AND id_cuser =:user");
+                    $sql->execute(["user"=>$user]);
+                }
+                    
+                $result = $sql->fetchAll();
+
+                return $result[0]['respuesta'];
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
+                return false;
+            }
         }
     }
 ?>

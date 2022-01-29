@@ -669,7 +669,7 @@ $(function(){
                 if (data){
                     $("#modalProcess").fadeOut();
 
-                    /*$.post(RUTA+"despacho/actualizaPrincipal",
+                    $.post(RUTA+"despacho/actualizaPrincipal",
                         function (data, textStatus, jqXHR) {
                             $("#tabla_guias tbody")
                                 .empty()
@@ -678,7 +678,7 @@ $(function(){
                             cerrarVentanaEspera();
                         },
                         "text"
-                    );*/
+                    );
 
                     $.ajax({
                         type: "POST",
@@ -700,12 +700,7 @@ $(function(){
                                 details:JSON.stringify(getDetails())},
                         dataType: "text",
                         success: function (response) {
-                            
-                            $("#modalVistaNotaSalida .insidePreview iframe")
-                                .attr("src","")
-                                .attr("src",response);
-            
-                                $("#modalVistaNotaSalida").fadeIn();                
+                                            
                         }
                     });
                 }

@@ -25,11 +25,12 @@
 
         public function insert($datos){
             try {
-                $query= $this->db->connect()->prepare("INSERT INTO tb_ccostos SET ccodcos=:cod,cdescos=:dsc,nflgactivo=:est,ncodpry=:proy");
+                $query= $this->db->connect()->prepare("INSERT INTO tb_ccostos SET ccodcos=:cod,cdescos=:dsc,nflgactivo=:est,ncodpry=:proy,nflgVeryAlm=:alm");
                 $query->execute(["cod"=>$datos['cod'],
                                  "dsc"=>$datos['des'],
                                  "est"=>$datos['est'],
-                                 "proy"=>$datos['proy']]);
+                                 "proy"=>$datos['proy'],
+                                 "alm"=>$datos['alm']]);
                 $rowcount = $query->rowcount();
 
                 if ($rowcount > 0) {
@@ -45,11 +46,12 @@
 
         public function update($datos){
             try {
-                $query= $this->db->connect()->prepare("UPDATE tb_ccostos SET ccodcos=:cod,cdescos=:dsc,nflgactivo=:est WHERE ncodcos=:idx LIMIT 1");
+                $query= $this->db->connect()->prepare("UPDATE tb_ccostos SET ccodcos=:cod,cdescos=:dsc,nflgactivo=:est,nflgVeryAlm=:alm WHERE ncodcos=:idx LIMIT 1");
                 $query->execute(["idx"=>$datos['idx'],
                                  "cod"=>$datos['cod'],
                                  "dsc"=>$datos['des'],
-                                 "est"=>$datos['est']]);
+                                 "est"=>$datos['est'],
+                                 "alm"=>$datos['alm']]);
                 $rowcount = $query->rowcount();
 
                 if ($rowcount > 0) {
@@ -108,21 +110,33 @@
             try {
                 $item = array();
 
-                $query = $this->db->connect()->prepare("SELECT  tb_ccostos.ccodcos,
-                                                                tb_ccostos.cdescos,
-                                                                tb_ccostos.nflgactivo,
-                                                                tb_ccostos.ncodcos
-                                                        FROM
-                                                            tb_ccostos 
-                                                        WHERE
-                                                            tb_ccostos.ncodcos =:idx");
+                $query = $this->db->connect()->prepare("SELECT
+                                                tb_ccostos.ccodcos, 
+                                                tb_ccostos.cdescos, 
+                                                tb_ccostos.nflgactivo, 
+                                                tb_ccostos.ncodcos, 
+                                                tb_ccostos.ncodpry, 
+                                                tb_ccostos.nflgVeryAlm, 
+                                                tb_proyecto1.cdespry,
+                                                tb_proyecto1.ccodpry
+                                            FROM
+                                                tb_ccostos
+                                                INNER JOIN
+                                                tb_proyecto1
+                                                ON 
+                                                    tb_ccostos.ncodpry = tb_proyecto1.ncodpry
+                                            WHERE
+                                                tb_ccostos.ncodcos = :idx");
                 $query->execute(["idx"=>$idx]);
 
                 while ($row = $query->fetch()) {
-                        $item['ncodcos'] = $row['ncodcos'];
-                        $item['ccodcos'] = $row['ccodcos'];
-                        $item['cdescos'] = $row['cdescos'];
-                        $item['nflgactivo'] = $row['nflgactivo'];
+                        $item['ncodcos']     = $row['ncodcos'];
+                        $item['ccodcos']     = $row['ccodcos'];
+                        $item['cdescos']     = $row['cdescos'];
+                        $item['nflgactivo']  = $row['nflgactivo'];
+                        $item['ncodpry']     =  $row['ncodpry'];
+                        $item['cdespry']     = $row['ccodpry']." ".$row['cdespry'];
+                        $item['nflgVeryAlm'] = $row['nflgVeryAlm'];
                 }
 
                 return $item;

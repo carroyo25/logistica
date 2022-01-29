@@ -641,9 +641,11 @@ function detallesparaOrden(){
             item['idprod'] = IDPROD;
             item['idunid'] = IDUND;
             item['factor'] = FACTOR;
+
+            DETALLES.push(item);
         }
 
-        DETALLES.push(item);
+        
     })
 
     return DETALLES;

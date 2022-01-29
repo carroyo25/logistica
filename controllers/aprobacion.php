@@ -148,7 +148,8 @@
 
         //repinta el cuadro de pedidos
         function mainList(){
-            $retorno = $this->model->getAllUserRecords();
+            
+            $retorno = $this->model->getAllUserRecords($_SESSION['id_user']);
 
             echo $retorno;
         }

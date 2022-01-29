@@ -405,7 +405,7 @@ function getMails(codigo){
 }
 
 function getListRequest(){
-    $.post(RUTA+"pedidos/mainList", data=0,
+    $.post(RUTA+"aprobacion/mainList", {data:0},
         function (data, textStatus, jqXHR) {
             $("#tabla_pedidos tbody")
                 .empty()

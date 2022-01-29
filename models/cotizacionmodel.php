@@ -205,7 +205,7 @@
                             $salida.='<tr class="lh1_2rem">
                                 <td class="con_borde centro"><input type="checkbox"></td>
                                 <td class="con_borde drch pr20" data-iddetalle="'.$row['nidpedi'].'">'. str_pad($line,3,"0",STR_PAD_LEFT) .'</td>
-                                <td class="con_borde centro" data-indice="'.$row['id_cprod'].'">'. $row['ccodprod'] .'</td>
+                                <td class="con_borde centro" data-indice="'.$row['id_cprod'].'">'. $row['id_cprod'] .'</td>
                                 <td class="con_borde pl10">'. $row['cdesprod'] .'</td>
                                 <td class="con_borde centro">'. $row['cabrevia'] .'</td>
                                 <td class="con_borde drch pr10">'. $row['cantidad'] .'</td>

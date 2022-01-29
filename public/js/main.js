@@ -82,4 +82,15 @@ $(function(){
         return false;
     });
 
+    $("#seePassword").click(function (e) { 
+        //e.preventDefault();
+
+        if ($(this).is(':checked')) {
+            $('#pass').attr('type', 'text');
+        }else {
+            $('#pass').attr('type', 'password');
+        }
+        //return false;
+    });
+
 })

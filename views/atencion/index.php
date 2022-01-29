@@ -98,12 +98,12 @@
                         <button type="button" id="saveItem" title="Grabar Pedido">
                             <span><i class="far fa-save"></i> Actualizar Pedido</span> 
                         </button>
-                        <button type="button" id="cancelItem" title="Cancelar Pedido">
-                            <i class="fas fa-ban"></i> Cancelar Atención
+                        <button type="button" id="finishItem" title="Terminar Pedido">
+                            <i class="fas fa-ban"></i> Terminar Pedido
                         </button>
                     </div>
                 </div>
-                    <div class="process_header desactivado">
+                    <div class="process_header desactivado_novisible">
                         <div class="process_left">    
                             <div class="input_process g4items">
                                 <label for="numero" class="w100px">Número :</label>
@@ -111,7 +111,7 @@
                                 <label for="fecha" class="w100px">Fec.Emisión :</label>
                                 <input type="date" name="fecha" id="fecha" value="<?php echo date("Y-m-d");?>" class="pl20">
                             </div>
-                            <div class="input_process g2items">
+                            <div class="oculto">
                                 <label for="usuario" class="w100px">Usuario :</label>
                                 <input type="text" name="usuario" id="usuario" value="<?php echo $_SESSION['cnameuser'];?>" class="pl20 mayusculas desactivado">
                             </div>
@@ -137,9 +137,6 @@
                                 <label for="area" class="w100px">C.Costos. :</label>
                                 <input type="text" name="costos" id="costos" class="pl20 mayusculas" placeholder="Seleccione una opcion">
                                 <div class="seleccion seleccion_pedido">
-                                    <ul id="listaCostos">
-                                        <?php echo $this->costos?>
-                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -148,9 +145,6 @@
                                 <label for="transporte" class="w100px">Transporte :</label>
                                 <input type="text" name="transporte" id="transporte" class="pl20 mayusculas" placeholder="Seleccione una opcion">
                                 <div class="seleccion seleccion_pedido">
-                                    <ul id="listaTransporte">
-                                        <?php echo $this->transporte?>
-                                    </ul>
                                 </div>
                             </div>
                             <div class="input_process g2items">
@@ -167,32 +161,30 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="input_process g4items">
-                                <label for="tipo" class="w100px">Tipo Pedido:</label>
-                                <input type="text" name="tipo" id="tipo" class="pl20 mayusculas">
-                                <div class="seleccion seleccion_pedido w30p">
-                                    <ul id="listaTipo">
-                                        <?php echo $this->tipo?>
-                                    </ul>
-                                </div>
-                                <label for="fechaven" class="w100px">Fec.Vence :</label>
-                                <input type="date" name="fechaven" id="fechaven" class="pl20">
-                            </div>
                         </div>
                         <div class="process_estate">
                             <div class="input_process g2items">
                                 <label for="registro" class="w100px">Est.Doc.:</label>
                                 <input type="text" name="registro" id="registro" class="pl20 mayusculas proceso" readonly>
                             </div>
+                            <div class="input_process g2items">
+                                <label for="tipo" class="w100px">Tipo Pedido:</label>
+                                <input type="text" name="tipo" id="tipo" class="pl20 mayusculas">
+                            </div>
+                            <div class="input_process g2items">   
+                                <label for="fechaven" class="w100px">Fec.Vence :</label>
+                                <input type="date" name="fechaven" id="fechaven" class="pl20">
+                            </div>
                         </div>
+                    </div>
+                    <div class="descrip_title desactivado">
+                        <span>Especificaciones Técnicas o Descripción del Item</span>
+                    </div>
+                    <div class="details_item">
+                        <textarea name="espec_items" id="espec_items" rows="2" class="w100p" readonly></textarea>
                     </div>
                     <div class="descrip_title">
                         <span>Detalles</span>
-                        <!-- <div>
-                            <button type="button" id="buscarExistencias" title="Consultar Almacen">
-                                <i class="far fa-plus-square"></i> Consultar Almacen
-                            </button>
-                        </div> -->
                     </div>
                     <div class="process_items">
                         <div>
@@ -217,12 +209,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="descrip_title desactivado">
-                        <span>Especificaciones Técnicas o Descripción del Item</span>
-                    </div>
-                    <div class="details_item">
-                        <textarea name="espec_items" id="espec_items" rows="5" class="w100p"></textarea>
-                    </div>
+                    
                 </div>
             </div>
         </form>
@@ -246,11 +233,26 @@
             </div>
         </div>
     </div>
+    <div class="modal" id="dialogFinish">
+        <div class="dialogContainer w35p">
+            <div class="dialogTitle">
+                <h4>Pregunta</h4>
+            </div>
+            <hr>
+            <div class="dialogBody">
+                <h1>¿Terminar el pedido? </h1> <!--alt 168-->   
+                <div class="options">
+                    <button id="btnFinishYes" class="botones">Si</button>
+                    <button id="btnFinishNo" class="botones">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="main_panel">
         <?php require 'views/acordeon.php'; ?>
         <div class="workOneForm">
             <div class="tilewindow">
-                <p class="workTitle">Atencion de pedidos por Stock</p>
+                <p class="workTitle">Verificación Almacen</p>
                 <?php require 'views/menus.php'; ?>
             </div>       
             <div class="formulario">
@@ -310,31 +312,32 @@
                     </table>
                 </div>
                 <div class="resumen_pedidos">
-                    <!-- <?php 
-                    //$activos = $this->actives;
-                    //$inactivos = $this->inactives;
-                    //$total = $activos + $inactivos;
-                    ?> -->
+                    <?php 
+                        
+                        $verificar  = $this->verificar;
+                        $atendidos  = $this->atendidos;
+                        $aprobados  = $this->aprobados;
+                    ?> 
                     <div class="banners_pedido posicion_absoluta">
                         <div>
                             <i class="fas fa-cogs"></i>
                             <div>
-                                <p>Emitidos</p>
-                                <!-- <p><?php echo $total?></p> -->
+                                <p>Por verificar</p>
+                                <p><?php echo $verificar?></p>
                             </div>
                         </div>
                         <div>
                             <i class="fas fa-barcode"></i>
                             <div>
-                                <p>Pendientes</p>
-                                <!-- <p><?php echo $activos?></p> -->
+                                <p>Culminados</p>
+                                <p><?php echo $atendidos?></p>
                             </div>
                         </div>
                         <div>
                             <i class="fas fa-toolbox"></i>
                             <div>
-                                <p>Rechazados</p>
-                                <!-- <p><?php echo $inactivos?></p> -->
+                                <p>Por Aprobar</p>
+                                <p><?php echo $aprobados?></p>
                             </div>
                         </div>
                     </div>   

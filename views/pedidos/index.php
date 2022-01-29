@@ -18,16 +18,18 @@
     <div class="modal zindex3" id="dialogSend">
         <div class="dialogContainer w35p">
             <div class="dialogTitle">
-                <h4>Enviar Pedido</h4>
+                <h4></h4>
             </div>
             <hr>
             <div class="dialogBody">
                 <div class="emails">
                     <table class="w100p con_borde table_dialog" id="listMailToSend">
+                        <caption>Listado de Correos</caption>
                         <thead>
-                            <tr>
-                                <th class="con_boder">Lista de Correos</th>
-                                <th class="con_boder"><a href="" id="callEmailList"><i class="far fa-address-book"></i></a></th>
+                            <tr class="con_boder">
+                                <th class="con_borde">...</th>
+                                <th class="con_borde">Nombre</th>
+                                <th class="con_borde">Correo</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -41,29 +43,6 @@
                     <button id="btnSendConfirm" class="botones">Aceptar</button>
                     <button id="btnSendCancel" class="botones">Cancelar</button>
                 </div>
-            </div>
-        </div>
-        <div class="listEmails">
-            <div class="titulo">
-                <h3>Lista de Correos</h3>
-                <button type="button" id="closeEmails"><i class="far fa-times-circle"></i></button>
-            </div>
-            <div class="cuerpo">
-                <form action="#" id="formEmails">
-                    <div class="enterData">
-                        <input type="text" name="searchEmailText" id="searchEmailText" placeholder="buscar">
-                    </div>
-                    <table id="corporativos" class="con_borde w100p espacio_tabla_0 mt10px">
-                        <thead>
-                            <tr>
-                                <th class="con_borde">Nombre</th>
-                                <th class="con_borde">Correo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </form>
             </div>
         </div>
     </div>
@@ -224,6 +203,7 @@
                     <a href="#" id="pickFiles"><i class="far fa-calendar-plus"></i></a>
                 </div>
                 <form action="<?php echo constant('URL');?>pedidos/uploadsAtachs" id="fileAtachs" enctype='multipart/form-data'>
+                    <input type="hidden" name="reference" id="reference">
                     <input type="file" name="uploadAtach[]" id="uploadAtach" multiple class="oculto">
                     <div>
                         <table id="tableAdjuntos" class="w100p con_border espacio_tabla_0 ">
@@ -258,6 +238,7 @@
             <input type="hidden" name="cod_tipo" id="cod_tipo">
             <input type="hidden" name="estado" id="estado" value="1">
             <input type="hidden" name="atencion" id="atencion" value="3">
+            <input type="hidden" name="verificarAlmacen" id="verificarAlmacen" value="0">
             <div class="process">
                 <div class="sides_process w85p">
                 <div class="descrip_title">
@@ -278,6 +259,9 @@
                         <button type="button" id="sendItem" title="Enviar Pedido" class="boton1">
                             <i class="far fa-paper-plane"></i> Enviar Almacen
                         </button>
+                        <button type="button" id="requestAprob" title="Solicitar Aprobacion" class="boton1 desactivado">
+                            <i class="fas fa-award"></i> Solicitar Aprobacion
+                        </button>
                     </div>
                 </div>
                     <div class="process_header">
@@ -288,7 +272,7 @@
                                 <label for="fecha" class="w100px">Fec.Emisión :</label>
                                 <input type="date" name="fecha" id="fecha" value="<?php echo date("Y-m-d");?>" class="pl20">
                             </div>
-                            <div class="input_process g2items">
+                            <div class="oculto">
                                 <label for="usuario" class="w100px">Usuario :</label>
                                 <input type="text" name="usuario" id="usuario" value="<?php echo $_SESSION['cnameuser'];?>" class="pl20 mayusculas desactivado">
                             </div>
@@ -302,20 +286,20 @@
                                 </div>
                             </div>
                             <div class="input_process g2items">
+                                <label for="area" class="w100px">C.Costos. :</label>
+                                <input type="text" name="costos" id="costos" class="pl20 mayusculas" placeholder="Seleccione un proyecto">
+                                <div class="seleccion seleccion_pedido">
+                                    <ul id="listaCostos">
+                                       <!--  <?php echo $this->costos?> -->
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="input_process g2items">
                                 <label for="area" class="w100px">Area/Of. :</label>
                                 <input type="text" name="area" id="area" class="pl20 mayusculas" placeholder="Seleccione una opcion">
                                 <div class="seleccion seleccion_pedido">
                                     <ul id="listaAreas">
                                         <?php echo $this->areas?>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="input_process g2items">
-                                <label for="area" class="w100px">C.Costos. :</label>
-                                <input type="text" name="costos" id="costos" class="pl20 mayusculas" placeholder="Seleccione una opcion">
-                                <div class="seleccion seleccion_pedido">
-                                    <ul id="listaCostos">
-                                        <?php echo $this->costos?>
                                     </ul>
                                 </div>
                             </div>
@@ -364,6 +348,12 @@
                         </div>
                     </div>
                     <div class="descrip_title">
+                        <span>Especificaciones Técnicas o Descripción del Pedido</span>
+                    </div>
+                    <div class="details_item">
+                        <textarea name="espec_items" id="espec_items" rows="2" class="w100p"></textarea>
+                    </div>
+                    <div class="descrip_title">
                         <span>Detalles</span>
                         <div>
                             <button type="button" id="addItem" title="Añadir Item" class="boton1">
@@ -390,7 +380,6 @@
                                         <th class="con_borde w8p">Nro. Parte</th>
                                         <th class="con_borde w5p">Verificar</br>Calidad</th>
                                         <th class="con_borde w8p">Tipo</th>
-                                        <th class="con_borde oculto">Factor</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -398,12 +387,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="descrip_title">
-                        <span>Especificaciones Técnicas o Descripción del Item</span>
-                    </div>
-                    <div class="details_item">
-                        <textarea name="espec_items" id="espec_items" rows="5" class="w100p"></textarea>
-                    </div>
+                   
                 </div>
             </div>
         </form>
@@ -493,31 +477,31 @@
                     </table>
                 </div>
                 <div class="resumen_pedidos">
-                    <!-- <?php 
-                    //$activos = $this->actives;
-                    //$inactivos = $this->inactives;
-                    //$total = $activos + $inactivos;
-                    ?> -->
+                    <?php 
+                        $emitidos   = $this->emitidos;
+                        $procesados = $this->procesados;
+                        $total      = $emitidos + $procesados;
+                    ?>
                     <div class="banners_pedido posicion_absoluta">
                         <div>
                             <i class="fas fa-cogs"></i>
                             <div>
                                 <p>Emitidos</p>
-                                <!-- <p><?php echo $total?></p> -->
+                                <p><?php echo $emitidos?></p>
                             </div>
                         </div>
                         <div>
                             <i class="fas fa-barcode"></i>
                             <div>
-                                <p>Pendientes</p>
-                                <!-- <p><?php echo $activos?></p> -->
+                                <p>Procesados</p>
+                                <p><?php echo $procesados?></p>
                             </div>
                         </div>
                         <div>
                             <i class="fas fa-toolbox"></i>
                             <div>
-                                <p>Rechazados</p>
-                                <!-- <p><?php echo $inactivos?></p> -->
+                                <p>Total</p>
+                                <p><?php echo $total?></p>
                             </div>
                         </div>
                     </div>   

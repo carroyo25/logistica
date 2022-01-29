@@ -59,8 +59,9 @@
             $des = $_POST['desde'];
             $has = $_POST['hasta'];
             $cca = $_POST['cod_cargo'];
+            $cor = $_POST['correo'];
 
-            $datos = compact("cre","cni","ces","cod","usr","nom","cla","des","has","cca");
+            $datos = compact("cre","cni","ces","cod","usr","nom","cla","des","has","cca","cor");
 
 
             $result = $this->model->insert($datos);
@@ -103,8 +104,9 @@
             $has = $_POST['hasta'];
             $old = $_POST['old_pass'];
             $id  = $_POST['cod_user'];
+            $cor = $_POST['correo'];
 
-            $datos = compact("cre","cni","ces","cod","usr","nom","cla","des","has","old","id","cca");
+            $datos = compact("cre","cni","ces","cod","usr","nom","cla","des","has","old","id","cca","cor");
 
             $result = $this->model->update($datos);
 

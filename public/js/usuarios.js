@@ -519,6 +519,8 @@ $(function(){
                         $("#hasta").val(data.fvighasta);
                         $("#nivel").val(data.nivel);
                         $("#estado").val(data.estado);
+                        $("#correo").val(data.cemail);
+                        $("#cargo").val(data.dcargo);
 
 
                         $.post(RUTA +"usuarios/getModules", {cod: $("#cod_user").val()},

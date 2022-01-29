@@ -29,6 +29,8 @@ class PDF extends PDF_MC_Table{
     }
     //page header
     function Header(){
+		$titulo = $this->tipo == "B" ? "PEDIDO DE COMPRA":"PEDIDO DE SERVICIO";
+
         $this->Rect(10,10,30,20); //marco de la imagen
         $this->Rect(40,10,130,20); //marco del titulo
         $this->Rect(10,10,190,20); //marco general
@@ -39,7 +41,7 @@ class PDF extends PDF_MC_Table{
 	    $this->SetFont('Arial','B',12);
 		$this->SetTextColor(0,0,0);
 	 	$this->SetFillColor(229, 229, 229);
-	    $this->Cell(190,7,'PEDIDO DE COMPRA',0,1,'C');
+	    $this->Cell(190,7,$titulo,0,1,'C');
 	    $this->SetFont('Arial','B',10);
 	    $this->Cell(190,6,utf8_decode('N° ').date("Y",strtotime($this->fecha))."-".$this->numero,0,1,'C');
 	    $this->Cell(190,7,$this->mensaje,0,0,'C');

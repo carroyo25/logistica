@@ -29,8 +29,9 @@
             $des = $_POST['descripcion_centro'];
             $est = $_POST['estado'];
             $proy = $_POST['cod_proy'];
+            $alm = isset($_POST['checkAlmacen']) ? 1 : 0;
 
-            $datos = compact("cod","des","est","proy");
+            $datos = compact("cod","des","est","proy","alm");
 
             $salida = $this->model->insert($datos);
 
@@ -42,8 +43,9 @@
             $cod = $_POST['codigo_centro'];
             $des = $_POST['descripcion_centro'];
             $est = $_POST['estado'];
+            $alm = isset($_POST['checkAlmacen']) ? 1 : 0;
 
-            $datos = compact("idx","cod","des","est");
+            $datos = compact("idx","cod","des","est","alm");
 
             $salida = $this->model->update($datos);
 

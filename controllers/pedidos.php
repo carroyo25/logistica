@@ -7,12 +7,13 @@
 
         function render(){
             $this->view->menu         = $this->model->acordeon($_SESSION['id_user']);
-            $this->view->costos       = $this->model->getAllCosts();
             $this->view->areas        = $this->model->getAllAreas();
             $this->view->transporte   = $this->model->getParameters(7);
             $this->view->tipo         = $this->model->getParameters(8);
-            $this->view->proyecto     = $this->model->getAllProys();
+            $this->view->proyecto     = $this->model->getAllProys($_SESSION['id_user']);
             $this->view->registros    = $this->model->getAllUserRecords($_SESSION['user']);
+            $this->view->emitidos     = $this->model->getTotals($_SESSION['user'],1);
+            $this->view->procesados   = $this->model->getTotals($_SESSION['user'],0);
 
             $this->view->render('pedidos/index');
         }
@@ -190,85 +191,35 @@
         //sube los archivos adjuntos
         function uploadCotAtachs(){
             // Count total files
-            $countfiles = count($_FILES['uploadAtach']['name']);
-            $files = array();
+            $countfiles = count( $_FILES['uploadAtach']['name'] );
+            $files = [];
             // Looping all files
             for($i=0;$i<$countfiles;$i++){
                 $ext = explode('.',$_FILES['uploadAtach']['name'][$i]);
-                $filename = uniqid("at").".".end($ext);
-                $return = $filename ."~".$_FILES['uploadAtach']['name'][$i];
-
+                $filename = uniqid('adj').".".end($ext);
                 // Upload file
                 move_uploaded_file($_FILES['uploadAtach']['tmp_name'][$i],'public/adjuntos/'.$filename);
-                array_push($files,$return);
+                array_push($files,array("archivo"=>$filename,"nombre"=>$_FILES['uploadAtach']['name'][$i],"pedido"=>$_POST['reference']));
             }
 
-            $json_string = json_encode($files);
-            echo $json_string;
+            echo json_encode($files);
         }
 
         //graba los registros en la tabla
         function registro(){
-            $retorno = "";
-            $codp = $_POST['cod_pedido'];
-            $cpry = $_POST['cod_proy'];
-            $ccos = $_POST['cod_cost'];
-            $care = $_POST['cod_area'];
-            $ctra = $_POST['cod_transporte'];
-            $cest = $_POST['cod_estdoc'];
-            $creg = $_POST['cod_registro'];
-            $csol = $_POST['cod_solicitante'];
-            $ctip = $_POST['cod_tipo'];
-            $num  = $_POST['numero'];
-            $fecr = $_POST['fecha'];
-            $usr  = $_POST['usuario'];
-            $conc = $_POST['concepto'];
-            $tipo = $_POST['tipo'];
-            $espe = $_POST['espec_items'];
-            $est  = $_POST['estado'];
-            $aten = $_POST['atencion'];
-            $fven = $_POST['fechaven'];
+           $cabecera = $_POST['cabecera'];
+           $detalles = $_POST['detalles'];
+           $accion = $_POST['act'];
 
-            $datos = compact("codp","cpry","ccos","care","ctra","cest","creg","csol","ctip","num","fecr","usr","conc","tipo","espe","est","aten","fven");
+           if ($accion == 'n')
+                $result = $this->model->insertarPedido($cabecera,$detalles);
+           else
+                $result = $this->model->actualizarPedido($cabecera,$detalles);
 
-            $retorno = $this->model->insertRequest($datos);
-            
-            echo $retorno;
+            echo $result;
         }
 
-        function actualiza(){
-            $retorno = "";
-            $codp = $_POST['cod_pedido'];
-            $cpry = $_POST['cod_proy'];
-            $ccos = $_POST['cod_cost'];
-            $care = $_POST['cod_area'];
-            $ctra = $_POST['cod_transporte'];
-            $cest = $_POST['cod_estdoc'];
-            $creg = $_POST['cod_registro'];
-            $csol = $_POST['cod_solicitante'];
-            $ctip = $_POST['cod_tipo'];
-            $num  = $_POST['numero'];
-            $fecr = $_POST['fecha'];
-            $usr  = $_POST['usuario'];
-            $conc = $_POST['concepto'];
-            $tipo = $_POST['tipo'];
-            $espe = $_POST['espec_items'];
-            $est  = $_POST['estado'];
-            $aten = $_POST['atencion'];
-            $fven = $_POST['fechaven'];
-
-            $datos = compact("codp","cpry","ccos","care","ctra","cest","creg","csol","ctip","num","fecr","usr","conc","tipo","espe","est","aten","fven");
-
-
-            $retorno = $this->model->updateRequest($datos);
-            
-            echo $retorno;
-        }
-
-        public function saveItemsTable(){
-            $datos = $_POST['data'];
-            $this->model->insertItemsTable($datos);
-        } 
+      
         
         public function saveAtachs(){
             $datos = $_POST['data'];
@@ -349,11 +300,32 @@
 
         //enviar el mail y el adjunto a los correos seleccionados
         function mailProcess(){
-            $datos = $_POST['data'];
+            $msg        = $_POST['msg'];
+            $correos    = $_POST['correos'];
+            $pedido     = $_POST['pedido'];
+            $titulo     = $_POST['titulo'];
+            $estado     = $_POST['estado'];
 
-            $retorno = $this->model->sendmails($datos);
+            $retorno = $this->model->sendmails($msg,$correos,$pedido,$titulo,$estado);
 
             echo $retorno;
+        }
+
+        function centroCostos(){
+            $cod = $_POST['cod'];
+
+            $result = $this->model->getAllCosts($cod);
+
+            echo $result;
+        }
+
+        function correosPedidos(){
+            $cod = $_POST['codigoProyecto'];
+            $acc = $_POST['accion'];
+
+            $result = $this->model->listarCorreos($cod,$acc);
+
+            echo $result;
         }
     }
     

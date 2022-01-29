@@ -87,7 +87,6 @@
                             </div>
                         </div>
                         <div class="process_right">
-                            </br>
                             <div class="input_process g2items">
                                 <label for="responsable" class="w100px">Responsable :</label>
                                 <input type="text" name="responsable" id="responsable" class="pl20 mayusculas" placeholder="Seleccione una opcion">
@@ -100,6 +99,10 @@
                                 <label for="responsable" class="w100px">Cargo :</label>
                                 <input type="text" name="cargo" id="cargo" class="pl20 mayusculas" readonly>
                             </div>
+                            <div class="input_process g2items">
+                                <label for="correo" class="w100px">Correo :</label>
+                                <input type="mail" name="correo" id="correo" class="pl20 minusculas">
+                            </div>
                             <div class="input_process g4items">
                                 <label for="desde" class="w100px">Desde :</label>
                                 <input type="date" name="desde" id="desde" class="pl20">
@@ -108,7 +111,6 @@
                             </div>
                         </div>
                         <div class="process_estate">
-                            </br>
                             <div class="input_process g2items">
                                 <label for="nivel" class="w100px">Nivel:</label>
                                 <input type="text" name="nivel" id="nivel" class="pl20 mayusculas" placeholder="Seleccione una opcion">

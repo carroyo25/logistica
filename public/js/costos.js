@@ -138,6 +138,13 @@ $(function(){
                 $("#codigo_centro").val(data.ccodcos);
                 $("#descripcion_centro").val(data.cdescos);
                 $("#estado").val(data.nflgactivo);
+
+                $("#cod_proy").val(data.ncodpry);
+                $("#proyecto").val(data.cdespry);
+
+                let checked = data.nflgVeryAlm == "1" ? true:false;
+
+                $("#checkAlmacen").prop("checked",checked);
             },
             "json"
         );

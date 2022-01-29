@@ -102,10 +102,10 @@ $(function(){
         return false;
     });
 
-    $("#btnNo").on("click", function (e) {
+    $("#btnNo,#btnFinishNo").on("click", function (e) {
         e.preventDefault();
 
-        $("#dialogConfirm").fadeOut();
+        $(this).parent().parent().parent().parent().fadeOut();
 
         return false;
     });
@@ -113,15 +113,36 @@ $(function(){
     $("#btnYes").on("click", function (e) {
         e.preventDefault();
 
-        grabarDetalles();
-
         $.post(RUTA+"atencion/grabaAtencion", {idx:$("#cod_pedido").val(),
-                                                detalles:JSON.stringify(DETALLES)},
+                                                detalles:JSON.stringify(grabarDetalles())},
             function (data, textStatus, jqXHR) {
                 $("#dialogConfirm").fadeOut();
             },
             "text"
         );
+
+        return false;
+    });
+
+    $("#btnFinishYes").click(function (e) { 
+        e.preventDefault();
+        
+         $.post(RUTA+"atencion/cierraAtencion", {idx:$("#cod_pedido").val(),
+                                                detalles:JSON.stringify(grabarDetalles())},
+            function (data, textStatus, jqXHR) {
+                $("#dialogFinish").fadeOut();
+            },
+            "text"
+        );
+
+        return false;
+    });
+
+    $("#finishItem").click(function (e) { 
+        e.preventDefault();
+        
+        $("#dialogFinish").fadeIn();
+
         return false;
     });
 })

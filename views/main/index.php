@@ -30,9 +30,6 @@
                     </div>
                 </div>
                 <div class="checks">
-                    <input type="checkbox" name="rememberUser" id="rememberUser">
-                    <label for="rememberUser">Recordarme</label>
-
                     <input type="checkbox" name="seePassword" id="seePassword">
                     <label for="seePassword">Ver Clave</label>
                 </div>

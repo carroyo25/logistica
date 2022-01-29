@@ -76,6 +76,12 @@
     cursor: default;
 }
 
+.desactivado_novisible{
+    opacity: 1;
+    pointer-events: none;
+    cursor: default;
+}
+
 .no_modificar{
     opacity: 0.9;
     pointer-events: none;
@@ -843,20 +849,22 @@
     #atachList{
         display: flex;
         text-align: center;
-        line-height: 4rem;
+        //line-height: 4rem;
         
-
         li{
-            margin: 10px;
+            margin: 4px;
             border: 1px solid #fff;
-            padding: 5px 10px;
+            padding: 0px 4px;
             border-radius: 8px;
-            transition: .5s;
+            -webkit-transition: 0.5s;
+            -o-transition: 0.5s;
+            transition: 0.5s;
 
             span {
                 display: block;
-                font-size: .8rem;
-                margin-top: -35px;
+                font-size: .6rem;
+                width: 20rem;
+                line-height: 1.5rem;
             }
 
             i {
@@ -1041,6 +1049,7 @@
             height: 48px;
             background-color: #fff;
             margin: 10px 0;
+            width: 100%;
             
             i{
                 color: #fff;
@@ -1054,12 +1063,12 @@
             }
 
             input{
-                height: 36px;
-                width: 45vh;
                 border: none;
                 outline: none;
-                font-size: 1.5rem;
-                padding-left: 15px;
+                height: 2rem;
+                width: 73%;
+                font-size: 1.2rem;
+                padding-left: 5px;
             }
         }
 
@@ -1850,6 +1859,7 @@
         display: flex;
         box-shadow: 2px 3px 5px #201f1f;
         margin-left: 10px;
+        width: 15rem;
 
         i{
             font-size: 4rem;
@@ -1864,6 +1874,8 @@
 
             p:nth-child(2) {
                 font-weight: bold;
+                margin-top: 1rem;
+                font-size: 2rem;
             }
         }
     }
@@ -2673,34 +2685,29 @@ input[type=checkbox]:checked
 .emitido,.activo,.recepcionado {
     background: dodgerblue !important;
     color: white;
-    //font-weight: 800;
 }
 
 .rechazado, .inactivo {
     background: orange !important;
     color: white;
-    //font-weight: 800;
 }
 
 .urgente,.malo{
     background: red;
     color: white;
     font-size: .7rem;
-    //font-weight: 800;
 }
 
 .aprobacion{
     background:darkblue;
     color: white;
     font-size: .7rem;
-    //font-weight: 800;
 }
 
 .aprobado,.regular {
     background: powderblue;
     color: #000;
     font-size: .7rem;
-    //font-weight: 700;
 }
 
 .proceso {
@@ -2718,23 +2725,25 @@ input[type=checkbox]:checked
 
 .normal,.maximo{
     background: chartreuse;
-    font-weight: 800;
 }
 
 .revisado,.consulta{
     background: #3BA28B;
-    font-weight: 800;
     color: #fff;
 }
 
 .transito{
     background: #5D8F64;
-    font-weight: 800;
     color: #fff;
 }
 
 .verificacion {
     background: #aaaaaa;
+    color: #fff;
+}
+
+.almacen {
+    background: #233C8F;
     color: #fff;
 }
 
