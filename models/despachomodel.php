@@ -403,7 +403,7 @@
                                                                  data-idprod="'.$rs['id_cprod'].'"
                                                                  data-nestado="'.$rs['nestadoreg'].'">
                                                                 '.str_pad($item,3,"0",STR_PAD_LEFT).'
-                                        <td class="con_borde centro">'.$rs['ccodprod'].'</td>
+                                        <td class="con_borde centro">'.$rs['id_cprod'].'</td>
                                         <td class="con_borde pl20">'.$rs['cdesprod'].'</td>
                                         <td class="con_borde centro">'.$rs['cabrevia'].'</td>
                                         <td class="con_borde drch pr10">'.number_format($cantidad, 2, '.', ',').'</td>
@@ -663,6 +663,10 @@
                     }
                     
                 $pdf->Output($filename,'F');
+
+                $c = "public/exe/PDFtoPrinter.exe".$filename;
+
+                $output = shell_exec($c);
                 
                 return $filename;
             } catch (PDOException $th) {

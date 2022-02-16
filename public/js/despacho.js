@@ -710,6 +710,19 @@ $(function(){
 
         return false;
     });
+
+    $("#orderDetail").click(function (e) { 
+        e.preventDefault();
+
+        $.post(RUTA+"despacho/impresion", {archivo:"/public/guias/GR6205ed57ac4bb.pdf"},
+            function (data, textStatus, jqXHR) {
+                
+            },
+            "text"
+        );
+
+        return false;
+    });
 })
 
 function getDetails(){

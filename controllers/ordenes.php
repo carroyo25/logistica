@@ -18,7 +18,6 @@
             echo json_encode($result);
         }
 
-
         function pedidosCostos(){
             $user = $_SESSION['id_user'];
 
@@ -65,8 +64,10 @@
         function grabaOrden(){
             $cabecera = $_POST['cabecera'];
             $detalles = $_POST['detalles'];
+            $accion = $_POST['accion'];
 
-            $result = $this->model->grabarDatosOrden($cabecera,$detalles);
+            $result = $accion == "n" ? $this->model->grabarDatosOrden($cabecera,$detalles):
+                                       $this->model->actualizarDatosOrden($cabecera,$detalles);
 
             echo $result;
         }
@@ -87,7 +88,6 @@
 
             echo $result;
         }
-
 
         function observaciones(){
             $observaciones = $_POST['observaciones'];
@@ -117,6 +117,16 @@
 
         function actualizaPrincipal(){
             $result = $this->model->obtenerOrdenesUser($_SESSION['user']);
+
+            echo $result;
+        }
+
+        function autoriza(){
+            $orden = $_POST['orden'];
+            $pedido = $_POST['pedido'];
+            $detalles = $_POST['detalles'];
+
+            $result = $this->model->autorizarOrden($orden, $pedido, $detalles);
 
             echo $result;
         }

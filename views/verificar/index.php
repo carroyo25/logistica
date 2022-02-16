@@ -52,7 +52,7 @@
                                 <label for="fecha" class="w100px">Fec.Emisión :</label>
                                 <input type="date" name="fecha" id="fecha" value="<?php echo date("Y-m-d");?>" class="pl20">
                             </div>
-                            <div class="input_process g2items">
+                            <div class="oculto">
                                 <label for="usuario" class="w100px">Usuario :</label>
                                 <input type="text" name="usuario" id="usuario" value="<?php echo $_SESSION['cnameuser'];?>" class="pl20 mayusculas desactivado">
                             </div>
@@ -128,6 +128,12 @@
                         </div>
                     </div>
                     <div class="descrip_title">
+                        <span>Especificaciones Técnicas o Descripción del Item</span>
+                    </div>
+                    <div class="details_item">
+                        <textarea name="espec_items" id="espec_items" rows="1" class="w100p"></textarea>
+                    </div>
+                    <div class="descrip_title">
                         <span>Detalles</span>
                         <div class="oculto">
                             <button type="button" id="addItem" title="Añadir Item">
@@ -162,12 +168,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="descrip_title">
-                        <span>Especificaciones Técnicas o Descripción del Item</span>
-                    </div>
-                    <div class="details_item">
-                        <textarea name="espec_items" id="espec_items" rows="5" class="w100p"></textarea>
-                    </div>
+                    
                 </div>
             </div>
         </form>
@@ -182,7 +183,7 @@
             </div>
             <hr>
             <div class="dialogBody">
-                <h1> ¿Los Datos con Correctos? </h1> <!--alt 168-->   
+                <h1> ¿Confirma la revisión técnica? </h1> <!--alt 168-->   
                 <div class="options">
                     <button id="btnYes" class="botones">Si</button>
                     <button id="btnNo" class="botones">No</button>

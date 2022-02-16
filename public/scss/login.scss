@@ -849,22 +849,23 @@
     #atachList{
         display: flex;
         text-align: center;
-        //line-height: 4rem;
         
         li{
             margin: 4px;
             border: 1px solid #fff;
-            padding: 0px 4px;
+            padding: 13px 4px;
             border-radius: 8px;
             -webkit-transition: 0.5s;
             -o-transition: 0.5s;
             transition: 0.5s;
+            width: 11rem;
+            overflow: hidden;
 
             span {
                 display: block;
                 font-size: .6rem;
-                width: 20rem;
-                line-height: 1.5rem;
+                margin-top: 1rem;
+                //background:#00508D;
             }
 
             i {
@@ -2683,12 +2684,12 @@ input[type=checkbox]:checked
 }
 //estado
 .emitido,.activo,.recepcionado {
-    background: dodgerblue !important;
+    background: dodgerblue;
     color: white;
 }
 
 .rechazado, .inactivo {
-    background: orange !important;
+    background: orange;
     color: white;
 }
 
@@ -2700,6 +2701,12 @@ input[type=checkbox]:checked
 
 .aprobacion{
     background:darkblue;
+    color: white;
+    font-size: .7rem;
+}
+
+.stock{
+    background:#00A65A;
     color: white;
     font-size: .7rem;
 }
@@ -2748,52 +2755,63 @@ input[type=checkbox]:checked
 }
 
 .cotizacion{
-    background: darkorange !important;
+    background: darkorange;
     outline: none;
-    font-weight: 800;
     color: #000;
     font-size: .7rem;
 }
 
 .recepcion{
-    background: #605CA8 !important;
+    background: #605CA8;
     outline: none;
-    font-weight: 800;
+    color: #000;
+    font-size: .7rem;
+}
+
+.orden{
+    background: #EBBBFF;
+    outline: none;
     color: #000;
     font-size: .7rem;
 }
 
 .despacho{
-    background: #FFD764 !important;
+    background: #FFD764;
     outline: none;
-    font-weight: 800;
     color: #000;
     font-size: .7rem;
 }
 
 .calidad{
-    background: #17BFDE !important;
+    background: #17BFDE;
     outline: none;
     color: #fff;
     font-size: .7rem;
 }
 
 .firmas{
-    background: #FF8C00 !important;
+    background: #FF8C00 ;
     outline: none;
     color: #fff;
     font-size: .7rem;
 }
 
 .adjudicacion{
-    background: #800000 !important;
+    background: #800000;
+    outline: none;
+    color: #fff;
+    font-size: .7rem;
+}
+
+.atencion{
+    background: #F39C11;
     outline: none;
     color: #fff;
     font-size: .7rem;
 }
 
 .orden_aprobada{
-    background: #008B8B !important;
+    background: #008B8B;
     outline: none;
     font-weight: 800;
     color: #fff;

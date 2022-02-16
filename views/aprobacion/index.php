@@ -123,7 +123,7 @@
                                 <label for="fecha" class="w100px">Fec.Emisión :</label>
                                 <input type="date" name="fecha" id="fecha" class="pl20" readonly>
                             </div>
-                            <div class="input_process g2items">
+                            <div class="oculto">
                                 <label for="usuario" class="w100px">Usuario :</label>
                                 <input type="text" name="usuario" id="usuario" class="pl20 mayusculas desactivado">
                             </div>
@@ -167,8 +167,13 @@
                         </div>
                     </div>
                     <div class="descrip_title">
+                        <span>Observaciones</span>
+                    </div>
+                    <div class="details_item">
+                        <textarea name="espec_items" id="espec_items" rows="2" class="w100p"></textarea>
+                    </div>
+                    <div class="descrip_title">
                         <span>Detalles</span>
-                        
                     </div>
                     <div class="process_items">
                         <div>
@@ -192,12 +197,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="descrip_title">
-                        <span>Observaciones</span>
-                    </div>
-                    <div class="details_item">
-                        <textarea name="espec_items" id="espec_items" rows="3" class="w100p"></textarea>
-                    </div>
+                    
                 </div>
             </div>
         </form>
@@ -266,31 +266,31 @@
                     </table>
                 </div>
                 <div class="resumen_pedidos">
-                    <!-- <?php 
-                    //$activos = $this->actives;
-                    //$inactivos = $this->inactives;
-                    //$total = $activos + $inactivos;
+                    <?php 
+                        $aprobados  = $this->aprobados;
+                        $pendientes = $this->pendientes;
+                        $anulados   = $this->anulados;
                     ?> -->
                     <div class="banners_pedido posicion_absoluta">
                         <div>
                             <i class="fas fa-cogs"></i>
                             <div>
-                                <p>Emitidos</p>
-                                <!-- <p><?php echo $total?></p> -->
+                                <p>Aprobados</p>
+                                <p><?php echo $aprobados?></p>
                             </div>
                         </div>
                         <div>
                             <i class="fas fa-barcode"></i>
                             <div>
                                 <p>Pendientes</p>
-                                <!-- <p><?php echo $activos?></p> -->
+                                <p><?php echo $pendientes?></p>
                             </div>
                         </div>
                         <div>
                             <i class="fas fa-toolbox"></i>
                             <div>
-                                <p>Rechazados</p>
-                                <!-- <p><?php echo $inactivos?></p> -->
+                                <p>Anulados</p>
+                                <p><?php echo $anulados?></p>
                             </div>
                         </div>
                     </div>   

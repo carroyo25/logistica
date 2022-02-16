@@ -172,7 +172,7 @@
                                         <th class="con_borde w30p">Descripcion</th>
                                         <th class="con_borde w5p">Unidad</th>
                                         <th class="con_borde w5p">Cantidad </br> Pedida</th>
-                                        <th class="con_borde w5p">Cant. </br> a Ingresar</th>
+                                        <th class="con_borde w5p">Cant. </br>Ingresada</th>
                                         <th class="con_borde w5p">Cantidad </br> Pendiente</th>
                                         <th class="con_borde w10p">Estado </br> Bien</th>
                                         <th class="con_borde w10p">Ubicación </br> Física</th>
@@ -306,7 +306,7 @@
         <?php require 'views/acordeon.php'; ?>
         <div class="workOneForm">
             <div class="tilewindow">
-                <p class="workTitle">Recepcion de Ordenes</p>
+                <p class="workTitle">Notas de Ingreso</p>
                 <?php require 'views/menusimple.php'; ?>
             </div>       
             <div class="formulario">

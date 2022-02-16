@@ -106,10 +106,13 @@ $(function(){
     $("#detalle_pedido").on("click","a", function (e) {
         e.preventDefault();
 
-        $(".insidePreview iframe").attr("src",$(this).attr("href"));
-
-        $("#modalPreview").fadeIn();
-        
+        if ($(this).attr("href") != 0){
+            $(".insidePreview iframe").attr("src",$(this).attr("href"));
+            $("#modalPreview").fadeIn();
+        }else{
+            mostrarMensaje("msj_info","No se adjuntaron detalles");
+        }
+    
         return false;
     });
 })

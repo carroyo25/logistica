@@ -37,21 +37,12 @@
             echo $return;
         }
 
-        //enviar los correos electronicos
-        function mails() {
-            $mails = $_POST['mails'];
-            $items = $_POST['items'];
-
-            //$result = $this->model->sendMails($mails,$items);
-
-            //echo $result;
-        }
-
         function enviaEnlace(){
             $mails = $_POST['mails'];
             $items = $_POST['items'];
+            $pedido = $_POST['pedido'];
 
-            $result = $this->model->sendMails($mails,$items);
+            $result = $this->model->sendMails($mails,$items,$pedido);
 
             echo $result;
         }
@@ -63,16 +54,6 @@
             $result = $this->model->changeStatus($cod);
 
             echo $result;
-        }
-
-        //cambiar prioridad de atencion
-        function priority(){
-            $cod = $_POST['cod'];
-
-            $result = $this->model->changePriority($cod);
-
-            echo $result;
-
         }
     }
 ?>

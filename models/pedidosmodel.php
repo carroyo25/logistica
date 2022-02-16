@@ -26,7 +26,8 @@
                                                 rrhh.tabla_aquarius.apellidos,
                                                 rrhh.tabla_aquarius.nombres,
                                                 atenciones.cdesprm2 AS atencion,
-                                                estados.cdesprm2 AS estado 
+                                                estados.cdesprm2 AS estado, 
+                                                estados.cdetalle 
                                             FROM
                                                 logistica.lg_pedidocab
                                                 INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry

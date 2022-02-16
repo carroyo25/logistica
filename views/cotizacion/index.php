@@ -48,7 +48,7 @@
                                 <label for="fecha" class="w100px">Fec.Emisión :</label>
                                 <input type="date" name="fecha" id="fecha" value="<?php echo date("Y-m-d");?>" class="pl20">
                             </div>
-                            <div class="input_process g2items">
+                            <div class="oculto">
                                 <label for="usuario" class="w100px">Usuario :</label>
                                 <input type="text" name="usuario" id="usuario" class="pl20 mayusculas desactivado">
                             </div>
@@ -82,7 +82,7 @@
                         <div class="process_estate">
                             <div class="input_process g2items">
                                 <label for="registro" class="w100px">Est.Doc.:</label>
-                                <input type="text" name="registro" id="registro" class="pl20 mayusculas cotizacion" readonly>
+                                <input type="text" name="registro" id="registro" class="pl20 mayusculas" readonly>
                             </div>
                             <div class="input_process g2items">
                                 <label for="documento" class="w100px">Vencimiento:</label>
@@ -95,13 +95,19 @@
                         </div>
                     </div>
                     <div class="descrip_title">
+                        <span>Especificaciones Técnicas o Descripción del Item</span>
+                    </div>
+                    <div class="details_item">
+                        <textarea name="espec_items" id="espec_items" rows="1" class="w100p desactivado"></textarea>
+                    </div>
+                    <div class="descrip_title">
                         <span>Detalles</span>
                         <div>
                             <button type="button" id="checkItems" title="Marcar todos">
                                 <i class="fas fa-check-double"></i> Marcar Todos
                             </button>
                             <button type="button" id="selectDist" title="Seleccionar Proveedores">
-                                <i class="fas fa-envelope-open-text"></i> Seleccionar Correos
+                                <i class="fas fa-envelope-open-text"></i> Solicitar Cotizaciones
                             </button>
                             
                         </div>
@@ -118,7 +124,6 @@
                                         <th class="con_borde w5p">UM</th>
                                         <th class="con_borde w5p">Cantidad</th>
                                         <th class="con_borde w8p">Nro. Parte</th>
-                                        <th class="oculto">Factor</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -126,12 +131,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="descrip_title">
-                        <span>Especificaciones Técnicas o Descripción del Item</span>
-                    </div>
-                    <div class="details_item">
-                        <textarea name="espec_items" id="espec_items" rows="3" class="w100p desactivado"></textarea>
-                    </div>
+                    
                 </div>
             </div>
         </form>
@@ -283,21 +283,21 @@ Atte.
                         <div>
                             <i class="fas fa-cogs"></i>
                             <div>
-                                <p>Emitidos</p>
+                                <p>Aprobados</p>
                                 <!-- <p><?php echo $total?></p> -->
                             </div>
                         </div>
                         <div>
                             <i class="fas fa-barcode"></i>
                             <div>
-                                <p>Pendientes</p>
+                                <p>Por cotizar</p>
                                 <!-- <p><?php echo $activos?></p> -->
                             </div>
                         </div>
                         <div>
                             <i class="fas fa-toolbox"></i>
                             <div>
-                                <p>Rechazados</p>
+                                <p>Cotizados</p>
                                 <!-- <p><?php echo $inactivos?></p> -->
                             </div>
                         </div>

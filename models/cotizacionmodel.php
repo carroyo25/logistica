@@ -183,6 +183,7 @@
                                                         lg_pedidodet.id_cprod,
                                                         ROUND( lg_pedidodet.ncantapro, 2 ) AS cantidad,
                                                         lg_pedidodet.nEstadoPed,
+                                                        lg_pedidodet.ncodmed,
                                                         tb_unimed.nfactor,
                                                         tb_unimed.cabrevia,
                                                         cm_producto.ccodprod,
@@ -204,13 +205,14 @@
                             $line++;
                             $salida.='<tr class="lh1_2rem">
                                 <td class="con_borde centro"><input type="checkbox"></td>
-                                <td class="con_borde drch pr20" data-iddetalle="'.$row['nidpedi'].'">'. str_pad($line,3,"0",STR_PAD_LEFT) .'</td>
+                                <td class="con_borde drch pr20" data-iddetalle="'.$row['nidpedi'].'"
+                                                                data-unidad="'.$row['ncodmed'].'"
+                                                                data-factor="'.$row['nfactor'].'">'. str_pad($line,3,"0",STR_PAD_LEFT) .'</td>
                                 <td class="con_borde centro" data-indice="'.$row['id_cprod'].'">'. $row['id_cprod'] .'</td>
                                 <td class="con_borde pl10">'. $row['cdesprod'] .'</td>
                                 <td class="con_borde centro">'. $row['cabrevia'] .'</td>
                                 <td class="con_borde drch pr10">'. $row['cantidad'] .'</td>
                                 <td class="con_borde"></td>
-                                <td class="oculto">'. $row['nfactor'] .'</td>
                             </tr>';
                         }
                     }
@@ -261,7 +263,7 @@
             }
         }
 
-        public function sendMails($mails,$items){
+        public function sendMails($mails,$items,$pedido){
             require_once("public/PHPMailer/PHPMailerAutoload.php");
 
             $correos = json_decode($mails);
@@ -299,7 +301,7 @@
 
             for ($i=0; $i < $data; $i++) {
 			    $mail->addAddress($correos[$i]->mail,$correos[$i]->mail);
-                $url = constant('URL').'public/cotizacion/?codped='.$correos[0]->codped.'&codenti='.$correos[$i]->codprov;
+                $url = constant('URL').'public/cotizacion/?codped='.$pedido.'&codenti='.$correos[$i]->codprov;
 
                 $bodycotiz =  "<html><body>";
 
@@ -322,9 +324,9 @@
 			}
 
             if($respuesta){
-                $salidajson = array("respuesta"=>$respuesta);
-                $this->saveDetails($mails,$items);
-                $this->saveHeader($mails);
+                $salidajson = array("response"=>$respuesta);
+                $this->saveDetails($mails,$items,$pedido);
+                $this->saveHeader($mails,$pedido);
             }else{
                 $salidajson = array("respuesta"=>false);
             }
@@ -332,13 +334,13 @@
             return json_encode($salidajson);
         }
 
-        public function saveHeader($mails){
+        public function saveHeader($mails,$pedido){
             try {
                 $correos = json_decode($mails);
 
                 for ($i=0; $i < count($correos); $i++) {
                     $query = $this->db->connect()->prepare("INSERT INTO lg_regcotiza1 SET id_regmov=:idped, id_centi=:idprov, nflgactivo = 1");
-                    $query->execute(["idped"=>$correos[$i]->codped,"idprov"=>$correos[$i]->codprov]);
+                    $query->execute(["idped"=>$pedido,"idprov"=>$correos[$i]->codprov]);
                 }
 
             } catch (PDOException $e) {
@@ -347,7 +349,7 @@
             }
         }
 
-        public function saveDetails($mails,$items){
+        public function saveDetails($mails,$items,$pedido){
             try {
                 $correos = json_decode($mails);
                 $detalles = json_decode($items);
@@ -357,15 +359,15 @@
                                                                                                 niddet=:iddet,
                                                                                                 id_cprod=:cprod,
                                                                                                 cantcoti=:canti,
-                                                                                                ncodmed=:facto,
+                                                                                                ncodmed=:unid,
                                                                                                 id_centi=:prove,
                                                                                                 nflgactivo=:flag,
                                                                                                 cestadodoc=:esta");
-                        $query->execute(["idped"=>$correos[$i]->codped,
+                        $query->execute(["idped"=>$pedido,
                                          "iddet"=>$detalles[$i]->iddetalle,
                                          "cprod"=>$detalles[$i]->indice,
                                          "canti"=>$detalles[$i]->cantidad,
-                                         "facto"=>$detalles[$i]->factor,
+                                         "unid"=>$detalles[$i]->unidad,
                                          "prove"=>$correos[$i]->codprov,
                                          "flag"=>1,
                                          "esta"=>0]);
@@ -408,18 +410,5 @@
             }
         }
 
-        public function changePriority($cod)
-        {
-            $priority = 2;
-
-            /*try {
-                $query = $this->db->connect()->prepare("UPDATE lg_pedidocat SET nNivAten=:aten WHERE id_regmov=:cod");
-                $query->execute(["aten"=>$priority,"cod"=>$cod]);
-            } catch (PDOException $e) {
-                echo $e->getMessage();
-
-                return false;
-            }*/
-        }
     }
 ?>

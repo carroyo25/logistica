@@ -6,8 +6,11 @@
         }
 
         function render(){
-            $this->view->menu = $this->model->acordeon($_SESSION['id_user']);
-            $this->view->registros    = $this->model->getAllUserRecords($_SESSION['id_user']);
+            $this->view->menu       = $this->model->acordeon($_SESSION['id_user']);
+            $this->view->registros  = $this->model->getAllUserRecords($_SESSION['id_user']);
+            $this->view->aprobados  = $this->model->resumen($_SESSION['id_user'],4);
+            $this->view->pendientes = $this->model->resumen($_SESSION['id_user'],3);
+            $this->view->anulados   = $this->model->resumen($_SESSION['id_user'],18);
             $this->view->render('aprobacion/index');
         }
         
@@ -37,31 +40,31 @@
         //generar los pedidos
         function genPreview(){
             require_once("public/libsrepo/repopedidos.php");
-
-            $datos = json_decode($_POST['data']);
+            
+            $cabecera = $_POST['cabecera'];
+            $datos = json_decode($_POST['detalles']);
             $filename = "public/temp/".uniqid().".pdf";
 
             if(file_exists($filename))
                 unlink($filename);
 
-            $num = $datos[0]->numero;
-            $fec = $datos[0]->fecha;
-            $usr = $datos[0]->usuario;
-            $pry = $datos[0]->proyecto;
-            $are = $datos[0]->area;
-            $cos = $datos[0]->costos;
-            $tra = $datos[0]->transporte;
-            $con = $datos[0]->concepto;
-            $sol = $datos[0]->solicitante;
-            $reg = $datos[0]->registro;
-            $esp = $datos[0]->espec_items;
-            $dti = $datos[0]->doctip;
+            $num = $cabecera['numero'];
+            $fec = $cabecera['fecha'];
+            $usr = $cabecera['usuario'];
+            $pry = $cabecera['proyecto'];
+            $are = $cabecera['area'];
+            $cos = $cabecera['costos'];
+            $tra = $cabecera['transporte'];
+            $con = $cabecera['concepto'];
+            $sol = $cabecera['solicitante'];
+            $reg = $cabecera['registro'];
+            $esp = $cabecera['espec_items'];
+            $dti = $cabecera['cod_tipo'];
             $mmt = "";
-            $cla = "NORMAL";
-            $msj = "APROBADO";
-            $apr = $datos[0]->aprueba;
+            $cla = $cabecera['atencion'] == 2 ? "URGENTE":"NORMAL";
+            $msj = $_POST['mensaje'];
+            $apr = strtoupper($_POST['aprueba']);
 
-            
             $pdf = new PDF($num,$fec,$pry,$cos,$are,$con,$mmt,$cla,$tra,$usr,$sol,$reg,$esp,$dti,$msj,$apr);
 		    $pdf->AddPage();
             $pdf->AliasNbPages();
@@ -98,34 +101,20 @@
 
             $pdf->Output($filename,'F');
             
-            echo $filename;
+            echo json_encode(array("response"=>true,
+                                    "archivo"=>$filename));
         }
 
-        /*function updateReg(){
-            $cod = $_POST['cod'];
-            $usr = $_POST['iu'];
+        //actualizar el pedido y los itmes
+        function apruebaPedido(){
+            $usuario = $_POST['usuario'];
+            $pedido = $_POST['pedido'];
+            $correos = $_POST['correos'];
+            $detalles = $_POST['items'];
 
-            $result = $this->model->changeStatus($cod,$usr);
+            $result = $this->model->cambiarEstatus($usuario,$pedido,$correos,$detalles);
 
-            echo $result;
-        }
-
-        function updateDetails(){
-            $datos = $_POST['data'];
-
-            $result = $this->model->changeDetailStatus($datos);
-
-            echo $result;
-        }*/
-
-        function aprobar(){
-            $cod = $_POST['cod'];
-            $usr = $_POST['iu'];
-            $datos = $_POST['detalles'];
-
-            $result = $this->model->aprobarItems($cod,$usr,$datos);
-
-            echo $result;
+            echo json_encode($result);
         }
 
         //enviar el mail y el adjunto a los correos seleccionados

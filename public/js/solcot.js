@@ -1,7 +1,7 @@
 $(function(){
     var origen = 0;
     if ($("#verifica").val() == 1){
-        $("#btnEnviar,#btnAdjuntar").css("display","none");
+        $("#btnEnviar,#btnAdjuntar").addClass("oculto");
     }
 
     $("#btnEnviar").on("click", function (e) {
@@ -33,7 +33,6 @@ $(function(){
                 $("#total").val((suma*(1+igv)).toFixed(2));
             }
         }
-
     });
 
     $("#detalle_pedido tbody").on("change",".fechaentrega",function(e){
@@ -126,7 +125,6 @@ $(function(){
 
     $("#btnAceptarEnvio").on("click", function (e) {
         e.preventDefault();
-
         
         if($("#fechaDoc").val().length == 0) {
             mostrarMensaje("msj_error","Rellene la fecha de emisión");
@@ -136,9 +134,6 @@ $(function(){
             return false;
         }else if($("#cotizacion").val().length == 0){
             mostrarMensaje("msj_error","Rellene el numero de cotización");
-            return false;
-        }else if($("#cuenta").val().length == 0){
-            mostrarMensaje("msj_error","Indique un numero de cuenta");
             return false;
         }else if($("#moneda").val() == -1){
             mostrarMensaje("msj_error","Seleccione el tipo de moneda");
@@ -163,6 +158,7 @@ $(function(){
             result[this.name] = this.value;
         });
 
+
         $.ajax({
             type: "POST",
             url: "sendDataToServer.php",
@@ -173,7 +169,7 @@ $(function(){
             dataType: "text",
             success: function (response) {
                 //if (response) {
-                    $("#btnEnviar").css("display","none");
+                    $("#btnEnviar,#btnAdjuntar").addClass("oculto");
                     $("#dialogConfirm").fadeOut();
                     mostrarMensaje("msj_correcto","Proforma enviada");
                 //}  

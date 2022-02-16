@@ -45,7 +45,7 @@ $(function(){
                 
                 $("#registro, #documento")
                     .removeClass('proceso')
-                    .addClass('aprobado');
+                    .addClass('cotizacion');
 
                 $.post(RUTA +"adjudicacion/proformas", {cod:$("#cod_pedido").val()},
                     function (data, textStatus, jqXHR) {
@@ -112,7 +112,7 @@ $(function(){
     //mostrar el archivo adjunto
     $("#atachList").on("click","a", function (e) {
         e.preventDefault();
-
+        
         $("#previewAttach object").attr("data",$(this).attr("href"));
 
         return false;
@@ -130,8 +130,13 @@ $(function(){
 
     $("#detalle_pedido").on("click","a", function (e) {
         e.preventDefault();
-        $(".insidePreview iframe").attr("src",$(this).attr("href"));
-        $("#modalPreviewMan").fadeIn();
+
+       if($(this).attr("href") != "xxx") {
+            $(".insidePreview iframe").attr("src",$(this).attr("href"));
+            $("#modalPreviewMan").fadeIn();
+       }else{
+            mostrarMensaje("msj_info","No se aduntaron detalles");
+       }
 
         return false;
     });

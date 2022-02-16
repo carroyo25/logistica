@@ -250,60 +250,45 @@
             }
         }
 
-        public function aprobarItems($cod,$nombre,$datos) {
-            $atendidos = 0;
+        public function cambiarEstatus($usuario,$pedido,$correos,$detalles){
             try {
-                $data = json_decode($datos);
-                for ($i=0; $i < count($data); $i++) {
+                $sql = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc=:est,ncodaproba=:user 
+                                                        WHERE id_regmov =:ped");
+                $sql->execute(["est"=>4,"ped"=>$pedido,"user"=>$_SESSION['id_user']]);
+                $rowcount = $sql->rowcount();
 
-                    $est = 8;
+                if($rowcount > 0) {
+                    $this->actualizarItems(4,$detalles);
+                    $this->genOc($pedido,$usuario);
+                    $this->sendmails($correos,$pedido);
 
-                    if ( intval($data[$i]->cantapr) != 0 ){
-                        $atendidos++;
-                        $est = 4;
-                    }
-
-                    $idd = $data[$i]->iddetalle;
-                    $cap = $data[$i]->cantapr;
-                    $chk = $data[$i]->aprob == true ? 1 : 0;
-                    $obs = $data[$i]->observ;
-
-                    $query = $this->db->connect()->prepare("UPDATE lg_pedidodet SET nflgactivo=:chk,ncantapro=:cap,cobserva=:obs,nEstadoReg=:est WHERE nidpedi=:idd");
-                    $query->execute(["idd"=>$idd,"cap"=>$cap,"chk"=>$chk,"obs"=>$obs,"est"=>$est]);
+                    return array("response"=>true);
+                }else {
+                    return array("response"=>false);
                 }
-
-                $mensaje = $this->actualizarPedido($cod,$nombre,$atendidos);
-                
-                return $mensaje;
-
-            } catch (PDOException $e) {
-                echo $e->getMessage();
+            } catch (PDOException $th) {
+                echo $th->getMessage();
                 return false;
             }
         }
 
-        public function actualizarPedido($cod,$nombre,$atendidos){
-            $estado = $atendidos > 0 ? 4 : 8;
-            $fecha = date("Y-m-d");
+        public function actualizarItems($estado,$detalles){
             try {
-                $mensaje = "No se aprobo el pedido";
-                $query = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc =:est,ncodaproba=:apro,ffechaprueba=:fechaAprueba WHERE id_regmov= :cod");
-                $query->execute(["cod"=>$cod,"apro"=>$_SESSION['iduser'],"est"=>$estado,"fechaAprueba"=>$fecha]);
-                $rowcount = $query->rowcount();
-
-                if ($rowcount > 0){
-                    $mensaje = "Pedido Aprobado";
-                    $this->genOc($cod,strtoupper($nombre));
+                $data = json_decode($detalles);
+                for ($i=0; $i < count($data) ; $i++) { 
+                    $sql = $this->db->connect()->prepare("UPDATE lg_pedidodet SET ncantapro=:aprob,
+                                                            nEstadoReg=:est WHERE nidpedi =:cod");
+                    $sql->execute(["aprob"=>$data[$i]->cantapr,
+                                    "est"=>$estado,
+                                    "cod"=>$data[$i]->iddetalle]);                    
                 }
-
-                return $mensaje;
-            } catch (PDOException $e) {
-                echo $e->getMessage();
+            } catch (PDOException $th) {
+                echo $th->getMessage();
                 return false;
             }
         }
 
-        public function sendmails($datos){
+        public function sendmails($datos,$pedido){
             require_once("public/PHPMailer/PHPMailerAutoload.php");
 
             try {
@@ -324,7 +309,6 @@
                 $mail->Host = 'mail.sepcon.net';
                 $mail->SMTPAuth = true;
                 $mail->Username = 'sistema_ibis@sepcon.net';
-                //$mail->Password = 'aK8izG1WEQwwB1O';
                 $mail->Password = $_SESSION['password'];
                 $mail->Port = 465;
                 $mail->SMTPSecure = "ssl";
@@ -344,11 +328,10 @@
                 $mail->Subject = $title;
                 $mail->Body = html_entity_decode(utf8_decode($mensaje));
 
-                $filename = "public/pedidos/aprobados/".$data[0]->codped.".pdf";
+                $filename = "public/pedidos/aprobados/".$pedido.".pdf";
 
                 if (file_exists( $filename )) {
                     $mail->AddAttachment($filename);
-                    $existe = 'Si existe el archivo';	
                 }
                 
                 if (!$mail->send()) {
@@ -376,6 +359,7 @@
                                                             logistica.lg_pedidocab.ffechadoc,
                                                             logistica.lg_pedidocab.cconcepto,
                                                             logistica.lg_pedidocab.mdetalle,
+                                                            logistica.lg_pedidocab.ctipmov,
                                                             logistica.lg_pedidocab.id_cuser,
                                                             rrhh.tabla_aquarius.apellidos,
                                                             rrhh.tabla_aquarius.nombres,
@@ -395,13 +379,14 @@
                                                             INNER JOIN logistica.tb_proyecto1 ON logistica.lg_pedidocab.ncodpry = logistica.tb_proyecto1.ncodpry
                                                             INNER JOIN logistica.tb_area ON logistica.lg_pedidocab.ncodarea = logistica.tb_area.ncodarea
                                                             INNER JOIN logistica.tb_ccostos ON logistica.lg_pedidocab.ncodcos = logistica.tb_ccostos.ncodcos
-                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ncodprm2
+                                                            INNER JOIN logistica.tb_paramete2 AS transportes ON logistica.lg_pedidocab.ctiptransp = transportes.ccodprm2
                                                             INNER JOIN logistica.tb_paramete2 AS atenciones ON logistica.lg_pedidocab.nNivAten = atenciones.ccodprm2
                                                             INNER JOIN logistica.tb_paramete2 AS estados ON logistica.lg_pedidocab.nEstadoDoc = estados.ccodprm2 
                                                         WHERE
                                                             logistica.lg_pedidocab.id_regmov = :cod 
                                                             AND atenciones.ncodprm1 = 13 
-                                                            AND estados.ncodprm1 = 4");
+                                                            AND estados.ncodprm1 = 4
+                                                            AND transportes.ncodprm1 = 7");
             $query->execute(["cod"=>$cod]);
             $rowcount = $query->rowcount();
 
@@ -418,9 +403,9 @@
                                     $are = $row['ccodarea']." ".$row['cdesarea'];
                                     $cos = $row['ccodcos']." ".$row['cdescos'];
                                     $tra = $row['cod_transporte']." ".$row['transporte'];
-                                    $dti = "";
+                                    $dti = $row['ctipmov'];
                                     $mmt = "";
-                                    $cla = "NORMAL";
+                                    $cla = $row['atencion'] == 2 ? "URGENTE":"NORMAL";
                                     $msj = "APROBADO";
                                     $reg = "";
                                     $apr = $nombre;
@@ -470,7 +455,7 @@
                                 $row['id_cprod'],
                                 utf8_decode($row['cdesprod']),
                                 $row['cabrevia'],
-                                $row['cantidad'], //preguntar si aca debe ir las cantidades por aprobar
+                                $row['aprobada'], //preguntar si aca debe ir las cantidades por aprobar
                                 '',
                                 '',
                                 '',
@@ -492,14 +477,14 @@
 
         public function getAtachs($cod){
             try {
-                $query = $this->db->connect()->prepare("SELECT nidrefer,cdocumento FROM lg_regdocumento WHERE id_regmov=:cod");
+                $query = $this->db->connect()->prepare("SELECT creferencia,cdocumento FROM lg_regdocumento WHERE id_regmov=:cod");
                 $query->execute(["cod"=>$cod]);
                 $rowcount = $query->rowcount();
 
                 if ($rowcount > 0){
                     $salida = "";
                     while($row = $query->fetch()){
-                        $adjunto =  constant("URL")."/public/adjuntos/".$row['nidrefer'];
+                        $adjunto =  constant("URL")."/public/adjuntos/".$row['creferencia'];
                         $salida .='<li><a href="'.$adjunto.'" class="atachDoc"><i class="fas fa-mail-bulk"></i><span>'.$row['cdocumento'].'</span></a></li>';
                     }
                 }else{
@@ -524,6 +509,27 @@
 
             } catch (PDOException $e) {
                 echo $e->getMessage();
+                return false;
+            }
+        }
+
+        public function resumen($user,$estado) {
+            try {
+                $sql = $this->db->connect()->prepare("SELECT
+                                                        COUNT( lg_pedidocab.cnumero ) AS respuesta 
+                                                        FROM
+                                                            tb_proyusu
+                                                            INNER JOIN lg_pedidocab ON tb_proyusu.ncodproy = lg_pedidocab.ncodpry 
+                                                        WHERE
+                                                            tb_proyusu.nflgactivo = 1 
+                                                            AND tb_proyusu.id_cuser = :usr 
+                                                            AND lg_pedidocab.nEstadoDoc = :est");
+                $sql->execute(["usr"=>$user,"est"=>$estado]);
+                $result = $sql->fetchAll();
+                return $result[0]['respuesta'];
+
+            } catch (PDOException $th) {
+                echo $th->getMessage();
                 return false;
             }
         }

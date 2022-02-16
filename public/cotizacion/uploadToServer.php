@@ -17,7 +17,7 @@
     $estado = false;
     $mensaje = "Disculpe, hubo un error al subir el archivo.";
 
-    if ($_FILES["uploadfile"]["size"] > 400000) {
+    if ($_FILES["uploadfile"]["size"] > 800000) {
         $mensaje = "El archivo es demasiado grande.";
     }else {
         if (move_uploaded_file($_FILES["uploadfile"]["tmp_name"], $target_file)) {

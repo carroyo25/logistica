@@ -48,10 +48,6 @@ $(function(){
             return false;
         }
 
-        getDetails();
-        //getSeries();
-        registerAtachs();
-
         if ( accion == "n" ) {
             $.post(RUTA + "ingresos/nuevoIngreso", {ningreso:$("#nro_ingreso").val(),
                                                     fecha:$("#fechadoc").val(),
@@ -69,9 +65,9 @@ $(function(){
                                                     cod_area:$("#cod_area").val(),
                                                     cod_cos:$("#cod_costos").val(),
                                                     calidad:$("#chkCalidad").prop("checked"),
-                                                    detalles:JSON.stringify(DETALLES),
-                                                    series:JSON.stringify(SERIES),
-                                                    adjuntos:JSON.stringify(ADJUNTOS)
+                                                    detalles:JSON.stringify(getDetails()),
+                                                    series:JSON.stringify(getSeries()),
+                                                    adjuntos:JSON.stringify(registerAtachs())
                                                 },
                 function (data, textStatus, jqXHR) {
                     if (data){
@@ -87,9 +83,9 @@ $(function(){
             $.post(RUTA+"ingresos/actualizaIngreso", {index:$("#id_ingreso").val(),
                                                       guia:$("#nroguia").val(),
                                                       autoriza:$("#cod_autoriza").val(),
-                                                      detalles:JSON.stringify(DETALLES),
-                                                      series:JSON.stringify(SERIES),
-                                                      adjuntos:JSON.stringify(ADJUNTOS)},
+                                                      detalles:JSON.stringify(getDetails()),
+                                                      series:JSON.stringify(getSeries()),
+                                                      adjuntos:JSON.stringify(registerAtachs())},
                 function (data, textStatus, jqXHR) {
                     if (data){
                         mostrarMensaje("msj_correcto","Registro actualizado...");
@@ -334,7 +330,7 @@ $(function(){
         itemsfila++;
 
         if ( itemsfila <= maxSerial ) {
-            var fila = '<tr>'+
+            var fila = '<tr data-grabado=0>'+
                         '<td class="con_borde centro"><a href="'+ codigoPro +'"><i class="fas fa-trash-alt"></i></a></td>'+
                         '<td class="con_borde centro">'+ itemShow +'</td>'+
                         '<td class="con_borde"><input type ="text" class="sin_borde mayusculas pl20"></td>'+
@@ -521,8 +517,6 @@ $(function(){
             return false;
         }
 
-        getDetails();
-
         $.ajax({
             type: "POST",
             url: RUTA+"ingresos/preview",
@@ -539,7 +533,7 @@ $(function(){
                     condicion: 0,
                     ndoc:$("#nro_ingreso").val(),
                     tipo:"I",
-                    details:JSON.stringify(DETALLES),
+                    details:JSON.stringify( getDetails()),
                     ruta:"public/temp/"},
             dataType: "text",
             success: function (response) {
@@ -681,7 +675,7 @@ $(function(){
         e.preventDefault();
         getDetails();
 
-        let sw = $("#chkCalidad").prop("checked") == true ? 10:11;
+        let sw = $("#chkCalidad").prop("checked") == true ? 12:13;
         let details = JSON.stringify(getDetails());
 
         $.post("ingresos/cierreIngreso", {cod:$("#id_ingreso").val(),details,condicion:sw,
@@ -729,10 +723,11 @@ function getSeries(){
         var SERIE    = $(this).find('td').eq(2).children().val(),
             OBSERV   = $(this).find('td').eq(3).children().val(),
             CODPRO   = $("#codigoProducto").text();
+            GRABADO  = $(this).data("grabado");
 
             item = {};
 
-            if(SERIE !== undefined){
+            if(GRABADO == "0"){
                 item['serie']   = SERIE;
                 item['observ']  = OBSERV;
                 item['codpro']  = CODPRO;
@@ -769,7 +764,6 @@ function getDetails(){
             CANTORD     = $(this).find('td').eq(6).text(),
             CANTPEND    = $(this).find('td').eq(8).text(),    
 
-
             item = {};
 
             if (ITEM !== ''){
@@ -792,9 +786,9 @@ function getDetails(){
                 item["iddetord"]    = IDDERORD;
                 item["cantord"]     = CANTORD;
                 item["cantpend"]    = CANTPEND;
-            }
 
-            DETALLES.push(item);
+                DETALLES.push(item);
+            }
     })
 
     return DETALLES;
@@ -810,9 +804,9 @@ function registerAtachs(){
 
             if (NOMBRE !== ""){
                 item['nombre'] = NOMBRE;
-            }
 
-            ADJUNTOS.push(item);
+                ADJUNTOS.push(item);
+            }      
     })
 
     return ADJUNTOS;

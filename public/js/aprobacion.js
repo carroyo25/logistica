@@ -59,9 +59,17 @@ $(function(){
 
     $("#closeModalProcess").on("click", function (e) {
         e.preventDefault()
-       
-        $("#modalProcess").fadeOut()
 
+        $.post(RUTA+"aprobacion/mainList",
+            function (data, textStatus, jqXHR) {
+                $("#tabla_pedidos tbody")
+                    .empty()
+                    .append(data);
+                $("#modalProcess").fadeOut()            
+            },
+            "text"
+        );
+    
         return false;
     });
 
@@ -178,22 +186,26 @@ $(function(){
     $("#btnSendConfirm").on("click", function (e) {
         e.preventDefault();
 
-
-        if ( $("#listMailToSend tbody tr").length == 0 ) {
-            mostrarMensaje("msj_info","Se aprueba , sin envio de correos")
+        if ( $("#listMailToSend tbody tr").length <= 0 ) {
+            mostrarMensaje("msj_error","Por favor elija un correo de respuesta");
+            return false;
         }
 
-        dataUpdateItems();
+        $(".listEmails").css('right',"-100%");
 
-        $.post(RUTA+"aprobacion/aprobar", {cod:$("#cod_pedido").val(),iu:$(".userData h3").text(),detalles:JSON.stringify(DATA)},
+        $.post(RUTA + "aprobacion/apruebaPedido", { pedido:$("#cod_pedido").val(),
+                                                    correos:JSON.stringify(getMails()),
+                                                    items:JSON.stringify(dataUpdateItems()),
+                                                    usuario:$(".userData h3").text()},
             function (data, textStatus, jqXHR) {
-                dataUpdateItems();
-                getMails($("#cod_pedido").val());
-                mostrarMensaje("msj_correcto",data);
-                $("#dialogSend").fadeOut();
-                getListRequest() //verificar esat part en el funcionamiento
+                if (data.response){
+                    mostrarMensaje("msj_info","Pedido aprobado");
+                }
+                else{
+                    mostrarMensaje("msj_error","Error al aprobar");
+                }
             },
-            "text"
+            "json"
         );
 
         return false;
@@ -206,8 +218,29 @@ $(function(){
         
         if ( $("#detalle_pedido tbody tr").length > 0) {
             //en el caso de que sea bienes *** aca ira la codicion para que sea la vista previa de servicios
-            dataPreviewBienes();
-            $("#modalPreview").fadeIn();
+            //
+            let result = {};
+    
+            $.each($("#formProcess").serializeArray(),function(){
+                result[this.name] = this.value;
+            })
+
+            $.post(RUTA+"aprobacion/genPreview", {cabecera:result,
+                                                  detalles:JSON.stringify(dataPreviewBienes()),
+                                                  aprueba:$(".userData H3").text(),
+                                                  mensaje:"EMITIDO"},
+                function (data, textStatus, jqXHR) {
+                    if(data.response){
+                        $(".insidePreview object")
+                        .attr("data","")
+                        .attr("data",data.archivo);
+                        $("#modalPreview").fadeIn();
+                    }else{
+                        mostrarMensaje("msj_error","No se puede ver la vista previa");
+                    }
+                },
+                "json"
+            );
         }else {
             mostrarMensaje("msj_error","No se puede generar vista previa, faltan datos");
         }
@@ -234,7 +267,7 @@ $(function(){
 })
 
 function dataPreviewBienes(){
-    DATA = [];
+    DETALLES = [];
     var TABLA = $("#detalle_pedido tbody > tr");
 
     TABLA.each(function(){
@@ -246,23 +279,7 @@ function dataPreviewBienes(){
             CANTAPR     = $(this).find('td').eq(6).children().val(),
             ESTADO      = $(this).find('td').eq(0).text(),
             OBSERV      = $(this).find('td').eq(7).children().val(),
-            APROB       = $(this).find('td').eq(8).children().prop("checked"),
-
-            NUMERO      = $("#numero").val(),
-            FECHA       = $("#fecha").val(),
-            USUARIO     = $("#usuario").val(),
-            PROYECTO    = $("#proyecto").val(),
-            AREA        = $("#area").val(),
-            COSTOS      = $("#costos").val(),
-            TRANSPORTE  = $("#transporte").val(),
-            CONCEPTO    = $("#concepto").val(),
-            SOLICITANTE = $("#solicitante").val(),
-            ESTREG      = $("#registro").val(),
-            ESTDOC      = $("#documento").val(),
-            TIPO        = $("#tipo").val(),
-            ESPEC       = $("#espec_items").val(),
-            DOCTIP      = "PARA APROBAR";
-            APRUEBA     = $(".userData H3").text();
+            APROB       = $(this).find('td').eq(8).children().prop("checked")
 
         item = {};
 
@@ -276,52 +293,17 @@ function dataPreviewBienes(){
             item["unidad"]      = UNIDAD;
             item["observ"]      = OBSERV;
             item["aprob"]       = APROB;
-            item["numero"]      = NUMERO;
-            item["fecha"]       = FECHA;
-            item["usuario"]     = USUARIO;
-            item["proyecto"]    = PROYECTO;
-            item["area"]        = AREA;
-            item["costos"]      = COSTOS;
-            item["transporte"]  = TRANSPORTE;
-            item["concepto"]    = CONCEPTO;
-            item["solicitante"] = SOLICITANTE;
-            item["registro"]    = ESTREG;
-            item["documento"]   = ESTDOC;
-            item["tipo"]        = TIPO;
-            item["espec_items"] = ESPEC;
-            item["doctip"]      = DOCTIP;
-            item['aprueba']     = APRUEBA;
-
+        
             //una vez agregados los datos al array "item" declarado anteriormente hacemos un .push() para agregarlos a nuestro array principal "DATA".
-            DATA.push(item);
+            DETALLES.push(item);
         }
     });
 
-    INFO    = new FormData();
-    aInfo   = JSON.stringify(DATA);
-
-    INFO.append('data', aInfo);
-
-    $.ajax({
-        data: INFO,
-        type: 'POST',
-        url : RUTA + 'aprobacion/genPreview',
-        processData: false, 
-        contentType: false,
-        dataType:"text",
-        success : function(response) {
-            $(".insidePreview object")
-            .attr("data","")
-            .attr("data",response)
-        },
-        error : function(xhr, status) {
-            alert('Disculpe, existió un problema');
-        },
-    });
+    return DETALLES;
 }
 
 function dataUpdateItems(){
-    DATA = [];
+    ITEMS = [];
     var TABLA = $("#detalle_pedido tbody > tr");
 
     TABLA.each(function(){
@@ -338,7 +320,7 @@ function dataUpdateItems(){
 
         item = {};
 
-        if ( ITEM ){
+        if ( APROB ){
             item["item"]        = ITEM;
             item['iddetalle']   = IDDETALLE;
             item["coditem"]     = CODITEM;
@@ -351,56 +333,34 @@ function dataUpdateItems(){
             item["aprob"]       = APROB;
 
             //una vez agregados los datos al array "item" declarado anteriormente hacemos un .push() para agregarlos a nuestro array principal "DATA".
-            DATA.push(item);
+            ITEMS.push(item);
         }
     });
 
-    return DATA;
+    return ITEMS;
 }
 
-function getMails(codigo){
+function getMails(){
     if ( $("#listMailToSend tbody tr").length > 0 ){
-        DATA = [];
+        CORREOS = [];
         var TABLA = $("#listMailToSend tbody > tr");
 
         TABLA.each(function(){
             var MAIL    = $(this).find('td').eq(0).text(),
                 MSG     = $("#mail_mssg").val(),
-                CODPED  = codigo,
             
             item = {};
 
-            if ( MAIL !== '' ){
+            if (MAIL !== '' ){
                 item["mail"]    = MAIL;
                 item["msg"]     = MSG;
-                item["codped"]  = CODPED;
 
                 //una vez agregados los datos al array "item" declarado anteriormente hacemos un .push() para agregarlos a nuestro array principal "DATA".
-                DATA.push(item);
+                CORREOS.push(item);
             }
         });
 
-        INFO    = new FormData();
-        aInfo   = JSON.stringify(DATA);
- 
-        INFO.append('data', aInfo);
-
-        $.ajax({
-            data: INFO,
-            type: 'POST',
-            url : RUTA + 'aprobacion/mailProcess',
-            processData: false, 
-            contentType: false,
-            success : function(response) {
-                if(response) {
-                    mostrarMensaje("msj_correcto","Correo enviado");
-                    $("#dialogSend").fadeOut();
-                    $("#btnSendCancel").trigger("click");
-                }else {
-                    mostrarMensaje("msj_error","No se completo el envio");
-                }
-            },
-        });
+        return CORREOS;
     }
 }
 

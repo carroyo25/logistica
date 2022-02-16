@@ -208,12 +208,26 @@ $(function(){
     $("#btnSendConfirm").on("click", function (e) {
         e.preventDefault();
 
-        if ( $("#listMailToSend tbody tr").length > 0){
-            getMails($("#cod_pedido").val());
-        }else{
+        if ( $("#listMailToSend tbody tr").length < 0){
             mostrarMensaje("msj_error","No hay direcciones de correo");
+            return false;    
         }
 
+        //getMails();
+
+        $.post(RUTA + 'cotizacion/enviaEnlace', {pedido:$("#cod_pedido").val(),
+                                                mails:JSON.stringify(getMails()),
+                                                items:JSON.stringify(countItemsSel())},
+            function (data, textStatus, jqXHR) {
+                if(data.response){
+                    mostrarMensaje("msj_info","Solicitudes enviadas!");
+                }else{
+                    mostrarMensaje("msj_error","Error al enviar el mensaje");
+                }
+            },
+            "json"
+        );
+        
         return false;
     });
 
@@ -237,12 +251,11 @@ function countItemsSel() {
             CODITEM     = $(this).find('td').eq(2).text(),
             IDXITEM     = $(this).find('td').eq(2).data("indice"),
             DESITEM     = $(this).find('td').eq(3).text(),
-            UNIDAD      = $(this).find('td').eq(4).text(),
+            UNIDAD      = $(this).find('td').eq(1).data("unidad"),
             CANTIDAD    = $(this).find('td').eq(5).text(),
             CHECKED     = $(this).find('td').eq(0).children().prop("checked"),
-            FACTOR      = $(this).find('td').eq(7).text(),
+            FACTOR      = $(this).find('td').eq(1).data('factor'),
             
-        
         item = {};
         counter++;
 
@@ -261,13 +274,13 @@ function countItemsSel() {
         }
 
         counter = ITEMS.length;
-
         $("#num_items").text(counter);
-
     });
+
+    return ITEMS;
 }
 
-function getMails(codigo){
+function getMails(){
     MAILS = [];
     if ( $("#listMailToSend tbody tr").length > 0){
         var TABLA = $("#listMailToSend tbody > tr");
@@ -276,37 +289,19 @@ function getMails(codigo){
             var MAIL    = $(this).find('td').eq(0).text(),
                 CODPROV = $(this).find('td').eq(2).text(),
                 MSG     = $("#mail_mssg").val(),
-                CODPED  = codigo,
             
             mail = {};
 
             if ( MAIL !== '' ){
                 mail["mail"]    = MAIL;
                 mail["msg"]     = MSG;
-                mail["codped"]  = CODPED;
                 mail["codprov"] = CODPROV;
 
                 //una vez agregados los datos al array "item" declarado anteriormente hacemos un .push() para agregarlos a nuestro array principal "DATA".
                 MAILS.push(mail);
             }
         });
-
-        $.ajax({
-            type: "POST",
-            url: RUTA + 'cotizacion/enviaEnlace',
-            data: {
-                    mails:JSON.stringify(MAILS),
-                    items:JSON.stringify(ITEMS)
-                },
-            dataType: "json",
-            success: function (response) {
-                if (response.respuesta){
-                    $("#btnSendCancel").trigger("click");
-                    mostrarMensaje("msj_correcto","Correo enviado");
-                }else{
-                    mostrarMensaje("msj_error","No se pudo enviar el mensaje");
-                }
-            }
-        });
     }
+
+    return MAILS;
 }

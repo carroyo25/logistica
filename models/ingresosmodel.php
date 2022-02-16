@@ -431,7 +431,7 @@
                                     <td class="con_borde centro"><a href="'.$row['nidpedi'].'" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
                                     <td class="con_borde centro" data-iddetpedido ="'.$row['nidpedi'].'" data-iddetorden ="'.$row['niddeta'].'" data-factor="'.$row['nfactor'].'" data-coduni="'.$row['ncodmed'].'"
                                                                  data-idprod="'.$row['id_cprod'].'">'.str_pad($cont,3,"0",STR_PAD_LEFT).'</td>
-                                    <td class="centro con_borde">'.$row['ccodprod'].'</td>
+                                    <td class="centro con_borde">'.$row['id_cprod'].'</td>
                                     <td class="pl20 con_borde">'.$row['cdesprod'].'</td>
                                     <td class="con_borde centro">'.$row['cabrevia'].'</td>
                                     <td class="con_borde drch pr20">'.number_format($row['ncanti'], 2, '.', ',').'</td>
@@ -504,6 +504,7 @@
             echo $filename;
         }
 
+        //inserta la cabcera de la nota de ingreso
         public function insertarIngreso($fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,$detalles,
                                         $series,$adjuntos,$proyecto,$area,$costos,$cod_mov,$calidad){
             $guia_actual = $this->genNumber($origen);
@@ -808,23 +809,23 @@
                         $swstate =  $row['nsaldo'] == 0 ? 'desactivado': '';
             
                         $cont++;
-                        $salida.='<tr class="lh1_2rem pointertr '.$swstate.'" data-id="'.$row['niddeta'].'">
-                                    <td class="con_borde centro"><a href="" data-action="register"><i class="fas fa-barcode"></i></a></td>
-                                    <td class="con_borde centro"><a href="" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
-                                    <td class="con_borde centro" data-iddetpedido ="'.$row['niddetaPed'].'"
+                        $salida.='<tr class="lh1_2rem pointertr " data-id="'.$row['niddeta'].'">
+                                    <td class="con_borde centro "><a href="" data-action="register"><i class="fas fa-barcode"></i></a></td>
+                                    <td class="con_borde centro '.$swstate.'"><a href="" data-action="delete"><i class="far fa-trash-alt"></i></a></td>
+                                    <td class="con_borde centro '.$swstate.'" data-iddetpedido ="'.$row['niddetaPed'].'"
                                                                     data-iddetorden ="'.$row['niddetaOrd'].'"    
                                                                     data-factor="'.$row['nfactor'].'"
                                                                     data-coduni="'.$row['ncodmed'].'"
                                                                     data-idprod="'.$row['id_cprod'].'">'.str_pad($cont,3,0,STR_PAD_LEFT).'</td>
-                                    <td class="centro con_borde">'.$row['ccodprod'].'</td>
-                                    <td class="pl20 con_borde">'.$row['cdesprod'].'</td>
-                                    <td class="con_borde centro">'.$row['cabrevia'].'</td>
-                                    <td class="con_borde centro">'.number_format($row['ncantapro'], 2, '.', ',').'</td>
-                                    <td class="con_borde centro"><input type="number" onClick="this.select();" class="drch pr10" ></td>
-                                    <td class="con_borde drch pr20">'.number_format( $row['nsaldo'], 2, '.', ',').'</td>
-                                    <td class="con_borde"><select name="estado">'.  $this->getParameters($row['nestadoreg']) .'</select></td>
-                                    <td class="con_borde"></td>
-                                    <td class="con_borde"><input type="date"></td>
+                                    <td class="centro con_borde '.$swstate.'">'.$row['id_cprod'].'</td>
+                                    <td class="pl20 con_borde '.$swstate.'">'.$row['cdesprod'].'</td>
+                                    <td class="con_borde centro '.$swstate.'">'.$row['cabrevia'].'</td>
+                                    <td class="con_borde centro '.$swstate.'">'.number_format($row['ncantapro'], 2, '.', ',').'</td>
+                                    <td class="con_borde centro '.$swstate.'"><input type="number" onClick="this.select();" class="drch pr10" value="'.number_format( $row['ncantidad'], 2, '.', ',').'"></td>
+                                    <td class="con_borde drch pr20 '.$swstate.'">'.number_format( $row['nsaldo'], 2, '.', ',').'</td>
+                                    <td class="con_borde '.$swstate.'"><select name="estado">'.  $this->getParameters($row['nestadoreg']) .'</select></td>
+                                    <td class="con_borde '.$swstate.'"></td>
+                                    <td class="con_borde '.$swstate.'"><input type="date"></td>
                                 </tr>';
                     }
                 }
@@ -881,6 +882,7 @@
             }
         }
 
+        //mostrar la series de los prodctos
         public function listarSeriesProducto($idx,$prod){
             try {
                 $salida = "";
@@ -903,7 +905,7 @@
 
                 if ($rowCount > 0) {
                     while ($rs = $sql->fetch()) {
-                        $salida.= '<tr>
+                        $salida.= '<tr data-grabado=1>
                             <td class="con_borde centro"><a href="'.$rs['ncodserie'].'"><i class="fas fa-trash-alt"></i></a></td>
                             <td class="con_borde centro">'.$cont.'</td>
                             <td class="con_borde pl20 mayusculas">'.$rs['cdesserie'].'</td>

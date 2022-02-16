@@ -122,10 +122,10 @@
             $cod_mov = $_POST['cod_mov'];
             $calidad = $_POST['calidad'];
 
-            $result = $this->model->insertarIngreso($fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,
+            /*$result = $this->model->insertarIngreso($fecha,$origen,$fcontable,$entidad,$guia,$orden,$pedido,$estado,$autoriza,
                                                     $detalles,$series,$adjuntos,$proyecto,$area,$costos,$cod_mov,$calidad);
 
-            echo json_encode($result);
+            echo json_encode($result);*/
         }
 
         function actualizaIngreso(){

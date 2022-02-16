@@ -145,7 +145,10 @@
                         </button>
                         <button type="button" id="commentItem" title="Ver/añadir comentarios" class="boton1">
                             <i class="far fa-comments"></i> Ver/Añadir Observaciones
-                        </button>   
+                        </button>
+                        <button type="button" id="singItem" title="Ver/añadir comentarios" class="boton1">
+                            <i class="fas fa-signature"></i> Pasar a firmas
+                        </button>  
                     </div>
                 </div>
                 <div class="tab" id="tab1">
@@ -167,10 +170,12 @@
                         <input type="hidden" name="idpago" id="idpago">
                         <input type="hidden" name="identrega" id="identrega">
                         <input type="hidden" name="cotizacion" id="cotizacion">
-                        <input type="hidden" id="status" value="0">
-                        <input type="hidden" id="logistica">
-                        <input type="hidden" id="operaciones">
-                        <input type="hidden" id="finanzas">
+                        <input type="hidden" name="status" id="status" value="0">
+                        <input type="hidden" name="logistica" id="logistica">
+                        <input type="hidden" name="operaciones" id="operaciones">
+                        <input type="hidden" name="finanzas" id="finanzas">
+                        <input type="hidden" name="suma_orden" id="suma_orden">
+                        <input type="hidden" name="nivel_atencion" id="nivel_atencion">
 
                         <div class="process_header3ec">
                             <div class="process_left">    
@@ -216,7 +221,7 @@
                                 <div class="input_process g4items">
                                     <label for="tipo" class="w100px">Tipo</label>
                                     <input type="text" name="tipoOrd" id="tipoOrd" class="pl10 mayusculas" readonly>
-                                    <label for="atencion" class="w100px ">Fecha Entrega:</label>
+                                    <label for="entrega" class="w100px ">Fecha Entrega:</label>
                                     <input type="date" name="entrega" id="entrega" class="pl10">
                                 </div>
                                 <div class="input_process g4items">
@@ -337,6 +342,21 @@
                 <div class="options">
                     <button id="btnYes" class="botones">Si</button>
                     <button id="btnNo" class="botones">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="dialogAutorize">
+        <div class="dialogContainer w35p">
+            <div class="dialogTitle">
+                <h4>Confirmación</h4>
+            </div>
+            <hr>
+            <div class="dialogBody">
+                <h1>¿Pasar la orden a firmas? </h1> <!--alt 168-->   
+                <div class="options">
+                    <button id="btnSingYes" class="botones">Si</button>
+                    <button id="btnSingNo" class="botones">No</button>
                 </div>
             </div>
         </div>

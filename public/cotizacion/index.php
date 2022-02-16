@@ -102,8 +102,6 @@
                     <input type="text" name="cotizacion" id="cotizacion">
                 </div>
                 <div class="datos grid4">
-                    <label for="cuenta" class="derecha">Nro. Cuenta :</label>
-                    <input type="text" name="cuenta" id="cuenta">
                     <label for="moneda" class="derecha">Moneda:</label>
                     <select name="moneda" id="moneda">
                         <?php echo $moneda?>

@@ -204,11 +204,13 @@
                 if ($rowcount > 0) {
                     while ($row = $query->fetch()) {
                         $line++;
-                        $adjunto =  constant("URL")."/public/manuales/".$row['archivo'];;
+                        $adjunto = file_exists("public/manuales/".$row['id_regmov'].'_'.$row['id_centi'].'_'.$row['nidpedi'].'.pdf') ? 
+                                            constant("URL")."public/manuales/".$row['id_regmov'].'_'.$row['id_centi'].'_'.$row['nidpedi'].'.pdf' : 
+                                            0;
                         $salida.='<tr class="lh1_2rem">
                             <td class="con_borde drch pr20">'. str_pad($line,3,"0",STR_PAD_LEFT) .'</td>
                             <td class="con_borde centro" 
-                                        data-indice="'.$row['nidpedi'].'" data-entidad="'.$row['id_centi'].'" data-pedido="'.$row['id_regmov'].'">'. $row['ccodprod'] .'</td>
+                                        data-indice="'.$row['nidpedi'].'" data-entidad="'.$row['id_centi'].'" data-pedido="'.$row['id_regmov'].'">'. $row['id_cprod'] .'</td>
                             <td class="con_borde pl10">'. $row['cdesprod'] .'</td>
                             <td class="con_borde centro">'. $row['cabrevia'] .'</td>
                             <td class="con_borde drch pr10">'.$row['cantidad'] .'</td>

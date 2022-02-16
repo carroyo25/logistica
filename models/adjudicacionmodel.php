@@ -261,6 +261,7 @@
             }
         }
 
+        //Consulta para las cotizaciones
         public function detalleCotizacion($cod,$enti,$nid){
             $nreg = count($enti);
             $proformas = "";
@@ -273,7 +274,8 @@
                                                         lg_proformadet.cantcoti,
                                                         lg_proformadet.ffechaent,
                                                         lg_proformadet.precunit,
-                                                        lg_proformadet.cantcoti * lg_proformadet.precunit AS total,
+                                                        lg_proformadet.impuesto,
+                                                        lg_proformadet.cantcoti * lg_proformadet.precunit * lg_proformadet.impuesto AS total,
                                                         CONCAT( lg_proformadet.id_regmov, '_', lg_proformadet.id_centi, '_', lg_proformadet.niddet, '.pdf' ) AS archivo,
                                                         DATE_FORMAT( lg_proformadet.fregsys, '%Y-%m-%d' ) AS emitido1,
                                                         DATEDIFF(
@@ -293,17 +295,24 @@
 
                 $query->execute(["cod"=>$cod,"ent"=>$enti[$i],"nid"=>$nid]);
                 $rs = $query->fetchAll();
-                $adjunto =  constant("URL")."/public/manuales/".$rs[0]['archivo'];
 
-                $proformas.= '<td class="con_borde drch pr10">'.$rs[0]['cabrevia']." ".number_format($rs[0]['total'], 2, '.', ',').'</td>
-                            <td class="con_borde centro">'.date("d/m/Y", strtotime($rs[0]['ffechaent'])).'</td>
+                $igv =  $rs[0]['impuesto'] == 0 ? 1 : 1.18;
+                
+                $adjunto = file_exists("public/manuales/".$rs[0]['id_regmov'].'_'.$rs[0]['id_centi'].'_'.$rs[0]['niddet'].'.pdf') ? 
+                                            constant("URL")."public/manuales/".$rs[0]['id_regmov'].'_'.$rs[0]['id_centi'].'_'.$rs[0]['niddet'].'.pdf' : 
+                                            0;
+                
+                $fecha = $rs[0]['ffechaent'] == '0000-00-00' ? '': date("d/m/Y", strtotime($rs[0]['ffechaent']));
+
+                $proformas.= '<td class="con_borde drch pr10">'.$rs[0]['cabrevia']." ".number_format($rs[0]['precunit']*$igv, 2, '.', ',').'</td>
+                            <td class="con_borde centro">'.$fecha.'</td>
                             <td class="con_borde drch pr10">'.$rs[0]['dias'].'</td>
                             <td class="con_borde centro"><a href="'.$adjunto.'"><i class="far fa-sticky-note"></i></a></td>
                             <td class="con_borde centro" data-position="'.$i.'" 
                                                          data-pedido="'.$rs[0]["id_regmov"].'" 
                                                          data-entidad="'.$rs[0]["id_centi"].'"
                                                          data-detalle="'.$rs[0]["niddet"].'"
-                                                         data-precio="'.$rs[0]["precunit"].'">
+                                                         data-precio="'.$rs[0]["total"].'">
                                 <input type="checkbox" class="chkVerificado">
                             </td>';
             }
@@ -333,7 +342,7 @@
                 if ($rowcount > 0){
                     $salida = "";
                     while($row = $query->fetch()){
-                        $adjunto =  constant("URL")."/public/proformas/".$row['archivo'];
+                        $adjunto =  constant("URL")."public/proformas/".$row['archivo'];
                         $salida .='<li><a href="'.$adjunto.'" class="atachDoc"><i class="fas fa-mail-bulk"></i><span>'.$row['crazonsoc'].'</span></a></li>';
                     }
                 }else{

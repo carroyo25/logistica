@@ -151,5 +151,13 @@
             $result = $this->model->getMainRecords();
             echo $result;
         }
+
+        function impresion(){
+            if(file_exists("public/exe/print.exe")){
+                echo system('PDFtoPrinter.exe');                
+            }else {
+                echo "no existe";
+            }
+        }
     }
 ?>

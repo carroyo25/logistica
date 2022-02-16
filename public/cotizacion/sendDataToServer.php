@@ -18,7 +18,7 @@
         $rowaffect = $statement->rowCount($sql);
 
         if ($rowaffect > 0) {
-            grabarDetalles($pdo,$detalles);
+            grabarDetalles($pdo,$detalles,$datos['igv']);
             calificarProveedor($pdo,$datos['codped'],$datos['identi']);
 
             return true;
@@ -28,12 +28,13 @@
         return false;
     }
 
-    function grabarDetalles($pdo,$detalles) {
+    function grabarDetalles($pdo,$detalles,$igv) {
         $nreg = count($detalles);
 
         for ($i=0; $i < $nreg; $i++) { 
             try {
-                $sql = "INSERT INTO lg_proformadet SET id_regmov=?,id_cprod=?,niddet=?,cantcoti=?,precunit=?,ffechaent=?,cdetalle=?,id_centi=?,nflgactivo = 1";
+                $sql = "INSERT INTO lg_proformadet SET id_regmov=?,id_cprod=?,niddet=?,cantcoti=?,precunit=?,ffechaent=?,
+                                                        cdetalle=?,id_centi=?,impuesto=?,nflgactivo = 1";
                 $statement = $pdo->prepare($sql);
                 $statement->execute(array($detalles[$i]->pedido,
                                           $detalles[$i]->codprod,
@@ -42,7 +43,8 @@
                                           $detalles[$i]->precio,
                                           $detalles[$i]->entrega,
                                           $detalles[$i]->observacion,
-                                          $detalles[$i]->entidad));
+                                          $detalles[$i]->entidad,
+                                          $igv));
 
             } catch (PDOException $th) {
                 echo  $th->getMessage();

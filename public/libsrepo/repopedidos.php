@@ -3,7 +3,7 @@ require_once "public/fpdf/mc_table.inc.php";
 
 class PDF extends PDF_MC_Table{
     //Construct
-    public function __construct($numero,$fecha,$proyecto,$costo,$area,$concepto,$mmto,$clasificacion,$transporte,$usuario,$solicitante,$estado,$especificacion,$tipo,$mensaje,$aprueba) {
+    public function __construct($numero,$fecha,$proyecto,$costo,$area,$concepto,$mmto,$condicion,$transporte,$usuario,$solicitante,$estado,$especificacion,$tipo,$mensaje,$aprueba) {
         parent::__construct();
         $this->numero           = $numero;
         $this->fecha            = $fecha;
@@ -12,7 +12,6 @@ class PDF extends PDF_MC_Table{
         $this->area             = $area;
         $this->concepto         = $concepto;
         $this->mmto             = $mmto;
-        $this->clasificacion    = $clasificacion;
         $this->transporte       = $transporte;
         $this->usuario          = $usuario;
         $this->solicitante      = $solicitante;
@@ -20,7 +19,7 @@ class PDF extends PDF_MC_Table{
         $this->estado           = $estado;
         $this->especificacion   = $especificacion;
         $this->mmto             = "";
-        $this->condicion        = "NORMAL";
+        $this->condicion        = $condicion;
         $this->aprobado         = "";
 		$this->cargoaprob       = "";
 		$this->tipo				= $tipo;

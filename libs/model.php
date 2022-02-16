@@ -1,4 +1,5 @@
 <?php
+    setlocale(LC_MONETARY, 'en_US');
     class Model{
         function __construct()
         {

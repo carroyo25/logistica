@@ -42,7 +42,8 @@
                                                         INNER JOIN lg_pedidocab ON lg_regabastec.id_refpedi = lg_pedidocab.id_regmov 
                                                     WHERE
                                                         tb_paramete2.ncodprm1 = 13 
-                                                        AND lg_regabastec.nflgactivo = 1");
+                                                        AND lg_regabastec.nflgactivo = 1
+                                                        AND lg_regabastec.nEstadoDoc = 1");
                     $sql->execute();
                     $rowcount = $sql->rowcount();
 
@@ -389,7 +390,7 @@
 
                         $salida.='<tr class="lh1_2rem">
                             <td class="con_borde drch pr20">'. str_pad($line,3,"0",STR_PAD_LEFT) .'</td>
-                            <td class="con_borde centro" data-indice="'.$row['id_cprod'].'">'. $row['ccodprod'] .'</td>
+                            <td class="con_borde centro" data-indice="'.$row['id_cprod'].'">'. $row['id_cprod'] .'</td>
                             <td class="con_borde pl10">'. $row['cdesprod'] .'</td>
                             <td class="con_borde centro">'. $row['cabrevia'] .'</td>
                             <td class="con_borde drch pr10">'.$row['cantidad'] .'</td>

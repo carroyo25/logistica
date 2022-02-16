@@ -142,7 +142,7 @@
                                     <label for="fecha" class="w100px">Fec.Emisión :</label>
                                     <input type="date" name="fecha" id="fecha"  class="pl10">
                                 </div>
-                                <div class="input_process g2items">
+                                <div class="oculto">
                                     <label for="usuario" class="w100px">Usuario :</label>
                                     <input type="text" name="usuario" id="usuario" class="pl10 mayusculas">
                                 </div>
@@ -188,6 +188,12 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="descrip_title">
+                            <span>Especificaciones Técnicas o Descripción del Item</span>
+                        </div>
+                        <div class="details_item desactivado">
+                            <textarea name="espec_items" id="espec_items" rows="1" class="w100p"></textarea>
+                        </div>
                         <div class="process_items">
                             <div>
                                 <table class="con_borde w100p" id="detalle_pedido">
@@ -209,12 +215,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="descrip_title">
-                            <span>Especificaciones Técnicas o Descripción del Item</span>
-                        </div>
-                        <div class="details_item desactivado">
-                            <textarea name="espec_items" id="espec_items" rows="3" class="w100p"></textarea>
-                        </div>
+                        
                 </div>
             </div>
         </div>

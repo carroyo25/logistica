@@ -750,7 +750,7 @@ $("#btnSendConfirm").on("click", function (e) {
                                         pedido:$('#cod_pedido').val(),
                                         tipo:$("#cod_tipo").val(),
                                         titulo:tituloCorreo,
-                                        estado:2},
+                                        estado:3},
         function (data, textStatus, jqXHR) {
             if (data == '1') {
                 mostrarMensaje("msj_info","Mensajes enviados correctamente");
@@ -1073,9 +1073,9 @@ if ( $("#listMailToSend tbody tr").length > 0){
         if (CHECKED) {
             item["mail"]    = MAIL;
             item['checked'] = CHECKED;
-        }
 
-        DATA.push(item);
+            DATA.push(item);
+        }
     })
 }
 

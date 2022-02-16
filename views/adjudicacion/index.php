@@ -82,7 +82,7 @@
                         <div class="process_estate">
                             <div class="input_process g2items">
                                 <label for="registro" class="w100px">Est.Doc.:</label>
-                                <input type="text" name="registro" id="registro" class="pl20 mayusculas adjudicacion" readonly>
+                                <input type="text" name="registro" id="registro" class="pl20 mayusculas" readonly>
                             </div>
                             <div class="input_process g2items">
                                 <label for="tipo" class="w100px">Tipo</label>
@@ -91,14 +91,17 @@
                         </div>
                     </div>
                     <div class="descrip_title">
+                        <span>Especificaciones Técnicas o Descripción del Item</span>
+                    </div>
+                    <div class="details_item">
+                        <textarea name="espec_items" id="espec_items" rows="1" class="w100p desactivado"></textarea>
+                    </div>
+                    <div class="descrip_title">
                         <span>Detalles</span>
                         <div>
                             <button type="button" id="verProforma" title="Ver Proforma">
                                 <i class="fas fa-check-double"></i> Ver Proforma
                             </button>
-                            <!-- <button type="button" id="selectDist" title="Seleccionar Proveedores">
-                                <i class="fas fa-envelope-open-text"></i> Seleccionar Correos
-                            </button -->
                         </div>
                     </div>
                     <div class="process_items">
@@ -108,12 +111,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="descrip_title">
-                        <span>Especificaciones Técnicas o Descripción del Item</span>
-                    </div>
-                    <div class="details_item">
-                        <textarea name="espec_items" id="espec_items" rows="3" class="w100p desactivado"></textarea>
-                    </div>
+                    
                 </div>
             </div>
         </form>

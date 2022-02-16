@@ -1,7 +1,7 @@
 $(function(){
     activar_opcion();
 
-    var accion = "";
+    var accion = "n";
 
     $("#newreg").click(function (e) { 
         e.preventDefault();
@@ -51,7 +51,6 @@ $(function(){
         }else {
             mostrarMensaje("msj_info","La orden no puede ser modificada, por estar en firmas");
         }
-        
 
         return false;
     });
@@ -66,7 +65,7 @@ $(function(){
         if (logistica && operaciones && finanzas) {
             $("#dialogConfirm").fadeIn();
         }else {
-            mostrarMensaje("msj_error","Falta una firma, no se puede proceder");
+            mostrarMensaje("msj_error","Debe completar las firmas.");
         }
 
         return false;
@@ -79,9 +78,6 @@ $(function(){
 
         $("#ordenpdf").val("");
 
-        detallesparaOrden();
-        let detalles = JSON.stringify(DETALLES);
-
         $.each($("#formProcessOrder").serializeArray(),function(){
             result[this.name] = this.value;
         })
@@ -91,21 +87,18 @@ $(function(){
             url: RUTA+"ordenes/correoProveedor",
             data: {
                 cabecera:result,
-                detalles,
+                detalles:JSON.stringify(detallesparaOrden()),
                 condicion:1
             },
             dataType: "text",
             success: function (response) {
-                console.log(response);
+                
             }
         });
-        
-        
         $(this).parent().parent().parent().parent().fadeOut();
 
         return false;
     });
-
 
     $("#btnNo").click(function (e) { 
         e.preventDefault();
@@ -130,8 +123,6 @@ $(function(){
             },
             "text"
         );
-        
-
         return false;
     });
 
@@ -188,6 +179,7 @@ $(function(){
                 $("#numOrd").val(data.numOrd);
                 $("#elaborado").val(data.elaborado);
                 $("#proyectoOrd").val(data.proyectoOrd);
+                $("#suma_orden").val(data.precioNumero);
                 $("#areaOrd").val(data.areaOrd);
                 $("#costosOrd").val(data.costosOrd);
                 $("#conceptoOrd").val(data.conceptoOrd);
@@ -207,7 +199,9 @@ $(function(){
                 $("#operaciones").val(data.operaciones);
                 $("#finanzas").val(data.finanzas);
                 $("#fechaOrd").val(data.fechaOrd);
-
+                $("#status").val(data.nEstadoDoc);
+                $("#nivel_atencion").val(data.nNivAten);
+                
                 if (data.logistica == 1) {
                     $(".logistica")
                         .removeClass("firma_pendiente")
@@ -232,7 +226,7 @@ $(function(){
                         .addClass("firma_confirmada")
                 }
 
-                $("#status").val(1);
+                accion = "u";
 
                 $.post(RUTA+"ordenes/detallesOrden", {cod:data.orden,pedido:data.nropedido},
                     function (data, textStatus, jqXHR) {
@@ -271,7 +265,7 @@ $(function(){
                 $("#cod_solicitante").val(data.ncodper);
                 $("#tipoPedido").val(data.ctipmov);
                 $("#estado").text(data.nflgactivo);
-                $("#atencion").text(data.nNivAten);
+                $("#atencion").text();
                 $("#nropedido").val(data.cnumero);
                 $("#numero").text(data.cnumero);
                 $("#fecha").text(data.ffechadoc);
@@ -287,6 +281,7 @@ $(function(){
                 $("#fechaven").text(data.ffechaven);
                 $("#tipo").text( data.ctipmov == "B" ? "01 BIENES" : "02 SERVICIOS");
                 $("#espec_items").text(data.mdetalle);
+                $("#nivel_atencion").val(data.nNivAten);
 
                     $.post(RUTA+"ordenes/detallesPedido", {id:data.id_regmov},
                         function (data, textStatus, jqXHR) {
@@ -341,6 +336,7 @@ $(function(){
                 $("#cotizacion").val(data.cotizacion);
                 $("#idpago").val(data.idpago);
                 $("#identrega").val(data.identrega);
+                $("#precioOrd").val(data.total);
         
                 $("#detalle_orden tbody")
                     .empty()
@@ -452,37 +448,28 @@ $(function(){
         var result = {};
 
         detallesparaOrden();
-        let detalles = JSON.stringify(DETALLES);
 
         $.each($("#formProcessOrder").serializeArray(),function(){
             result[this.name] = this.value;
         })
 
-        $.ajax({
-            type: "POST",
-            url: RUTA+"ordenes/grabaOrden",
-            data: {
-                cabecera:result,
-                detalles
-            },
-            dataType: "text",
-            beforeSend: function( xhr ) {
-                abrirVentanaEspera();
-            },
-            success: function (response) {
-                if (response) {
-                    $(".datoCabecera, #tabla_detalle_pedidos tbody,#detalle_orden").empty();
+        $.post(RUTA+"ordenes/grabaOrden", {accion,cabecera:result,detalles:JSON.stringify(detallesparaOrden())},
+            function (data, textStatus, jqXHR) {
+                if (data) {
+                    $(".datoCabecera, #tabla_detalle_pedidos tbody,#detalle_orden tbody").empty();
                     $("#modalProcessOrden").fadeOut();
                     $("#saveItem span").removeClass('parpadea');
                     $("#formProcessOrder")[0].reset();
 
                     cerrarVentanaEspera();
+
                     mostrarMensaje("msj_correcto","Se grabo la orden correctamente");
                 }else {
                     mostrarMensaje("msj_error","No se pudo grabar el registro");
                 }
-            }
-        });
+            },
+            "text"
+        );
 
         return false;
     });
@@ -546,7 +533,50 @@ $(function(){
         return false;
     });
 
+    $("#tabla_detalle_pedidos tbody").on("click","input", function (e) {
+        
+        if ( $(this).prop("checked") == true ){
+            if (checkExistTable($("#detalle_orden tbody"),$(this).parent().parent().find("td").eq(2).text(),1)){
+                $(this).prop("checked",false);
+                mostrarMensaje("msj_error","Detalle registrado");
+            }
+        }
+    });
 
+    $("#singItem").click(function (e) { 
+        e.preventDefault();
+       
+        $("#dialogAutorize").fadeIn();
+
+        return false;
+    });
+
+    $("#btnSingYes").click(function (e) { 
+        e.preventDefault();
+
+        $.post(RUTA+"ordenes/autoriza", {orden:$("#orden").val(),
+                                         pedido:$("#pedido").val(),
+                                         detalles:JSON.stringify(detallesAutorizacion())},
+            function (data, textStatus, jqXHR) {
+                if(data){
+                    mostrarMensaje("msj_correcto","Se paso la orden para su firma");
+                }else{
+                    mostrarMensaje("msj_error","No se completo el proceso.");
+                }
+                $("#dialogAutorize").fadeOut();
+            },
+            "text"
+        );
+        return false;
+    });
+
+    $("#btnSingNo").click(function (e) { 
+        e.preventDefault();
+
+        $("#dialogAutorize").fadeOut();
+
+        return false;
+    });
 })
 
 function detallesSeleccionados(){
@@ -581,9 +611,10 @@ function obtenerDetallesPedido(){
             idprod = $(this).find('td').eq(2).data('idprod');
             idunid = $(this).find('td').eq(4).data('idunid');
             factor = $(this).find('td').eq(4).data('factor');
+            grabar = '0';
 
             fila += '<tr>'+
-                        '<td class="con_borde centro" data-iddet="'+idpet+'" data-entidad="'+entidad+'">'+ $(this).find('td').eq(1).text()+'</td>'+
+                        '<td class="con_borde centro" data-iddet="'+idpet+'" data-entidad="'+entidad+'" data-grabar="'+grabar+'">'+ $(this).find('td').eq(1).text()+'</td>'+
                         '<td class="con_borde centro" data-idprod="'+idprod+'">'+ $(this).find('td').eq(2).text()+'</td>'+
                         '<td class="con_borde pl10">'+ $(this).find('td').eq(3).text()+'</td>'+
                         '<td class="con_borde centro" data-idunid="'+idunid+'" data-factor="'+factor+'">'+ $(this).find('td').eq(4).text()+'</td>'+
@@ -622,11 +653,12 @@ function detallesparaOrden(){
             IDPROD = $(this).find('td').eq(1).data('idprod'),
             IDUND = $(this).find('td').eq(3).data('idunid'),
             FACTOR = $(this).find('td').eq(3).data('factor'),
+            GRABAR = $(this).find('td').eq(0).data("grabar")
 
         
         item = {};
 
-        if (ITEM !== '') {  
+        if ( GRABAR == '0' ) {  
             item['item'] = ITEM;
             item['codigo'] = CODIGO;
             item['descripcion'] = DESCRIP;
@@ -637,15 +669,14 @@ function detallesparaOrden(){
             item['nparte'] = NPARTE;
             item['pedido'] = PEDIDO;
             item['iddet'] = IDDET;
-            item['entidad'] = PEDIDO;
+            item['entidad'] = ENTIDAD;
             item['idprod'] = IDPROD;
             item['idunid'] = IDUND;
             item['factor'] = FACTOR;
+            item['grabar'] = GRABAR;
 
             DETALLES.push(item);
         }
-
-        
     })
 
     return DETALLES;
@@ -676,4 +707,27 @@ function obtenerComentarios() {
     });
 
     return COMENTARIOS;
+}
+
+function detallesAutorizacion(){
+    FIRMAS = [];
+
+    let TABLE = $("#detalle_orden tbody > tr");
+
+    TABLE.each(function(){
+        var IDDET = $(this).find('td').eq(0).data('iddet'),
+            ENTIDAD = $(this).find('td').eq(0).data('entidad')
+            
+        item = {};
+
+        if ( IDDET !== '' ) {  
+            item['iddet'] = IDDET;
+            item['entidad'] = ENTIDAD;
+            
+
+            FIRMAS.push(item);
+        }
+    })
+
+    return FIRMAS;
 }
