@@ -8,7 +8,8 @@
         public function getMainRecords(){
             try {
                 $salida = "";
-                $query = $this->db->connect()->query("SELECT logistica.lg_pedidocab.id_regmov,
+                $query = $this->db->connect()->query("SELECT 
+                                                        logistica.lg_pedidocab.id_regmov,
                                                         logistica.lg_pedidocab.ffechadoc,
                                                         logistica.lg_pedidocab.ffechaven,
                                                         logistica.lg_pedidocab.cconcepto,
@@ -38,7 +39,7 @@
                                                     WHERE
                                                         atenciones.ncodprm1 = 13 
                                                         AND estados.ncodprm1 = 4 
-                                                        AND logistica.lg_pedidocab.nEstadoDoc = 4");
+                                                        AND logistica.lg_pedidocab.nEstadoDoc = 5");
                 $query->execute();
                 $rowcount = $query->rowcount();
 

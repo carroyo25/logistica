@@ -40,7 +40,7 @@
                                                         AND tb_proyusu.nflgactivo = 1 
                                                         AND atenciones.ncodprm1 = 13 
                                                         AND estados.ncodprm1 = 4 
-                                                        AND logistica.lg_pedidocab.nEstadoDoc = 3");
+                                                        AND logistica.lg_pedidocab.nEstadoDoc = 4");
                 $query->execute(["user"=>$user]);
                 $rowcount = $query->rowcount();
 
@@ -254,11 +254,11 @@
             try {
                 $sql = $this->db->connect()->prepare("UPDATE lg_pedidocab SET nEstadoDoc=:est,ncodaproba=:user 
                                                         WHERE id_regmov =:ped");
-                $sql->execute(["est"=>4,"ped"=>$pedido,"user"=>$_SESSION['id_user']]);
+                $sql->execute(["est"=>5,"ped"=>$pedido,"user"=>$_SESSION['id_user']]);
                 $rowcount = $sql->rowcount();
 
                 if($rowcount > 0) {
-                    $this->actualizarItems(4,$detalles);
+                    $this->actualizarItems(5,$detalles);
                     $this->genOc($pedido,$usuario);
                     $this->sendmails($correos,$pedido);
 

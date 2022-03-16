@@ -277,10 +277,10 @@ $(function(){
                 //pestaña 1
 
                 $("#cod_unidad").val(data.id_cprod);
-                $("#codigo").val(data.ccodprod);
-                $("#grupo").val(data.ccodprod.substr(1,2));
-                $("#clase").val(data.ccodprod.substr(3,2));
-                $("#familia").val(data.ccodprod.substr(5,4));
+                $("#codigo").val(data.id_cprod);
+                $("#grupo").val(data.id_cprod.substr(1,2));
+                $("#clase").val(data.id_cprod.substr(3,2));
+                $("#familia").val(data.id_cprod.substr(5,4));
                 $("#nombre_grupo").text(data.grupo);
                 $("#nombre_clase").text(data.clase);
                 $("#nombre_familia").text(data.familia);

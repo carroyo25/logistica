@@ -905,7 +905,7 @@ $("#requestAprob").click(function (e) {
             $("#dialogSend h4").text("Solicitar Aprobación");
             $("#dialogSend").fadeIn();
             tituloCorreo = "Aprobación de Pedido";
-            estadoPedido = 3;
+            estadoPedido = 4;
         },
         "text"
     );
@@ -922,7 +922,7 @@ $("#sendItem").click(function (e) {
                 $("#dialogSend h4").text("Verificar Almacen");
                 $("#dialogSend").fadeIn();
                 tituloCorreo = "Verificar Almacen";
-                estadoPedido = 2;
+                estadoPedido = 3;
             },
             "text"
         );

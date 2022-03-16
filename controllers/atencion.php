@@ -43,7 +43,7 @@
             $idx = $_POST['idx'];
             $detalles = $_POST['detalles'];
 
-            $result = $this->model->actualizaDetalle($idx,$detalles,3);
+            $result = $this->model->actualizaDetalle($idx,$detalles,4);
 
             echo $result;
         }

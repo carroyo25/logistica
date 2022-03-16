@@ -99,7 +99,7 @@
                                                         AND tb_proyusu.nflgactivo = 1 
                                                         AND atenciones.ncodprm1 = 13 
                                                         AND estados.ncodprm1 = 4 
-                                                        AND logistica.lg_pedidocab.nEstadoDoc = 2");
+                                                        AND logistica.lg_pedidocab.nEstadoDoc = 3");
                 $query->execute(["user"=>$user]);
                 $rowcount = $query->rowcount();
 
@@ -285,8 +285,8 @@
             for ($i=0; $i < $nreg; $i++) { 
                 try {
 
-                    if ($est == 3 ){
-                        $estado = $datos[$i]->alm == $datos[$i]->cant  ? 14:3;
+                    if ( $est == 3 ){
+                        $estado = $datos[$i]->alm == $datos[$i]->cant  ? 14:5;
                         $cant = $datos[$i]->alm; 
                     }else {
                         $cant = $datos[$i]->cant;
