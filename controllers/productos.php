@@ -6,7 +6,7 @@
         }
 
         function render(){
-            $this->view->render('productos/index');
+            $this->view->render('costos/index');
         }
         
     }

@@ -64,9 +64,14 @@
         public function insert($datos)
         {
             try {
-                $query=$this->db->connect()->prepare("INSERT INTO tb_almacen SET ncubigeo=:ubi,ccodalm=:coa,cdesalm=:dea,
-                                                                                ctipovia=:vti,cdesvia=:vin,cnrovia=:num,czonavia=:zon,
-                                                                                nflgactivo=:est,cdesdpto=:dep,cdesprov=:pro,cdesdist=:dis");
+                $query=$this->db->connect()->prepare("INSERT INTO tb_almacen SET ncubigeo=:ubi,
+                                                                                ccodalm=:coa,
+                                                                                cdesalm=:dea,
+                                                                                ctipovia=:vti,
+                                                                                cdesvia=:vin,
+                                                                                cnrovia=:num,
+                                                                                czonavia=:zon,
+                                                                                nflgactivo=:est");
                 $query->execute(["ubi"=>$datos['ubi'],
                                 "coa"=>$datos['coa'],
                                 "dea"=>$datos['dea'],
@@ -74,10 +79,7 @@
                                 "vin"=>$datos['vin'],
                                 "num"=>$datos['num'],
                                 "zon"=>$datos['zon'],
-                                "est"=>$datos['est'],
-                                "dep"=>$datos['dep'],
-                                "pro"=>$datos['pro'],
-                                "dis"=>$datos['dis']]);
+                                "est"=>$datos['est']]);
                                 
                 $rowcount = $query->rowcount();
 
